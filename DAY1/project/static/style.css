@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Urbanist", sans-serif;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  width: 100%;
+  height: 100vh;
+  /* background: linear-gradient(toleft, #f4584e, #c91cd3); */
+  /* background: linear-gradient(to left, #f4584e, #b921c1); */
+  /* background: linear-gradient(#160d26, #1e0b31); */
+  background: linear-gradient(to left, #f4584e, #b921c1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card {
+  width: 550px;
+  /* background: linear-gradient(to bottom, #180b32, #402577); */
+  background: rgba(0, 0, 0, 0.466);
+  border: 2px solid rgba(255, 255, 255, 0.91);
+  color: white;
+  border-radius: 20px;
+  height: 400px;
+  padding: 10px;
+  flex-direction: column;
+}
+.log {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 30px;
+  border-radius: 20px;
+  padding: 10px;
+  font-weight: 700;
+}
+.log img {
+  height: 50px;
+}
+.days {
+  width: 95%;
+  margin: 0 auto;
+  /* background: greenyellow; */
+  padding: 20px 10px;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 20px;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+}
+.days p {
+  font-size: 35px;
+  font-weight: 600;
+  background: linear-gradient(to left, #ff4d40, #ffffff);
+
+  -webkit-background-clip: text; /* Clips background to text shape */
+  -webkit-text-fill-color: transparent; /* Makes text transparent so gradient is visible */
+  /* -webkit-text-stroke: 0.5px white; */
+}
+.btn {
+  font-size: 20px;
+  border-radius: 20px 0 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  width: 30%;
+  margin: 0 auto;
+  padding: 15px;
+  margin-top: 20px;
+  background: linear-gradient(to left, #f4584e, #b921c1);
+}
+.challenge {
+  /* margin-top: 10px; */
+  padding: 10px;
+  font-size: 20px;
+  margin: 20px auto;
+  text-align: center;
+}
