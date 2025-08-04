@@ -46,12 +46,12 @@ option {
 }
 
 .card h2 {
-  background: linear-gradient(to left, #efeded, #b921c1);
+  background: linear-gradient(to left, #efeded, #ff3cc4);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  font-size: 30px;
+  font-size: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,15 +110,15 @@ option {
 }
 .hello img {
   position: absolute;
-  top: 30px;
-  right: 10px;
+  top: 33px;
+  right: 15px;
   width: 20px;
 }
 button {
   width: 100%;
   padding: 20px;
-  font-size: 18px;
-  border-radius: 10px 0 10px 0;
+  font-size: 20px;
+  border-radius: 17px 0 20px 0;
   background: linear-gradient(to right, #f4584e, #b921c1);
   border: 3px solid white;
   color: white;
