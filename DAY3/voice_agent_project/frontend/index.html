@@ -1,11 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Day 3 - AI Voice Agent</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    hello
+    <div class="card">
+      <h2>Text To Speech Converter <i class="ri-speak-ai-line"></i></h2>
+
+      <!-- Voice selection -->
+
+      <!-- Textarea instead of input -->
+      <textarea
+        id="textInput"
+        placeholder="Type something..."
+        rows="4"
+        cols="50"
+      ></textarea>
+
+      <br /><br />
+      <div class="select">
+        <label for="voiceSelect">Choose Voice:</label>
+        <div class="hello">
+          <select id="voiceSelect"></select>
+          <img src="./images/dropdown.png" alt="" />
+        </div>
+      </div>
+      <br /><br />
+
+      <button onclick="generateAudio()">Generate Audio</button>
+
+      <br /><br />
+
+      <!-- Audio player hidden by default -->
+      <div class="audio-wrapper" id="audioContainer" style="display: none">
+        <audio id="audioPlayer" controls></audio>
+      </div>
+    </div>
+
+    <script>
+      // Load voices from backend
+      async function loadVoices() {
+        try {
+          const res = await fetch("http://127.0.0.1:8000/voices");
+          const voices = await res.json();
+          const select = document.getElementById("voiceSelect");
+
+          voices.forEach((v) => {
+            const opt = document.createElement("option");
+            opt.value = v.voiceId;
+            opt.text = `${v.displayName} (${v.locale})`;
+            select.appendChild(opt);
+          });
+        } catch (error) {
+          alert("Error loading voices.");
+        }
+      }
+
+      // Generate audio
+      async function generateAudio() {
+        const text = document.getElementById("textInput").value.trim();
+        const voiceId = document.getElementById("voiceSelect").value;
+
+        if (!text) {
+          alert("Please enter some text.");
+          return;
+        }
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/generate-audio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text, voiceId: voiceId }),
+          });
+
+          const data = await response.json();
+
+          if (data.audio_url) {
+            const audioPlayer = document.getElementById("audioPlayer");
+            audioPlayer.src = data.audio_url;
+            audioPlayer.style.display = "block"; // Show only when audio arrives
+            audioPlayer.play();
+          } else {
+            alert("Error generating audio.");
+          }
+        } catch (error) {
+          alert("Failed to connect to server.");
+        }
+      }
+
+      // Load voices on page load
+      window.onload = loadVoices;
+    </script>
   </body>
 </html>
