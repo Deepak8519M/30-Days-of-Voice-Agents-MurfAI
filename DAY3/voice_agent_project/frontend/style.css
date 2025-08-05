@@ -35,7 +35,7 @@ option {
 
 .card {
   cursor: pointer;
-  width: 550px;
+  width: 650px;
   background: rgba(0, 0, 0, 0.466);
   border: 3px solid rgba(255, 255, 255, 0.91);
   color: white;
@@ -43,6 +43,7 @@ option {
   height: fit-content;
   padding: 20px;
   flex-direction: column;
+  /* margin-right: 20px; */
 }
 
 .card h2 {
@@ -134,4 +135,57 @@ button {
 audio {
   width: 100%;
   border-radius: 8px;
+}
+.cardflow {
+  display: flex;
+  gap: 30px;
+}
+.card1 {
+  cursor: pointer;
+  width: 650px;
+  background: rgba(0, 0, 0, 0.466);
+  border: 3px solid rgba(255, 255, 255, 0.91);
+  color: white;
+  border-radius: 20px;
+  height: fit-content;
+  padding: 20px;
+  flex-direction: column;
+}
+.card1 h1 {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.row1 {
+  display: flex;
+}
+#startRecording {
+  background: linear-gradient(to right, rgb(71, 215, 143), rgb(109, 220, 61));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+#stopRecording {
+  background: linear-gradient(to right, rgb(226, 67, 99), rgb(255, 98, 98));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+#downloadAudio {
+  background: linear-gradient(to right, rgb(226, 67, 99), rgb(107, 124, 255));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+#resetAudio {
+  background: linear-gradient(to right, rgb(243, 255, 8), rgb(107, 124, 255));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.row2 {
+  display: flex;
 }
