@@ -190,11 +190,23 @@ audio {
   display: flex;
 }
 .status {
-  background: rgb(139, 252, 139);
+  /* background: rgb(68, 70, 68);
   border: 1px dotted white;
   padding: 20px;
   width: 100%;
-}
-#recordStatus {
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
+  font-size: 20px; */
+  border: 2px dashed white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+  color: #ffffff;
+  font-family: sans-serif;
+  background: #32dc2cb2;
+  font-size: 25px;
 }
