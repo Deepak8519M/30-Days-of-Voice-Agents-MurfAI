@@ -5,6 +5,7 @@ import os
 import shutil
 import requests
 import assemblyai as aai
+import time
 
 # Load environment variables
 load_dotenv()
@@ -78,12 +79,44 @@ def transcribe_audio(filename: str = Body(...)):
     if not os.path.exists(audio_path):
         return {"error": "File not found."}
 
-    with open(audio_path, "rb") as f:
-        audio_data = f.read()
+    headers = {
+        "authorization": ASSEMBLYAI_API_KEY
+    }
 
-    try:
-        transcriber = aai.Transcriber()
-        transcript = transcriber.transcribe(audio_data)
-        return {"transcription": transcript.text}
-    except Exception as e:
-        return {"error": str(e)}
+    # Step 1: Upload the audio file to AssemblyAI
+    with open(audio_path, "rb") as f:
+        upload_response = requests.post(
+            "https://api.assemblyai.com/v2/upload",
+            headers=headers,
+            data=f
+        )
+
+    if upload_response.status_code != 200:
+        return {"error": "Failed to upload audio to AssemblyAI"}
+
+    upload_url = upload_response.json()["upload_url"]
+
+    # Step 2: Start the transcription job
+    transcript_response = requests.post(
+        "https://api.assemblyai.com/v2/transcript",
+        headers=headers,
+        json={"audio_url": upload_url}
+    )
+
+    if transcript_response.status_code != 200:
+        return {"error": "Failed to start transcription job"}
+
+    transcript_id = transcript_response.json()["id"]
+
+    # Step 3: Poll for the result
+    while True:
+        polling_response = requests.get(
+            f"https://api.assemblyai.com/v2/transcript/{transcript_id}",
+            headers=headers
+        )
+        result = polling_response.json()
+        if result["status"] == "completed":
+            return {"transcription": result["text"]}
+        elif result["status"] == "error":
+            return {"error": result["error"]}
+        time.sleep(2)  # wait 2 seconds before next poll
