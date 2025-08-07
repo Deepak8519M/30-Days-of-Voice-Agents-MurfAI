@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Body
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles  # Added for static file serving
 from dotenv import load_dotenv
 import os
 import shutil
@@ -26,12 +27,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve static files (e.g., style.css, dropdown.png, favicon.ico)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Create uploads directory
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @app.post("/upload-audio")
 async def upload_audio(file: UploadFile = File(...)):
+    # Validate file type
+    if not file.content_type.startswith("audio/"):
+        return {"error": "Invalid file type. Please upload an audio file."}
+
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_location, "wb") as f:
         shutil.copyfileobj(file.file, f)
@@ -51,6 +59,8 @@ def list_voices():
         "api-key": MURF_API_KEY
     }
     response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return {"error": f"Failed to fetch voices: {response.text}"}
     return response.json()
 
 @app.post("/generate-audio")
@@ -68,12 +78,12 @@ def generate_audio(text: str = Body(..., embed=True), voiceId: str = Body(..., e
     response = requests.post(url, json=payload, headers=headers)
 
     if response.status_code != 200:
-        return {"error": response.text}
+        return {"error": f"Failed to generate audio: {response.text}"}
 
     return {"audio_url": response.json().get("audioFile")}
 
 @app.post("/transcribe")
-def transcribe_audio(filename: str = Body(...)):
+async def transcribe_audio(filename: str = Body(..., embed=True)):
     audio_path = os.path.join(UPLOAD_DIR, filename)
 
     if not os.path.exists(audio_path):
@@ -92,7 +102,7 @@ def transcribe_audio(filename: str = Body(...)):
         )
 
     if upload_response.status_code != 200:
-        return {"error": "Failed to upload audio to AssemblyAI"}
+        return {"error": f"Failed to upload audio to AssemblyAI: {upload_response.text}"}
 
     upload_url = upload_response.json()["upload_url"]
 
@@ -104,12 +114,13 @@ def transcribe_audio(filename: str = Body(...)):
     )
 
     if transcript_response.status_code != 200:
-        return {"error": "Failed to start transcription job"}
+        return {"error": f"Failed to start transcription job: {transcript_response.text}"}
 
     transcript_id = transcript_response.json()["id"]
 
     # Step 3: Poll for the result
-    while True:
+    max_attempts = 30
+    for _ in range(max_attempts):
         polling_response = requests.get(
             f"https://api.assemblyai.com/v2/transcript/{transcript_id}",
             headers=headers
@@ -118,5 +129,7 @@ def transcribe_audio(filename: str = Body(...)):
         if result["status"] == "completed":
             return {"transcription": result["text"]}
         elif result["status"] == "error":
-            return {"error": result["error"]}
-        time.sleep(2)  # wait 2 seconds before next poll
+            return {"error": f"Transcription failed: {result['error']}"}
+        time.sleep(2)  # Wait 2 seconds before next poll
+
+    return {"error": "Transcription timed out."}
