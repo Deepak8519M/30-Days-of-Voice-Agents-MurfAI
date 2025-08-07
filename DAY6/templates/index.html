@@ -8,16 +8,6 @@
     />
     <link rel="stylesheet" href="/static/style.css" />
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
-    <style>
-      .transcript {
-        margin-top: 15px;
-        padding: 10px;
-        background: #f1f1f1;
-        border-left: 3px solid #2196f3;
-        font-family: sans-serif;
-        color: black;
-      }
-    </style>
   </head>
   <body>
     <div class="cardflow">
@@ -75,7 +65,9 @@
         </div>
 
         <br />
-        <audio id="echoAudio" controls style="display: none"></audio>
+        <div class="wrapper">
+          <audio id="echoAudio" controls style="display: none"></audio>
+        </div>
 
         <!-- TRANSCRIPT DISPLAY -->
         <div id="transcriptContainer"></div>
@@ -176,10 +168,13 @@
             transcriptContainer.innerHTML = "";
             transcriptContainer.appendChild(transcriptDiv);
           } else {
-            transcriptContainer.innerHTML = `<div class="transcript">Error: ${transData.error || "No transcript found."}</div>`;
+            transcriptContainer.innerHTML = `<div class="transcript">Error: ${
+              transData.error || "No transcript found."
+            }</div>`;
           }
         } catch (e) {
-          recordStatus.textContent = "Status: Upload or transcription failed ❌";
+          recordStatus.textContent =
+            "Status: Upload or transcription failed ❌";
           console.error("Upload/transcription error:", e);
           alert("Upload or transcription failed: " + e.message);
         }
@@ -198,7 +193,9 @@
       const resetBtn = document.getElementById("resetAudio");
       const echoAudio = document.getElementById("echoAudio");
       const recordStatus = document.getElementById("recordStatus");
-      const transcriptContainer = document.getElementById("transcriptContainer");
+      const transcriptContainer = document.getElementById(
+        "transcriptContainer"
+      );
 
       startBtn.addEventListener("click", async () => {
         try {
