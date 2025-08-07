@@ -10,7 +10,7 @@ load_dotenv()
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 
 # Initialize FastAPI app
-app = FastAPI(title="Day 5 - AI Voice Agent")
+app = FastAPI(title="Day 6 - AI Voice Agent")
 
 # CORS middleware
 app.add_middleware(
