@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 5 - AI Voice Agent</title>
+    <title>Day 6 - AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../static/style.css" />
+    <style>
+      .transcript {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f1f1f1;
+        border-left: 3px solid #2196f3;
+        font-family: sans-serif;
+        color: black;
+      }
+    </style>
   </head>
   <body>
     <div class="cardflow">
+      <!-- TEXT TO SPEECH -->
       <div class="card">
-        <h2>Text To Speech Converter <i class="ri-speak-ai-line"></i></h2>
+        <h2>Text To Speech Converter <i class="ri-speak-line"></i></h2>
 
         <textarea
           id="textInput"
@@ -25,20 +36,20 @@
           <label for="voiceSelect">Choose Voice:</label>
           <div class="hello">
             <select id="voiceSelect"></select>
-            <img src="./images/dropdown.png" alt="" />
+            <img src="./images/dropdown.png" alt="dropdown icon" />
           </div>
         </div>
-        <br /><br />
 
+        <br /><br />
         <button onclick="generateAudio()">Generate Audio</button>
 
         <br /><br />
-
         <div class="audio-wrapper" id="audioContainer" style="display: none">
           <audio id="audioPlayer" controls></audio>
         </div>
       </div>
 
+      <!-- ECHO BOT RECORDING -->
       <div class="card1">
         <h1>Echo Bot</h1>
 
@@ -61,8 +72,12 @@
         <div class="status">
           <div id="recordStatus">Status: Idle</div>
         </div>
+
         <br />
         <audio id="echoAudio" controls style="display: none"></audio>
+
+        <!-- TRANSCRIPT DISPLAY -->
+        <div id="transcriptContainer"></div>
       </div>
     </div>
 
@@ -79,7 +94,7 @@
             opt.text = `${v.displayName} (${v.locale})`;
             select.appendChild(opt);
           });
-        } catch {
+        } catch (e) {
           alert("Error loading voices.");
         }
       }
@@ -97,15 +112,15 @@
           const response = await fetch("http://127.0.0.1:8000/generate-audio", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: text, voiceId: voiceId }),
+            body: JSON.stringify({ text, voiceId }),
           });
 
           const data = await response.json();
 
           if (data.audio_url) {
             const audioPlayer = document.getElementById("audioPlayer");
+            document.getElementById("audioContainer").style.display = "block";
             audioPlayer.src = data.audio_url;
-            audioPlayer.style.display = "block";
             audioPlayer.play();
           } else {
             alert("Error generating audio.");
@@ -117,7 +132,7 @@
 
       window.onload = loadVoices;
 
-      // ===== ECHO RECORDING =====
+      // ==== Recording, Upload & Transcription ====
       let mediaRecorder;
       let audioChunks = [];
       let audioBlob;
@@ -128,6 +143,9 @@
       const resetBtn = document.getElementById("resetAudio");
       const echoAudio = document.getElementById("echoAudio");
       const recordStatus = document.getElementById("recordStatus");
+      const transcriptContainer = document.getElementById(
+        "transcriptContainer"
+      );
 
       startBtn.addEventListener("click", async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -159,11 +177,30 @@
               method: "POST",
               body: formData,
             });
+
             const data = await res.json();
-            recordStatus.textContent = `Status: Uploaded ✅ (${data.filename} - ${data.file_size} bytes - ${data.content_type})`;
-          } catch {
+            recordStatus.textContent = `Status: Uploaded ✅ (${data.filename})`;
+
+            const transRes = await fetch("http://127.0.0.1:8000/transcribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ filename: data.filename }),
+            });
+
+            const transData = await transRes.json();
+
+            if (transData.transcription) {
+              const transcriptDiv = document.createElement("div");
+              transcriptDiv.className = "transcript";
+              transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${transData.transcription}`;
+              transcriptContainer.innerHTML = "";
+              transcriptContainer.appendChild(transcriptDiv);
+            } else {
+              transcriptContainer.innerHTML = `<div class="transcript">No transcript found.</div>`;
+            }
+          } catch (e) {
             recordStatus.textContent = "Status: Upload failed ❌";
-            alert("Failed to upload audio.");
+            alert("Upload or transcription failed.");
           }
         };
 
@@ -171,6 +208,14 @@
         startBtn.disabled = true;
         stopBtn.disabled = false;
         recordStatus.textContent = "Status: Recording... 🎙️";
+      });
+
+      stopBtn.addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
       });
 
       downloadBtn.addEventListener("click", () => {
@@ -181,39 +226,14 @@
         a.click();
       });
 
-      // stopBtn.addEventListener("click", (e) => {
-      //   e.preventDefault();
-      //   mediaRecorder.stop();
-      //   startBtn.disabled = false;
-      //   stopBtn.disabled = true;
-      // });
-
-      // resetBtn.addEventListener("click", () => {
-      //   echoAudio.pause();
-      //   echoAudio.src = "";
-      //   echoAudio.style.display = "none";
-      //   downloadBtn.disabled = true;
-      //   resetBtn.disabled = true;
-      //   recordStatus.textContent = "Status: Idle";
-      // });
-      stopBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (mediaRecorder && mediaRecorder.state !== "inactive") {
-          mediaRecorder.stop();
-        }
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        // REMOVE THIS LINE: Don't set status to idle here!
-        // recordStatus.textContent = "Status: Idle";
-      });
-
       resetBtn.addEventListener("click", () => {
         echoAudio.pause();
         echoAudio.src = "";
         echoAudio.style.display = "none";
+        transcriptContainer.innerHTML = "";
         downloadBtn.disabled = true;
         resetBtn.disabled = true;
-        recordStatus.textContent = "Status: Idle"; // Only reset here
+        recordStatus.textContent = "Status: Idle";
       });
     </script>
   </body>

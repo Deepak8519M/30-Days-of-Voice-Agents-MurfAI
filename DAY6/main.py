@@ -4,15 +4,19 @@ from dotenv import load_dotenv
 import os
 import shutil
 import requests
+import assemblyai as aai
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 MURF_API_KEY = os.getenv("MURF_API_KEY")
+ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
 
-# Initialize FastAPI app
+# Configure AssemblyAI
+aai.settings.api_key = ASSEMBLYAI_API_KEY
+
 app = FastAPI(title="Day 6 - AI Voice Agent")
 
-# CORS middleware
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,25 +25,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Upload directory
+# Create uploads directory
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Upload audio
 @app.post("/upload-audio")
 async def upload_audio(file: UploadFile = File(...)):
     file_location = os.path.join(UPLOAD_DIR, file.filename)
-
     with open(file_location, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
     return {
         "filename": file.filename,
         "file_size": os.path.getsize(file_location),
-        "content_type": file.content_type
+        "content_type": file.content_type,
+        "path": file_location
     }
 
-# Get available voices
 @app.get("/voices")
 def list_voices():
     url = "https://api.murf.ai/v1/speech/voices"
@@ -50,7 +52,6 @@ def list_voices():
     response = requests.get(url, headers=headers)
     return response.json()
 
-# Generate audio using Murf API
 @app.post("/generate-audio")
 def generate_audio(text: str = Body(..., embed=True), voiceId: str = Body(..., embed=True)):
     url = "https://api.murf.ai/v1/speech/generate"
@@ -69,3 +70,20 @@ def generate_audio(text: str = Body(..., embed=True), voiceId: str = Body(..., e
         return {"error": response.text}
 
     return {"audio_url": response.json().get("audioFile")}
+
+@app.post("/transcribe")
+def transcribe_audio(filename: str = Body(...)):
+    audio_path = os.path.join(UPLOAD_DIR, filename)
+
+    if not os.path.exists(audio_path):
+        return {"error": "File not found."}
+
+    with open(audio_path, "rb") as f:
+        audio_data = f.read()
+
+    try:
+        transcriber = aai.Transcriber()
+        transcript = transcriber.transcribe(audio_data)
+        return {"transcription": transcript.text}
+    except Exception as e:
+        return {"error": str(e)}
