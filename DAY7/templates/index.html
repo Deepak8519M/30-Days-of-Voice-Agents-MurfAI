@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 6 - AI Voice Agent</title>
+    <title>Day 7 - AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
@@ -42,7 +42,7 @@
 
       <!-- ECHO BOT RECORDING -->
       <div class="card1">
-        <h1>Echo Bot</h1>
+        <h1>Echo Bot v2</h1>
 
         <div class="row1">
           <button id="startRecording">Start Recording</button>
@@ -137,46 +137,39 @@
         formData.append("file", audioBlob, "echo_recording.webm");
 
         try {
-          const res = await fetch("http://127.0.0.1:8000/upload-audio", {
+          const res = await fetch("http://127.0.0.1:8000/tts/echo", {
             method: "POST",
             body: formData,
           });
 
           if (!res.ok) {
-            throw new Error(`Upload failed: ${res.statusText}`);
+            throw new Error(`Echo bot failed: ${res.statusText}`);
           }
 
           const data = await res.json();
-          recordStatus.textContent = `Status: Uploaded ✅ (${data.filename})`;
+          recordStatus.textContent = `Status: Processed ✅`;
 
-          const transRes = await fetch("http://127.0.0.1:8000/transcribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ filename: data.filename }),
-          });
-
-          if (!transRes.ok) {
-            throw new Error(`Transcription failed: ${transRes.statusText}`);
-          }
-
-          const transData = await transRes.json();
-
-          if (transData.transcription) {
+          if (data.audio_url && data.transcription) {
+            // Display transcription
             const transcriptDiv = document.createElement("div");
             transcriptDiv.className = "transcript";
-            transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${transData.transcription}`;
+            transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${data.transcription}`;
             transcriptContainer.innerHTML = "";
             transcriptContainer.appendChild(transcriptDiv);
+
+            // Play Murf-generated audio
+            echoAudio.src = data.audio_url;
+            echoAudio.style.display = "block";
+            echoAudio.play();
           } else {
             transcriptContainer.innerHTML = `<div class="transcript">Error: ${
-              transData.error || "No transcript found."
+              data.error || "No audio or transcription returned."
             }</div>`;
           }
         } catch (e) {
-          recordStatus.textContent =
-            "Status: Upload or transcription failed ❌";
-          console.error("Upload/transcription error:", e);
-          alert("Upload or transcription failed: " + e.message);
+          recordStatus.textContent = "Status: Processing failed ❌";
+          console.error("Echo bot error:", e);
+          alert("Echo bot failed: " + e.message);
         }
       }
 
@@ -213,11 +206,6 @@
 
           mediaRecorder.onstop = async () => {
             audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-            const audioURL = URL.createObjectURL(audioBlob);
-            echoAudio.src = audioURL;
-            echoAudio.style.display = "block";
-            echoAudio.play();
-
             downloadBtn.disabled = false;
             resetBtn.disabled = false;
             recordStatus.textContent = "Status: Uploading...";
