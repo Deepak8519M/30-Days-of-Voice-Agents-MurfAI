@@ -42,7 +42,7 @@
 
       <!-- ECHO BOT RECORDING -->
       <div class="card1">
-        <h1>Echo Bot v2</h1>
+        <h1 class="echobot">Echo Bot v2</h1>
 
         <div class="row1">
           <button id="startRecording">Start Recording</button>
@@ -147,7 +147,7 @@
           }
 
           const data = await res.json();
-          recordStatus.textContent = `Status: Processed ✅`;
+          recordStatus.textContent = `Status: Processed `;
 
           if (data.audio_url && data.transcription) {
             // Display transcription
@@ -216,7 +216,7 @@
           mediaRecorder.start();
           startBtn.disabled = true;
           stopBtn.disabled = false;
-          recordStatus.textContent = "Status: Recording... 🎙️";
+          recordStatus.textContent = "Status: Recording... ";
         } catch (e) {
           console.error("Recording error:", e);
           alert("Failed to start recording: " + e.message);
