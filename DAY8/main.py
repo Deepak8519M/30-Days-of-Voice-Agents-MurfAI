@@ -7,16 +7,18 @@ import shutil
 import requests
 import assemblyai as aai
 import time
+import google.generativeai as genai  # Added for Gemini API
 
 # Load environment variables
 load_dotenv()
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Added for Gemini API
 
 # Configure AssemblyAI
 aai.settings.api_key = ASSEMBLYAI_API_KEY
 
-app = FastAPI(title="Day 7 - AI Voice Agent")
+app = FastAPI(title="Day 8 - AI Voice Agent")
 
 # Enable CORS
 app.add_middleware(
@@ -212,3 +214,16 @@ async def tts_echo(file: UploadFile = File(...)):
         "transcription": transcription,
         "audio_url": audio_url
     }
+
+@app.post("/llm/query")
+def llm_query(text: str = Body(..., embed=True)):
+    if not GEMINI_API_KEY:
+        return {"error": "Gemini API key not configured."}
+
+    genai.configure(api_key=GEMINI_API_KEY)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    try:
+        response = model.generate_content(text)
+        return {"response": response.text}
+    except Exception as e:
+        return {"error": f"Failed to generate response from Gemini: {str(e)}"}
