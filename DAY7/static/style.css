@@ -108,7 +108,7 @@ option {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   background: linear-gradient(270deg, #efeded, #ff3cc4, #6a5bff, #ff5b5b);
   background-size: 300% 300%;
