@@ -475,13 +475,16 @@ audio {
   line-height: 1.5; /* Improved readability */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
   animation: fadeIn 0.5s ease-in; /* Fade-in animation */
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .transcript strong {
   color: #4f92ff; /* Light blue for "Transcript:" label to stand out */
   font-weight: 600; /* Slightly bold */
-  font-size: 25px;
+  font-size: 20px;
+}
+#transcriptContainer {
+  font-size: 20px;
 }
 
 /* Fade-in animation */
