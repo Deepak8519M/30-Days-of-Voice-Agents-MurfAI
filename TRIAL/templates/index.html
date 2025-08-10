@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 9 - AI Voice Agent</title>
+    <title>Day Trail - AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
@@ -14,14 +14,12 @@
       <!-- TEXT TO SPEECH -->
       <div class="card">
         <h2>Text To Speech Converter <i class="ri-speak-line"></i></h2>
-
         <textarea
           id="textInput"
           placeholder="Type something..."
           rows="4"
           cols="50"
         ></textarea>
-
         <br /><br />
         <div class="select">
           <label for="voiceSelect">Choose Voice:</label>
@@ -30,10 +28,10 @@
             <img src="/static/images/dropdown.png" alt="dropdown icon" />
           </div>
         </div>
-
         <br /><br />
-        <button onclick="generateAudio()">Generate Audio</button>
-
+        <button class="generate-btn" onclick="generateAudio()">
+          Generate Audio
+        </button>
         <br /><br />
         <div class="audio-wrapper" id="audioContainer" style="display: none">
           <audio id="audioPlayer" controls></audio>
@@ -43,14 +41,12 @@
       <!-- ECHO BOT RECORDING -->
       <div class="card1">
         <h1 class="echobot">Echo Bot v2</h1>
-
         <div class="row1">
           <button id="startRecording">Start Recording</button>
           <button id="stopRecording" disabled>
             Stop Recording <i class="ri-stop-fill"></i>
           </button>
         </div>
-
         <div class="row2">
           <button id="downloadAudio" disabled>
             Download Audio <i class="ri-download-fill"></i>
@@ -59,16 +55,14 @@
             Reset <i class="ri-restart-line"></i>
           </button>
         </div>
-
         <div class="status">
           <div id="recordStatus">Status: Idle</div>
+          <div id="loadingSpinner" class="spinner" style="display: none"></div>
         </div>
-
         <br />
         <div class="wrapper">
           <audio id="echoAudio" controls style="display: none"></audio>
         </div>
-
         <!-- TRANSCRIPT DISPLAY -->
         <div id="transcriptContainer"></div>
       </div>
@@ -83,7 +77,6 @@
             throw new Error(voices.error);
           }
           const select = document.getElementById("voiceSelect");
-
           voices.forEach((v) => {
             const opt = document.createElement("option");
             opt.value = v.voiceId;
@@ -99,7 +92,6 @@
       async function generateAudio() {
         const text = document.getElementById("textInput").value.trim();
         const voiceId = document.getElementById("voiceSelect").value;
-
         if (!text) {
           alert("Please enter some text.");
           return;
@@ -108,19 +100,15 @@
           alert("Please select a voice.");
           return;
         }
-
         try {
           const response = await fetch("http://127.0.0.1:8000/generate-audio", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text, voiceId }),
           });
-
           const data = await response.json();
-
           if (data.audio_url) {
             const audioPlayer = document.getElementById("audioPlayer");
-            // document.getElementById("audioContainer").style.display = "block";
             audioPlayer.src = data.audio_url;
             audioPlayer.play();
           } else {
@@ -135,29 +123,28 @@
       async function uploadAndTranscribe() {
         const formData = new FormData();
         formData.append("file", audioBlob, "echo_recording.webm");
-
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const recordStatus = document.getElementById("recordStatus");
+        loadingSpinner.style.display = "inline-block";
+        recordStatus.classList.add("uploading");
         try {
           const res = await fetch("http://127.0.0.1:8000/llm/query", {
             method: "POST",
             body: formData,
           });
-
           if (!res.ok) {
             throw new Error(`LLM query failed: ${res.statusText}`);
           }
-
           const data = await res.json();
+          loadingSpinner.style.display = "none";
+          recordStatus.classList.remove("uploading");
           recordStatus.textContent = `Status: Processed`;
-
           if (data.audio_url && data.transcription && data.response) {
-            // Display transcription
             const transcriptDiv = document.createElement("div");
             transcriptDiv.className = "transcript";
             transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${data.transcription}<br><strong>LLM Response:</strong> ${data.response}`;
             transcriptContainer.innerHTML = "";
             transcriptContainer.appendChild(transcriptDiv);
-
-            // Play Murf-generated audio
             echoAudio.src = data.audio_url;
             echoAudio.style.display = "block";
             echoAudio.play();
@@ -167,6 +154,8 @@
             }</div>`;
           }
         } catch (e) {
+          loadingSpinner.style.display = "none";
+          recordStatus.classList.remove("uploading");
           recordStatus.textContent = "Status: Processing failed ❌";
           console.error("LLM query error:", e);
           alert("LLM query failed: " + e.message);
@@ -175,7 +164,6 @@
 
       window.onload = loadVoices;
 
-      // ==== Recording, Upload & Transcription ====
       let mediaRecorder;
       let audioChunks = [];
       let audioBlob;
@@ -197,26 +185,24 @@
           });
           mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
           audioChunks = [];
-
           mediaRecorder.ondataavailable = (e) => {
             if (e.data.size > 0) {
               audioChunks.push(e.data);
             }
           };
-
           mediaRecorder.onstop = async () => {
             audioBlob = new Blob(audioChunks, { type: "audio/webm" });
             downloadBtn.disabled = false;
             resetBtn.disabled = false;
             recordStatus.textContent = "Status: Uploading...";
-
+            recordStatus.classList.add("uploading");
             await uploadAndTranscribe();
           };
-
           mediaRecorder.start();
           startBtn.disabled = true;
           stopBtn.disabled = false;
-          recordStatus.textContent = "Status: Recording... ";
+          recordStatus.textContent = "Status: Recording...";
+          recordStatus.classList.add("recording");
         } catch (e) {
           console.error("Recording error:", e);
           alert("Failed to start recording: " + e.message);
@@ -228,6 +214,7 @@
           mediaRecorder.stop();
           startBtn.disabled = false;
           stopBtn.disabled = true;
+          recordStatus.classList.remove("recording");
         }
       });
 
@@ -247,6 +234,7 @@
         downloadBtn.disabled = true;
         resetBtn.disabled = true;
         recordStatus.textContent = "Status: Idle";
+        recordStatus.classList.remove("recording", "uploading");
         audioChunks = [];
         audioBlob = null;
       });
