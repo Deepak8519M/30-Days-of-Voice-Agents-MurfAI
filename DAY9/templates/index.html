@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 7 - AI Voice Agent</title>
+    <title>Day 9 - AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
@@ -137,23 +137,23 @@
         formData.append("file", audioBlob, "echo_recording.webm");
 
         try {
-          const res = await fetch("http://127.0.0.1:8000/tts/echo", {
+          const res = await fetch("http://127.0.0.1:8000/llm/query", {
             method: "POST",
             body: formData,
           });
 
           if (!res.ok) {
-            throw new Error(`Echo bot failed: ${res.statusText}`);
+            throw new Error(`LLM query failed: ${res.statusText}`);
           }
 
           const data = await res.json();
-          recordStatus.textContent = `Status: Processed `;
+          recordStatus.textContent = `Status: Processed`;
 
-          if (data.audio_url && data.transcription) {
+          if (data.audio_url && data.transcription && data.response) {
             // Display transcription
             const transcriptDiv = document.createElement("div");
             transcriptDiv.className = "transcript";
-            transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${data.transcription}`;
+            transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${data.transcription}<br><strong>LLM Response:</strong> ${data.response}`;
             transcriptContainer.innerHTML = "";
             transcriptContainer.appendChild(transcriptDiv);
 
@@ -163,13 +163,13 @@
             echoAudio.play();
           } else {
             transcriptContainer.innerHTML = `<div class="transcript">Error: ${
-              data.error || "No audio or transcription returned."
+              data.error || "No audio, transcription, or response returned."
             }</div>`;
           }
         } catch (e) {
           recordStatus.textContent = "Status: Processing failed ❌";
-          console.error("Echo bot error:", e);
-          alert("Echo bot failed: " + e.message);
+          console.error("LLM query error:", e);
+          alert("LLM query failed: " + e.message);
         }
       }
 
