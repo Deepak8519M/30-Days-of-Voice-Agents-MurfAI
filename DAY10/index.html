@@ -64,7 +64,7 @@
           <audio id="echoAudio" controls style="display: none"></audio>
         </div>
         <!-- TRANSCRIPT DISPLAY -->
-        <div id="transcriptContainer"></div>
+        <div id="transcriptContainer" class="transcript-container"></div>
       </div>
     </div>
 
@@ -156,16 +156,20 @@
           if (data.audio_url && data.transcription && data.response) {
             const transcriptDiv = document.createElement("div");
             transcriptDiv.className = "transcript";
-            transcriptDiv.innerHTML = `<strong>Transcript:</strong> ${data.transcription}<br><strong>LLM Response:</strong> ${data.response}`;
-            transcriptContainer.innerHTML = "";
-            transcriptContainer.appendChild(transcriptDiv);
+            transcriptDiv.innerHTML = `<strong>User:</strong> ${data.transcription}<br><strong>AI:</strong> ${data.response}`;
+            transcriptContainer.appendChild(transcriptDiv); // Append instead of clearing
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight; // Auto-scroll to bottom
             echoAudio.src = data.audio_url;
             echoAudio.style.display = "block";
             echoAudio.play();
           } else {
-            transcriptContainer.innerHTML = `<div class="transcript">Error: ${
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "transcript";
+            errorDiv.innerHTML = `<strong>Error:</strong> ${
               data.error || "No audio, transcription, or response returned."
-            }</div>`;
+            }`;
+            transcriptContainer.appendChild(errorDiv);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
           }
         } catch (e) {
           loadingSpinner.style.display = "none";

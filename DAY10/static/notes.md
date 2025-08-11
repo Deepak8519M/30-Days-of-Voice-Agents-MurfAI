@@ -1,0 +1,323 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(-45deg, #ff29bf, #5849ff, #ff4848, #6a5bff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.cardflow {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+}
+
+.card, .card1 {
+  width: 650px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover, .card1:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card h2, .card1 h1.echobot {
+  font-size: 38px;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(270deg, #efeded, #ff3cc4, #6a5bff, #ff5b5b);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 4s ease infinite;
+  margin-bottom: 20px;
+  text-shadow: 0 0 8px rgba(255, 92, 180, 0.3);
+}
+
+.card h2 i {
+  font-size: 40px;
+}
+
+@keyframes gradientText {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+textarea {
+  width: 100%;
+  outline: none;
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 18px;
+  resize: none;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  border-color: #a1c4fd;
+  box-shadow: 0 0 8px rgba(161, 196, 253, 0.5);
+}
+
+.select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+label {
+  font-size: 18px;
+  color: #ffffff;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  color: #ffffff;
+  font-size: 18px;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+select:focus {
+  border-color: #a1c4fd;
+  box-shadow: 0 0 8px rgba(161, 196, 253, 0.5);
+}
+
+option {
+  background: #1a1a3d;
+  color: #ffffff;
+}
+
+.hello {
+  position: relative;
+  width: 100%;
+}
+
+.hello img {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 20px;
+}
+
+button, .generate-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f4584e, #b921c1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover, .generate-btn:hover {
+  background: linear-gradient(135deg, #ff6b6b, #d84bff);
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+button:active, .generate-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled, .generate-btn:disabled {
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.5), rgba(150, 150, 150, 0.5));
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#startRecording {
+  background: linear-gradient(135deg, rgba(71, 215, 143, 0.8), rgba(109, 220, 61, 0.8));
+}
+
+#startRecording:hover {
+  background: linear-gradient(135deg, rgba(71, 215, 143, 1), rgba(109, 220, 61, 1));
+}
+
+#stopRecording {
+  background: linear-gradient(135deg, rgba(226, 67, 99, 0.8), rgba(255, 98, 98, 0.8));
+}
+
+#stopRecording:hover {
+  background: linear-gradient(135deg, rgba(226, 67, 99, 1), rgba(255, 98, 98, 1));
+}
+
+#downloadAudio {
+  background: linear-gradient(135deg, rgba(226, 67, 99, 0.8), rgba(107, 124, 255, 0.8));
+}
+
+#downloadAudio:hover {
+  background: linear-gradient(135deg, rgba(226, 67, 99, 1), rgba(107, 124, 255, 1));
+}
+
+#resetAudio {
+  background: linear-gradient(135deg, rgba(243, 255, 8, 0.8), rgba(107, 124, 255, 0.8));
+}
+
+#resetAudio:hover {
+  background: linear-gradient(135deg, rgba(243, 255, 8, 1), rgba(107, 124, 255, 1));
+}
+
+.row1, .row2 {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.status {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#recordStatus {
+  font-size: 18px;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+#recordStatus.recording, #recordStatus.uploading {
+  color: #a1c4fd;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(161, 196, 253, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(161, 196, 253, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(161, 196, 253, 0); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #a1c4fd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.wrapper {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+audio#echoAudio {
+  width: 100%;
+  max-width: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+audio#echoAudio::-webkit-media-controls-panel {
+  background: transparent;
+  color: #ffffff;
+}
+
+audio#echoAudio::-webkit-media-controls-play-button,
+audio#echoAudio::-webkit-media-controls-current-time-display,
+audio#echoAudio::-webkit-media-controls-time-remaining-display {
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.transcript-container {
+  max-height: 200px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.transcript {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.5;
+  animation: slideIn 0.5s ease-in;
+}
+
+.transcript strong {
+  color: #a1c4fd;
+  font-weight: 600;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
