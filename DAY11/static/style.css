@@ -25,7 +25,6 @@ body {
   align-items: center;
 }
 
-/* Animation keyframes */
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
@@ -432,7 +431,7 @@ audio {
 }
 
 #recordStatus.uploading::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -444,10 +443,35 @@ audio {
   animation: ripple 1.5s ease-out infinite;
 }
 
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.91);
+  border-top: 3px solid rgb(77, 255, 118);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(77, 255, 118, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(77, 255, 118, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(77, 255, 118, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(77, 255, 118, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(77, 255, 118, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(77, 255, 118, 0);
+  }
 }
 
 @keyframes ripple {
@@ -462,8 +486,13 @@ audio {
 }
 
 @keyframes scaleText {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .transcript-container {

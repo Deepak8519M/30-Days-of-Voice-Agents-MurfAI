@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 10 - AI Voice Agent</title>
+    <title>Day 11 - AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
@@ -72,6 +72,7 @@
       async function loadVoices() {
         try {
           const res = await fetch("http://127.0.0.1:8000/voices");
+          if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
           const voices = await res.json();
           if (voices.error) {
             throw new Error(voices.error);
@@ -85,7 +86,14 @@
           });
         } catch (e) {
           console.error("Error loading voices:", e);
-          alert("Error loading voices: " + e.message);
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript";
+          transcriptDiv.innerHTML = `<strong>Error:</strong> Failed to load voices: ${e.message}`;
+          document
+            .getElementById("transcriptContainer")
+            .appendChild(transcriptDiv);
+          document.getElementById("transcriptContainer").scrollTop =
+            document.getElementById("transcriptContainer").scrollHeight;
         }
       }
 
@@ -106,21 +114,44 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text, voiceId }),
           });
+          if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
           const data = await response.json();
+          const audioPlayer = document.getElementById("audioPlayer");
+          const audioContainer = document.getElementById("audioContainer");
           if (data.audio_url) {
-            const audioPlayer = document.getElementById("audioPlayer");
             audioPlayer.src = data.audio_url;
+            audioContainer.style.display = "block";
             audioPlayer.play();
           } else {
-            alert("Error generating audio: " + (data.error || "Unknown error"));
+            const transcriptDiv = document.createElement("div");
+            transcriptDiv.className = "transcript";
+            transcriptDiv.innerHTML = `<strong>Error:</strong> ${
+              data.error || "Failed to generate audio."
+            }`;
+            document
+              .getElementById("transcriptContainer")
+              .appendChild(transcriptDiv);
+            document.getElementById("transcriptContainer").scrollTop =
+              document.getElementById("transcriptContainer").scrollHeight;
+            if (data.audio_url) {
+              audioPlayer.src = data.audio_url;
+              audioContainer.style.display = "block";
+              audioPlayer.play();
+            }
           }
         } catch (e) {
           console.error("Generate audio error:", e);
-          alert("Failed to connect to server: " + e.message);
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript";
+          transcriptDiv.innerHTML = `<strong>Error:</strong> Failed to connect to server: ${e.message}`;
+          document
+            .getElementById("transcriptContainer")
+            .appendChild(transcriptDiv);
+          document.getElementById("transcriptContainer").scrollTop =
+            document.getElementById("transcriptContainer").scrollHeight;
         }
       }
 
-      // Get or generate session_id from URL query param
       let sessionId = new URLSearchParams(window.location.search).get(
         "session"
       );
@@ -136,8 +167,13 @@
         formData.append("file", audioBlob, "echo_recording.webm");
         const loadingSpinner = document.getElementById("loadingSpinner");
         const recordStatus = document.getElementById("recordStatus");
+        const transcriptContainer = document.getElementById(
+          "transcriptContainer"
+        );
+        const echoAudio = document.getElementById("echoAudio");
         loadingSpinner.style.display = "inline-block";
         recordStatus.classList.add("uploading");
+        recordStatus.textContent = "Status: Uploading...";
         try {
           const res = await fetch(
             `http://127.0.0.1:8000/agent/chat/${sessionId}`,
@@ -146,37 +182,42 @@
               body: formData,
             }
           );
-          if (!res.ok) {
-            throw new Error(`Agent chat failed: ${res.statusText}`);
-          }
+          if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
           const data = await res.json();
           loadingSpinner.style.display = "none";
           recordStatus.classList.remove("uploading");
           recordStatus.textContent = `Status: Processed`;
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript";
           if (data.audio_url && data.transcription && data.response) {
-            const transcriptDiv = document.createElement("div");
-            transcriptDiv.className = "transcript";
             transcriptDiv.innerHTML = `<strong>User:</strong> ${data.transcription}<br><strong>AI:</strong> ${data.response}`;
-            transcriptContainer.appendChild(transcriptDiv); // Append instead of clearing
-            transcriptContainer.scrollTop = transcriptContainer.scrollHeight; // Auto-scroll to bottom
+            transcriptContainer.appendChild(transcriptDiv);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
             echoAudio.src = data.audio_url;
             echoAudio.style.display = "block";
             echoAudio.play();
           } else {
-            const errorDiv = document.createElement("div");
-            errorDiv.className = "transcript";
-            errorDiv.innerHTML = `<strong>Error:</strong> ${
+            transcriptDiv.innerHTML = `<strong>Error:</strong> ${
               data.error || "No audio, transcription, or response returned."
             }`;
-            transcriptContainer.appendChild(errorDiv);
+            transcriptContainer.appendChild(transcriptDiv);
             transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+            if (data.audio_url) {
+              echoAudio.src = data.audio_url;
+              echoAudio.style.display = "block";
+              echoAudio.play();
+            }
           }
         } catch (e) {
           loadingSpinner.style.display = "none";
           recordStatus.classList.remove("uploading");
           recordStatus.textContent = "Status: Processing failed ❌";
           console.error("Agent chat error:", e);
-          alert("Agent chat failed: " + e.message);
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript";
+          transcriptDiv.innerHTML = `<strong>Error:</strong> Agent chat failed: ${e.message}`;
+          transcriptContainer.appendChild(transcriptDiv);
+          transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
         }
       }
 
@@ -194,7 +235,6 @@
         "transcriptContainer"
       );
 
-      // Auto-start recording after audio ends
       echoAudio.addEventListener("ended", () => {
         startBtn.click();
       });
@@ -228,9 +268,11 @@
           recordStatus.classList.add("recording");
         } catch (e) {
           console.error("Recording error:", e.message);
-          alert(
-            `Failed to start recording: ${e.message}. Please ensure microphone permissions are granted.`
-          );
+          const transcriptDiv = document.createElement("div");
+          transcriptDiv.className = "transcript";
+          transcriptDiv.innerHTML = `<strong>Error:</strong> Failed to start recording: ${e.message}. Please ensure microphone permissions are granted.`;
+          transcriptContainer.appendChild(transcriptDiv);
+          transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
         }
       });
 
