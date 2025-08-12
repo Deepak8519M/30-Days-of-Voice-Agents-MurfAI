@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Day 10 - AI Voice Agent</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="cardflow">
+      <!-- TEXT TO SPEECH -->
+      <div class="card">
+        <h2>Text To Speech Converter <i class="ri-speak-line"></i></h2>
+        <textarea
+          id="textInput"
+          placeholder="Type something..."
+          rows="4"
+          cols="50"
+        ></textarea>
+        <br /><br />
+        <div class="select">
+          <label for="voiceSelect">Choose Voice:</label>
+          <div class="hello">
+            <select id="voiceSelect"></select>
+            <img src="/static/images/dropdown.png" alt="dropdown icon" />
+          </div>
+        </div>
+        <br /><br />
+        <button class="generate-btn" onclick="generateAudio()">
+          Generate Audio
+        </button>
+        <br /><br />
+        <div class="audio-wrapper" id="audioContainer" style="display: none">
+          <audio id="audioPlayer" controls></audio>
+        </div>
+      </div>
+
+      <!-- ECHO BOT RECORDING -->
+      <div class="card1">
+        <h1 class="echobot">Echo Bot v2</h1>
+        <div class="row1">
+          <button id="startRecording">Start Recording</button>
+          <button id="stopRecording" disabled>
+            Stop Recording <i class="ri-stop-fill"></i>
+          </button>
+        </div>
+        <div class="row2">
+          <button id="downloadAudio" disabled>
+            Download Audio <i class="ri-download-fill"></i>
+          </button>
+          <button id="resetAudio" disabled>
+            Reset <i class="ri-restart-line"></i>
+          </button>
+        </div>
+        <div class="status">
+          <div id="recordStatus">Status: Idle</div>
+          <div id="loadingSpinner" class="spinner" style="display: none"></div>
+        </div>
+        <br />
+        <div class="wrapper">
+          <audio id="echoAudio" controls style="display: none"></audio>
+        </div>
+        <!-- TRANSCRIPT DISPLAY -->
+        <div id="transcriptContainer" class="transcript-container"></div>
+      </div>
+    </div>
+
+    <script>
+      async function loadVoices() {
+        try {
+          const res = await fetch("http://127.0.0.1:8000/voices");
+          const voices = await res.json();
+          if (voices.error) {
+            throw new Error(voices.error);
+          }
+          const select = document.getElementById("voiceSelect");
+          voices.forEach((v) => {
+            const opt = document.createElement("option");
+            opt.value = v.voiceId;
+            opt.text = `${v.displayName} (${v.locale})`;
+            select.appendChild(opt);
+          });
+        } catch (e) {
+          console.error("Error loading voices:", e);
+          alert("Error loading voices: " + e.message);
+        }
+      }
+
+      async function generateAudio() {
+        const text = document.getElementById("textInput").value.trim();
+        const voiceId = document.getElementById("voiceSelect").value;
+        if (!text) {
+          alert("Please enter some text.");
+          return;
+        }
+        if (!voiceId) {
+          alert("Please select a voice.");
+          return;
+        }
+        try {
+          const response = await fetch("http://127.0.0.1:8000/generate-audio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text, voiceId }),
+          });
+          const data = await response.json();
+          if (data.audio_url) {
+            const audioPlayer = document.getElementById("audioPlayer");
+            audioPlayer.src = data.audio_url;
+            audioPlayer.play();
+          } else {
+            alert("Error generating audio: " + (data.error || "Unknown error"));
+          }
+        } catch (e) {
+          console.error("Generate audio error:", e);
+          alert("Failed to connect to server: " + e.message);
+        }
+      }
+
+      // Get or generate session_id from URL query param
+      let sessionId = new URLSearchParams(window.location.search).get(
+        "session"
+      );
+      if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        const url = new URL(window.location.href);
+        url.searchParams.set("session", sessionId);
+        window.history.replaceState(null, "", url.toString());
+      }
+
+      async function uploadAndTranscribe() {
+        const formData = new FormData();
+        formData.append("file", audioBlob, "echo_recording.webm");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const recordStatus = document.getElementById("recordStatus");
+        loadingSpinner.style.display = "inline-block";
+        recordStatus.classList.add("uploading");
+        try {
+          const res = await fetch(
+            `http://127.0.0.1:8000/agent/chat/${sessionId}`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+          if (!res.ok) {
+            throw new Error(`Agent chat failed: ${res.statusText}`);
+          }
+          const data = await res.json();
+          loadingSpinner.style.display = "none";
+          recordStatus.classList.remove("uploading");
+          recordStatus.textContent = `Status: Processed`;
+          if (data.audio_url && data.transcription && data.response) {
+            const transcriptDiv = document.createElement("div");
+            transcriptDiv.className = "transcript";
+            transcriptDiv.innerHTML = `<strong>User:</strong> ${data.transcription}<br><strong>AI:</strong> ${data.response}`;
+            transcriptContainer.appendChild(transcriptDiv); // Append instead of clearing
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight; // Auto-scroll to bottom
+            echoAudio.src = data.audio_url;
+            echoAudio.style.display = "block";
+            echoAudio.play();
+          } else {
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "transcript";
+            errorDiv.innerHTML = `<strong>Error:</strong> ${
+              data.error || "No audio, transcription, or response returned."
+            }`;
+            transcriptContainer.appendChild(errorDiv);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+          }
+        } catch (e) {
+          loadingSpinner.style.display = "none";
+          recordStatus.classList.remove("uploading");
+          recordStatus.textContent = "Status: Processing failed ❌";
+          console.error("Agent chat error:", e);
+          alert("Agent chat failed: " + e.message);
+        }
+      }
+
+      let mediaRecorder;
+      let audioChunks = [];
+      let audioBlob;
+
+      const startBtn = document.getElementById("startRecording");
+      const stopBtn = document.getElementById("stopRecording");
+      const downloadBtn = document.getElementById("downloadAudio");
+      const resetBtn = document.getElementById("resetAudio");
+      const echoAudio = document.getElementById("echoAudio");
+      const recordStatus = document.getElementById("recordStatus");
+      const transcriptContainer = document.getElementById(
+        "transcriptContainer"
+      );
+
+      // Auto-start recording after audio ends
+      echoAudio.addEventListener("ended", () => {
+        startBtn.click();
+      });
+
+      window.onload = loadVoices;
+
+      startBtn.addEventListener("click", async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+          mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+          audioChunks = [];
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+              audioChunks.push(e.data);
+            }
+          };
+          mediaRecorder.onstop = async () => {
+            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            downloadBtn.disabled = false;
+            resetBtn.disabled = false;
+            recordStatus.textContent = "Status: Uploading...";
+            recordStatus.classList.add("uploading");
+            await uploadAndTranscribe();
+          };
+          mediaRecorder.start();
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          recordStatus.textContent = "Status: Recording...";
+          recordStatus.classList.add("recording");
+        } catch (e) {
+          console.error("Recording error:", e.message);
+          alert(
+            `Failed to start recording: ${e.message}. Please ensure microphone permissions are granted.`
+          );
+        }
+      });
+
+      stopBtn.addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          recordStatus.classList.remove("recording");
+        }
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        if (!audioBlob) return;
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(audioBlob);
+        a.download = "echo_recording.webm";
+        a.click();
+      });
+
+      resetBtn.addEventListener("click", () => {
+        echoAudio.pause();
+        echoAudio.src = "";
+        echoAudio.style.display = "none";
+        transcriptContainer.innerHTML = "";
+        downloadBtn.disabled = true;
+        resetBtn.disabled = true;
+        recordStatus.textContent = "Status: Idle";
+        recordStatus.classList.remove("recording", "uploading");
+        audioChunks = [];
+        audioBlob = null;
+      });
+    </script>
+  </body>
+</html>
