@@ -26,19 +26,13 @@ body {
 }
 
 @keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .card-agent {
-  width: 600px;
+  width: 800px;
   background: rgba(0, 0, 0, 0.466);
   border: 3px solid rgba(255, 255, 255, 0.91);
   border-radius: 20px;
@@ -47,11 +41,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
 }
 
 .agent-title {
-  font-size: 40px;
+  font-size: 50px;
   font-weight: 800;
   text-align: center;
   margin-bottom: 25px;
@@ -64,24 +57,17 @@ body {
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .transcript-container {
   width: 100%;
-  min-height: 200px;
-  cursor: pointer;
-  max-height: 300px;
+  min-height: 500px;
+  max-height: 600px;
   overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   border: 2px solid rgba(255, 255, 255, 0.91);
   border-radius: 15px;
   padding: 25px;
@@ -89,11 +75,10 @@ body {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.6) rgba(0, 0, 0, 0.4);
-  position: relative;
 }
 
 .transcript-container::-webkit-scrollbar {
-  width: 20px;
+  width: 10px;
 }
 
 .transcript-container::-webkit-scrollbar-track {
@@ -118,38 +103,28 @@ body {
   line-height: 1.6;
   font-size: 16px;
   color: #ffffff;
-  text-align: right;
-  /* margin-left: 10px; */
-  position: relative;
-  animation: slideInLeft 0.5s ease-in;
-  background: rgb(171, 255, 45);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
+  text-align: left;
   width: fit-content;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .user-message {
   background: linear-gradient(135deg, #4f92ff, #6a5bff);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  width: fit-content;
-  margin-left: 280px;
-  /* position: relative; */
-  right: 10px;
+  margin-left: auto;
+  margin-right: 10px;
+  animation: slideInRight 0.5s ease-in;
 }
 
 .ai-message {
   background: linear-gradient(135deg, #ff4e50, #b921c1);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  width: fit-content;
-  /* margin-left: 10px; */
-  text-align: left;
+  margin-left: 10px;
+  animation: slideInLeft 0.5s ease-in;
 }
 
 .error-message {
   background: linear-gradient(135deg, #e24363, #ff6262);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  margin-left: 10px;
+  animation: slideInLeft 0.5s ease-in;
 }
 
 .message strong {
@@ -161,14 +136,13 @@ body {
 }
 
 @keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .controls {
@@ -196,7 +170,6 @@ body {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
 }
 
 .record-btn:hover {
@@ -239,11 +212,7 @@ body {
 }
 
 .record-btn:disabled {
-  background: linear-gradient(
-    135deg,
-    rgba(100, 100, 100, 0.5),
-    rgba(150, 150, 150, 0.5)
-  );
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.5), rgba(150, 150, 150, 0.5));
   color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
   box-shadow: none;
@@ -297,45 +266,24 @@ body {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(77, 255, 118, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(77, 255, 118, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(77, 255, 118, 0);
-  }
+  0% { box-shadow: 0 0 0 0 rgba(77, 255, 118, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(77, 255, 118, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(77, 255, 118, 0); }
 }
 
 @keyframes ripple {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(3);
-    opacity: 0;
-  }
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
 }
 
 @keyframes scaleText {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .row2 {
@@ -344,8 +292,7 @@ body {
   justify-content: center;
 }
 
-#downloadAudio,
-#resetAudio {
+#downloadAudio, #resetAudio {
   width: 160px;
   padding: 14px;
   font-size: 16px;
@@ -362,26 +309,19 @@ body {
   transition: all 0.3s ease;
 }
 
-#downloadAudio:hover,
-#resetAudio:hover {
+#downloadAudio:hover, #resetAudio:hover {
   background: linear-gradient(135deg, #ff6b6b, #d83de3);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
-#downloadAudio:active,
-#resetAudio:active {
+#downloadAudio:active, #resetAudio:active {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-#downloadAudio:disabled,
-#resetAudio:disabled {
-  background: linear-gradient(
-    135deg,
-    rgba(100, 100, 100, 0.5),
-    rgba(150, 150, 150, 0.5)
-  );
+#downloadAudio:disabled, #resetAudio:disabled {
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.5), rgba(150, 150, 150, 0.5));
   color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
   box-shadow: none;

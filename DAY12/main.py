@@ -1,6 +1,7 @@
-from fastapi import FastAPI, File, UploadFile, Body
+from fastapi import FastAPI, File, UploadFile, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import os
 import shutil
@@ -20,7 +21,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if ASSEMBLYAI_API_KEY:
     aai.settings.api_key = ASSEMBLYAI_API_KEY
 
-app = FastAPI(title="Day 11 - AI Voice Agent")
+app = FastAPI(title="Day 12 - AI Voice Agent")
 
 # Enable CORS
 app.add_middleware(
@@ -33,6 +34,9 @@ app.add_middleware(
 
 # Serve static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Configure Jinja2 templates
+templates = Jinja2Templates(directory="templates")
 
 # Create uploads directory
 UPLOAD_DIR = "uploads"
@@ -62,6 +66,10 @@ def generate_fallback_audio():
         return None
     except Exception:
         return None
+
+@app.get("/")
+async def serve_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/upload-audio")
 async def upload_audio(file: UploadFile = File(...)):
