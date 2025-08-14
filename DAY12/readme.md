@@ -37,7 +37,30 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
+## 🛠 Tech Stack
 
+| Layer               | Technology                                |
+| ------------------- | ----------------------------------------- |
+| **Frontend**        | HTML, CSS, JavaScript                     |
+| **Backend**         | FastAPI (Python)                          |
+| **Speech-to-Text**  | [AssemblyAI](https://www.assemblyai.com/) |
+| **AI Reasoning**    | [Google Gemini](https://ai.google.dev/)   |
+| **Text-to-Speech**  | [Murf AI](https://murf.ai/)               |
+| **Templating**      | Jinja2                                    |
+| **Env. Management** | python-dotenv                             |
+
+---
+
+
+
+Alright — here’s your **gradient-style ASCII border version** of the Features section.
+It uses Unicode box characters + emoji to simulate a **blue → purple → red glow** in plain Markdown, giving each feature a premium, UI-like card feel.
+
+---
+
+## ✨ Features
+
+```plaintext
 🟦╔════════════════════════════════════════════════╗
 🟪║ 🎤 VOICE RECORDING                             ║
 🟥║ Record audio directly from your browser.       ║
@@ -94,21 +117,17 @@ And wrapped in a **vibrant UI** where:
 🟪║ 🚨 ERROR HANDLING                              ║
 🟥║ Clear API errors + fallback audio.             ║
 🟦╚════════════════════════════════════════════════╝
----
-
-## 🛠 Tech Stack
-
-| Layer               | Technology                                |
-| ------------------- | ----------------------------------------- |
-| **Frontend**        | HTML, CSS, JavaScript                     |
-| **Backend**         | FastAPI (Python)                          |
-| **Speech-to-Text**  | [AssemblyAI](https://www.assemblyai.com/) |
-| **AI Reasoning**    | [Google Gemini](https://ai.google.dev/)   |
-| **Text-to-Speech**  | [Murf AI](https://murf.ai/)               |
-| **Templating**      | Jinja2                                    |
-| **Env. Management** | python-dotenv                             |
+```
 
 ---
+
+This will render in a **retro-console, neon-gradient style** inside your README, making each feature pop as if it’s a UI component.
+It works perfectly on GitHub’s Markdown viewer because it’s all plain text with emojis.
+
+If you want, I can also make a **mixed visual README** where the top has your **screenshot/UI mockup**, and these gradient cards scroll below it like an app store product page. That would make the README *look like a landing page*.
+
+Do you want me to make that landing-page style README?
+
 
 ## 🏗 Architecture
 
@@ -244,4 +263,5 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
