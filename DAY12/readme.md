@@ -2,10 +2,10 @@
 
 ---
 
-Welcome to AI Voice Agent — my project for the 30 Days of AI Voice Agents challenge with #BuildwithMurf 🎙️.
-It’s an interactive voice-powered assistant that lets you speak, listen, and engage with AI in real time.
+Welcome to `AI Voice Agent` — my project for the `30 Days of AI Voice Agents challenge` with `#BuildwithMurf 🎙️`.
+It’s an interactive voice-powered assistant that lets you `speak`, `listen`, and `engage` with AI in real time.
 
-💡 Powered by:
+💡 `Powered by`:
 
 - 🧠 **`xAI’s Grok API`** for witty, context-aware answers
 - 📝 **`AssemblyAI`** for lightning-fast transcription
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
