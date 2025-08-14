@@ -3,6 +3,20 @@
 
 Welcome to my AI Voice Agent, a dazzling creation for the 30 Days of AI Voice Agents challenge with #BuildwithMurf! This project is a conversational powerhouse that lets you speak, listen, and engage with AI in a sleek, ChatGPT-inspired interface. Powered by xAI’s Grok API, it transcribes your voice with AssemblyAI, responds with natural audio via Murf AI, and wraps it all in a vibrant UI with messages dancing across the screen—user queries on the right, AI replies on the left. Day 13 is all about documenting this journey with flair, and I’ve poured my passion into making it shine! 🚀
 
+---
+
+## ✨ Features
+
+- 🎤 **Voice Recording** – Record directly from your browser.
+- 📝 **Speech-to-Text** – Accurate transcription via AssemblyAI.
+- 🤖 **Smart AI Responses** – Context-aware answers from Google Gemini.
+- 🔊 **Text-to-Speech** – Human-like speech via Murf AI.
+- 💬 **Live Chat View** – Real-time transcripts and AI replies.
+- 📥 **Audio Download** – Save your recordings locally.
+- 🧠 **Session Memory** – Keeps context across conversation turns.
+
+---
+
 💡 Powered by:
 - 🧠 **xAI’s Grok API** for witty, context-aware answers
 - 📝 **AssemblyAI** for lightning-fast transcription
@@ -17,45 +31,17 @@ Today’s focus: **Documenting this journey with flair** ✍️
 
 ---
 
-## 🌟 Project Overview
+## 🛠 Tech Stack
 
-This AI Voice Agent is your **virtual conversational partner**.  
-
-🎤 Speak a question — for example:
-> “What’s the capital of France?”
-
-And here’s what happens:
-1. It **transcribes** your voice 🎙️ → 📝 (AssemblyAI)
-2. **Queries Grok** for a **witty, precise answer** 🤖
-3. **Plays the reply** back to you in **natural-sounding audio** 🎶 (Murf AI)
-
-The UI is **alive**:
-- Spacious conversation window 🖼️
-- Auto-recording after AI replies 🔄
-- Downloadable `.webm` audio 📥
-- Smooth animations that make chatting feel magical ✨
-
----
-
-## 🛠️ Technologies Used
-
-### **Frontend**
-- 🎨 **HTML/CSS** — *templates/index.html* + *static/style.css*  
-  Responsive design with Urbanist font, vibrant gradients, and subtle animations.
-- ⚡ **JavaScript** — Handles recording, API calls, and live message rendering.
-- 🎯 **Remixicon** — Stylish icons for record, download, and reset buttons.
-
-### **Backend**
-- 🚀 **FastAPI** — API server (*main.py*) for processing audio and responses.
-- 🐍 **Python** — Logic orchestration with:
-  - `aiohttp`
-  - `assemblyai`
-  - `python-dotenv`
-
-### **APIs**
-- 📝 **AssemblyAI** — Speech-to-text (`ASSEMBLYAI_API_KEY`)
-- 🔊 **Murf AI** — Text-to-speech (`MURF_API_KEY`)
-- 🧠 **xAI Grok API** — Conversational AI responses (`GROK_API_KEY`)
+| Layer         | Technology |
+|--------------|------------|
+| **Frontend** | HTML, CSS, JavaScript |
+| **Backend**  | FastAPI (Python) |
+| **Speech-to-Text** | [AssemblyAI](https://www.assemblyai.com/) |
+| **AI Reasoning** | [Google Gemini](https://ai.google.dev/) |
+| **Text-to-Speech** | [Murf AI](https://murf.ai/) |
+| **Templating** | Jinja2 |
+| **Env. Management** | python-dotenv |
 
 ---
 
@@ -202,6 +188,7 @@ This challenge is my journey to push the limits of AI voice tech.
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
 
 ```
+
 
 
 
