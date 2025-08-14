@@ -105,18 +105,6 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## 🔑 Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-MURF_API_KEY=your_murf_api_key
-ASSEMBLYAI_API_KEY=your_assemblyai_api_key
-GROK_API_KEY=your_grok_api_key
-```
-
----
-
 ## ⚙️ Setup Instructions
 
 1️⃣ **Clone Repository**
@@ -197,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
