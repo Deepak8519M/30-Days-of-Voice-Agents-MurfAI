@@ -27,12 +27,7 @@ And wrapped in a **vibrant UI** where:
 - 💬 **Live Chat View** – Real-time transcripts and AI replies.
 - 📥 **Audio Download** – Save your recordings locally.
 - 🧠 **Session Memory** – Keeps context across conversation turns.
-
----
-
-## ✨ Features
-
-* 🎤 **Voice Interaction** — Speak and listen to AI responses
+- * 🎤 **Voice Interaction** — Speak and listen to AI responses
 * 💬 **ChatGPT-Like UI** — Beautiful gradients & message alignment
 * 🔄 **Auto-Recording** — Starts after each AI reply
 * 📥 **Download Audio** — Save `.webm` recordings
@@ -185,6 +180,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
