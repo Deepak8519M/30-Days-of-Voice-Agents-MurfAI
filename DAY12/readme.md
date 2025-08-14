@@ -7,15 +7,15 @@ It’s a powerful, ChatGPT-style assistant that lets you **talk, listen, and int
 
 💡 Powered by:
 
-- 🧠 **xAI’s Grok API** for witty, context-aware answers
-- 📝 **AssemblyAI** for lightning-fast transcription
-- 🔊 **Murf AI** for crystal-clear text-to-speech
+- 🧠 **`xAI’s Grok API`** for witty, context-aware answers
+- 📝 **`AssemblyAI`** for lightning-fast transcription
+- 🔊 **`Murf AI`** for crystal-clear text-to-speech
 
-And wrapped in a **vibrant UI** where:
+And wrapped in a **`vibrant UI`** where:
 
-- **User queries** dance on the **right** in blue-purple gradients ✨
-- **AI replies** appear on the **left** in red-purple gradients 🔥
-- **Errors** pop in bold red for quick visibility 🚨
+- **`User queries`** dance on the **right** in `blue-purple gradients` ✨
+- **`AI replies`** appear on the **left** in `red-purple gradients` 🔥
+- **`Errors`** pop in `bold red` for quick visibility 🚨
 
 ---
 
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
