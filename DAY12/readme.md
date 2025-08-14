@@ -204,11 +204,7 @@ Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
 
 ```
 
----
 
-If you want, I can also make a **LinkedIn-optimized “banner image”** for Day 13 that shows:  
-📌 *Your app screenshot + “Day 13: Documentation” title + AI/microphone graphics*.  
-It’ll pop in people’s feeds way more than plain text.
-```
+
 
 
