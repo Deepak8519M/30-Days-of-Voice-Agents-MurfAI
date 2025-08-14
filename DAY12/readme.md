@@ -105,7 +105,7 @@ And wrapped in a **vibrant UI** where:
 
 ## ⚙️ `Setup Instructions`
 
-1️⃣ **Clone Repository**
+1️⃣ **`Clone Repository`**
 
 ```bash
 git clone <your-repo-url>
@@ -184,7 +184,8 @@ I’m a developer fueled by curiosity & creativity — blending **code**, **desi
 This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
-Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
