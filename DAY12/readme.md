@@ -1,8 +1,8 @@
-# 🎙️ AI Voice Agent — Day 13 of 30 Days of AI Voice Agents 🚀
+# 🎙️ `AI Voice Agent — Day 13 of 30 Days of AI Voice Agents 🚀`
 
 ---
 
-Welcome to my **AI Voice Agent**, built for the **30 Days of AI Voice Agents** challenge with **#BuildwithMurf**! 🎙️
+Welcome to my **`AI Voice Agent`**, built for the **30 Days of AI Voice Agents** challenge with **#BuildwithMurf**! 🎙️
 It’s a powerful, ChatGPT-style assistant that lets you **talk, listen, and interact** in real time.
 
 💡 Powered by:
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
