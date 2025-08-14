@@ -18,22 +18,32 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
+Here’s a **beautifully formatted, boxed, and polished** version of your features list so it feels premium and well-structured:
+
+---
+
 ## ✨ Features
 
-- 🎤 **Voice Recording** – Record directly from your browser.
-- 📝 **Speech-to-Text** – Accurate transcription via AssemblyAI.
-- 🤖 **Smart AI Responses** – Context-aware answers from Google Gemini.
-- 🔊 **Text-to-Speech** – Human-like speech via Murf AI.
-- 💬 **Live Chat View** – Real-time transcripts and AI replies.
-- 📥 **Audio Download** – Save your recordings locally.
-- 🧠 **Session Memory** – Keeps context across conversation turns.
-- * 🎤 **Voice Interaction** — Speak and listen to AI responses
-* 💬 **ChatGPT-Like UI** — Beautiful gradients & message alignment
-* 🔄 **Auto-Recording** — Starts after each AI reply
-* 📥 **Download Audio** — Save `.webm` recordings
-* 🗑 **Reset Session** — Clear conversation & UI
-* 🎨 **Animations** — Sliding messages & pulsing indicators
-* 🚨 **Error Handling** — Clear API error messages + fallback audio
+| 🌟 Feature                | Description                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------- |
+| 🎤 **Voice Recording**    | Record audio directly from your browser — no extra tools needed.                    |
+| 📝 **Speech-to-Text**     | Lightning-fast, accurate transcription powered by **AssemblyAI**.                   |
+| 🤖 **Smart AI Responses** | Context-aware, witty answers via **xAI’s Grok API**.                                |
+| 🔊 **Text-to-Speech**     | Crystal-clear, human-like audio from **Murf AI**.                                   |
+| 💬 **Chat View**          | Real-time transcripts — **your messages** on the right, **AI replies** on the left. |
+| 🧠 **Session Memory**     | Remembers previous conversation turns for better context.                           |
+| 🔄 **Auto-Recording**     | Automatically starts listening after each AI reply.                                 |
+| 📥 **Download Audio**     | Save your recordings as `.webm` files in one click.                                 |
+| 🗑 **Reset Session**      | Instantly clear your chat history and reset the interface.                          |
+| 🎨 **Animations**         | Smooth sliding messages, ripples, and pulsing indicators.                           |
+| 🚨 **Error Handling**     | Shows clear error messages with fallback audio when APIs fail.                      |
+
+---
+
+I can also make this **fancier with gradient emoji headers, shadow boxes, and “card-style” callouts** so it looks like a product landing page. That way, each feature feels like a premium highlight instead of just a bullet in a list.
+
+Do you want me to make it in that **showcase-style card format**?
+
 
 ---
 
@@ -180,6 +190,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
