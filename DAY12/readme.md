@@ -37,6 +37,65 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🎤 VOICE RECORDING                             ║
+🟥║ Record audio directly from your browser.       ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 📝 SPEECH-TO-TEXT                              ║
+🟥║ Lightning-fast, accurate transcription via     ║
+🟥║ AssemblyAI.                                    ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🤖 SMART AI RESPONSES                          ║
+🟥║ Context-aware, witty answers from xAI’s Grok.  ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🔊 TEXT-TO-SPEECH                              ║
+🟥║ Natural, human-like speech via Murf AI.        ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 💬 CHAT VIEW                                   ║
+🟥║ Messages on the right for you, left for AI.    ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🧠 SESSION MEMORY                              ║
+🟥║ Keeps context across multiple conversation     ║
+🟥║ turns.                                         ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🔄 AUTO-RECORDING                              ║
+🟥║ Starts listening automatically after replies. ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 📥 DOWNLOAD AUDIO                              ║
+🟥║ Save `.webm` recordings in one click.          ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🗑 RESET SESSION                               ║
+🟥║ Instantly clear chat history & reset UI.       ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🎨 ANIMATIONS                                  ║
+🟥║ Smooth sliding messages & pulsing indicators. ║
+🟦╚════════════════════════════════════════════════╝
+
+🟦╔════════════════════════════════════════════════╗
+🟪║ 🚨 ERROR HANDLING                              ║
+🟥║ Clear API errors + fallback audio.             ║
+🟦╚════════════════════════════════════════════════╝
+---
+
 ## 🛠 Tech Stack
 
 | Layer               | Technology                                |
@@ -185,3 +244,4 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
