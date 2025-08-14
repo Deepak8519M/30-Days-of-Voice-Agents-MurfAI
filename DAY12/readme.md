@@ -30,6 +30,18 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
+## ✨ Features
+
+* 🎤 **Voice Interaction** — Speak and listen to AI responses
+* 💬 **ChatGPT-Like UI** — Beautiful gradients & message alignment
+* 🔄 **Auto-Recording** — Starts after each AI reply
+* 📥 **Download Audio** — Save `.webm` recordings
+* 🗑 **Reset Session** — Clear conversation & UI
+* 🎨 **Animations** — Sliding messages & pulsing indicators
+* 🚨 **Error Handling** — Clear API error messages + fallback audio
+
+---
+
 ## 🛠 Tech Stack
 
 | Layer         | Technology |
@@ -73,18 +85,6 @@ And wrapped in a **vibrant UI** where:
    ↓
 🗣 AI Speaks Back
 ````
-
----
-
-## ✨ Features
-
-* 🎤 **Voice Interaction** — Speak and listen to AI responses
-* 💬 **ChatGPT-Like UI** — Beautiful gradients & message alignment
-* 🔄 **Auto-Recording** — Starts after each AI reply
-* 📥 **Download Audio** — Save `.webm` recordings
-* 🗑 **Reset Session** — Clear conversation & UI
-* 🎨 **Animations** — Sliding messages & pulsing indicators
-* 🚨 **Error Handling** — Clear API error messages + fallback audio
 
 ---
 
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
