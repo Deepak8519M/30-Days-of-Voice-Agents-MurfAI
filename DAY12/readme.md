@@ -43,7 +43,7 @@ And wrapped in a **`vibrant UI`** where:
 | ------------------- | ----------------------------------------- |
 | **Frontend**        | HTML, CSS, JavaScript                     |
 | **Backend**         | FastAPI (Python)                          |
-| **Speech-to-Text**  | [AssemblyAI](https://www.assemblyai.com/) |
+| **Speech-to-Text**  | `[AssemblyAI](https://www.assemblyai.com/)` |
 | **AI Reasoning**    | [Google Gemini](https://ai.google.dev/)   |
 | **Text-to-Speech**  | [Murf AI](https://murf.ai/)               |
 | **Templating**      | Jinja2                                    |
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
