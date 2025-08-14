@@ -1,4 +1,3 @@
-
 # 🎙️ AI Voice Agent — Day 13 of 30 Days of AI Voice Agents 🚀
 
 ---
@@ -7,11 +6,13 @@ Welcome to my **AI Voice Agent**, built for the **30 Days of AI Voice Agents** c
 It’s a powerful, ChatGPT-style assistant that lets you **talk, listen, and interact** in real time.
 
 💡 Powered by:
+
 - 🧠 **xAI’s Grok API** for witty, context-aware answers
 - 📝 **AssemblyAI** for lightning-fast transcription
 - 🔊 **Murf AI** for crystal-clear text-to-speech
 
 And wrapped in a **vibrant UI** where:
+
 - **User queries** dance on the **right** in blue-purple gradients ✨
 - **AI replies** appear on the **left** in red-purple gradients 🔥
 - **Errors** pop in bold red for quick visibility 🚨
@@ -30,7 +31,7 @@ And wrapped in a **vibrant UI** where:
 | 🧠 **Session Memory**     | Remembers previous conversation turns for better context.                           |
 | 🔄 **Auto-Recording**     | Automatically starts listening after each AI reply.                                 |
 | 📥 **Download Audio**     | Save your recordings as `.webm` files in one click.                                 |
-| 🗑 **Reset Session**      | Instantly clear your chat history and reset the interface.                          |
+| 🗑 **Reset Session**       | Instantly clear your chat history and reset the interface.                          |
 | 🎨 **Animations**         | Smooth sliding messages, ripples, and pulsing indicators.                           |
 | 🚨 **Error Handling**     | Shows clear error messages with fallback audio when APIs fail.                      |
 
@@ -38,27 +39,29 @@ And wrapped in a **vibrant UI** where:
 
 ## 🛠 Tech Stack
 
-| Layer         | Technology |
-|--------------|------------|
-| **Frontend** | HTML, CSS, JavaScript |
-| **Backend**  | FastAPI (Python) |
-| **Speech-to-Text** | [AssemblyAI](https://www.assemblyai.com/) |
-| **AI Reasoning** | [Google Gemini](https://ai.google.dev/) |
-| **Text-to-Speech** | [Murf AI](https://murf.ai/) |
-| **Templating** | Jinja2 |
-| **Env. Management** | python-dotenv |
+| Layer               | Technology                                |
+| ------------------- | ----------------------------------------- |
+| **Frontend**        | HTML, CSS, JavaScript                     |
+| **Backend**         | FastAPI (Python)                          |
+| **Speech-to-Text**  | [AssemblyAI](https://www.assemblyai.com/) |
+| **AI Reasoning**    | [Google Gemini](https://ai.google.dev/)   |
+| **Text-to-Speech**  | [Murf AI](https://murf.ai/)               |
+| **Templating**      | Jinja2                                    |
+| **Env. Management** | python-dotenv                             |
 
 ---
 
 ## 🏗 Architecture
 
 **Frontend** (`templates/index.html`, `static/style.css`)
+
 - Captures audio 🎙️ via MediaRecorder API
 - Sends to `/agent/chat/{session_id}` 📡
 - Displays **user messages** (right) & **AI replies** (left) 💬
 - Plays back generated AI audio 🎶
 
 **Backend** (`main.py`)
+
 - Receives audio → Saves to `uploads/` 📂
 - Transcribes via AssemblyAI 📝
 - Gets AI response from Grok 🤖
@@ -66,6 +69,7 @@ And wrapped in a **vibrant UI** where:
 - Maintains **in-memory chat history** per session 🧠
 
 **Flow Diagram**
+
 ```plaintext
 🎤 User Voice
    ↓
@@ -78,7 +82,7 @@ And wrapped in a **vibrant UI** where:
 🔊 Murf AI (TTS)
    ↓
 🗣 AI Speaks Back
-````
+```
 
 ---
 
@@ -144,31 +148,33 @@ http://127.0.0.1:8000
 
 ---
 
-## 📸 Screenshots
+## 🖼️ Screenshot
+
+![AI Voice Agent UI](./Day13.png)
 
 Coming soon:
 
-* Conversation UI
-* User messages (right, blue-purple)
-* AI responses (left, red-purple)
-* Smooth animations in action
+- Conversation UI
+- User messages (right, blue-purple)
+- AI responses (left, red-purple)
+- Smooth animations in action
 
 ---
 
 ## 🌟 Future Enhancements
 
-* 🎙️ Voice selection for Murf AI responses
-* 🧩 Intent recognition for smarter interactions
-* ⏱ Message timestamps
-* 🔘 Interactive control buttons
+- 🎙️ Voice selection for Murf AI responses
+- 🧩 Intent recognition for smarter interactions
+- ⏱ Message timestamps
+- 🔘 Interactive control buttons
 
 ---
 
 ## 💪 Challenges Overcome
 
-* Switched from Gemini to Grok API to dodge **429 quota errors**
-* Designed **ChatGPT-like UI** with clean message alignment and gradients
-* Implemented **fallback audio** for API error resilience
+- Switched from Gemini to Grok API to dodge **429 quota errors**
+- Designed **ChatGPT-like UI** with clean message alignment and gradients
+- Implemented **fallback audio** for API error resilience
 
 ---
 
@@ -179,21 +185,3 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
