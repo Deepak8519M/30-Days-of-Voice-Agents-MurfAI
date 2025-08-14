@@ -51,84 +51,6 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-
-
-Alright — here’s your **gradient-style ASCII border version** of the Features section.
-It uses Unicode box characters + emoji to simulate a **blue → purple → red glow** in plain Markdown, giving each feature a premium, UI-like card feel.
-
----
-
-## ✨ Features
-
-```plaintext
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🎤 VOICE RECORDING                             ║
-🟥║ Record audio directly from your browser.       ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 📝 SPEECH-TO-TEXT                              ║
-🟥║ Lightning-fast, accurate transcription via     ║
-🟥║ AssemblyAI.                                    ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🤖 SMART AI RESPONSES                          ║
-🟥║ Context-aware, witty answers from xAI’s Grok.  ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🔊 TEXT-TO-SPEECH                              ║
-🟥║ Natural, human-like speech via Murf AI.        ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 💬 CHAT VIEW                                   ║
-🟥║ Messages on the right for you, left for AI.    ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🧠 SESSION MEMORY                              ║
-🟥║ Keeps context across multiple conversation     ║
-🟥║ turns.                                         ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🔄 AUTO-RECORDING                              ║
-🟥║ Starts listening automatically after replies. ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 📥 DOWNLOAD AUDIO                              ║
-🟥║ Save `.webm` recordings in one click.          ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🗑 RESET SESSION                               ║
-🟥║ Instantly clear chat history & reset UI.       ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🎨 ANIMATIONS                                  ║
-🟥║ Smooth sliding messages & pulsing indicators. ║
-🟦╚════════════════════════════════════════════════╝
-
-🟦╔════════════════════════════════════════════════╗
-🟪║ 🚨 ERROR HANDLING                              ║
-🟥║ Clear API errors + fallback audio.             ║
-🟦╚════════════════════════════════════════════════╝
-```
-
----
-
-This will render in a **retro-console, neon-gradient style** inside your README, making each feature pop as if it’s a UI component.
-It works perfectly on GitHub’s Markdown viewer because it’s all plain text with emojis.
-
-If you want, I can also make a **mixed visual README** where the top has your **screenshot/UI mockup**, and these gradient cards scroll below it like an app store product page. That would make the README *look like a landing page*.
-
-Do you want me to make that landing-page style README?
-
-
 ## 🏗 Architecture
 
 **Frontend** (`templates/index.html`, `static/style.css`)
@@ -263,5 +185,6 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
