@@ -36,68 +36,6 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-Got it — here’s your **card-style, eye-candy version** of the Features section for your README.
-No HTML, but **looks like UI cards** thanks to Markdown + emojis + formatting tricks.
-
----
-
-## ✨ Features
-
-> ╭──────────🎤 **Voice Recording**
-> │ Record audio directly from your browser — no extra setup needed.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────📝 **Speech-to-Text**
-> │ Lightning-fast, accurate transcription via **AssemblyAI**.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🤖 **Smart AI Responses**
-> │ Context-aware, witty answers from **xAI’s Grok API**.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🔊 **Text-to-Speech**
-> │ Natural, human-like speech powered by **Murf AI**.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────💬 **Chat View**
-> │ User messages on the right, AI replies on the left — clean & clear.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🧠 **Session Memory**
-> │ Keeps conversation context across multiple turns.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🔄 **Auto-Recording**
-> │ Starts listening automatically after each AI reply.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────📥 **Download Audio**
-> │ Save `.webm` audio recordings instantly.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🗑 **Reset Session**
-> │ Clear chat history and reset the interface anytime.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🎨 **Animations**
-> │ Smooth sliding messages, ripples, and pulsing indicators.
-> ╰───────────────────────────────────────────────
-
-> ╭──────────🚨 **Error Handling**
-> │ Displays clear API errors + plays fallback audio.
-> ╰───────────────────────────────────────────────
-
----
-
-I can also make a **gradient-style ASCII border version** so it looks like neon cards in the README — still pure Markdown.
-That one will feel *even more premium* and match your **blue-purple-red gradient UI**.
-
-Do you want me to make that **gradient border card edition** next?
-
-
-
----
-
 ## 🛠 Tech Stack
 
 | Layer         | Technology |
@@ -241,6 +179,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
