@@ -19,7 +19,7 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## ✨ Features
+## ✨ `Features`
 
 | 🌟 Feature                | Description                                                                         |
 | ------------------------- | ----------------------------------------------------------------------------------- |
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
