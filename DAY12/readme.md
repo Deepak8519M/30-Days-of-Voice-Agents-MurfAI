@@ -6,13 +6,15 @@
 Welcome to my **AI Voice Agent**, built for the **30 Days of AI Voice Agents** challenge with **#BuildwithMurf**! 🎙️
 It’s a powerful, ChatGPT-style assistant that lets you **talk, listen, and interact** in real time.
 
-* 🧠 **xAI’s Grok API** handles smart, context-aware answers.
-* 📝 **AssemblyAI** transcribes your voice.
-* 🔊 **Murf AI** replies with natural, human-like audio.
+💡 Powered by:
+- 🧠 **xAI’s Grok API** for witty, context-aware answers
+- 📝 **AssemblyAI** for lightning-fast transcription
+- 🔊 **Murf AI** for crystal-clear text-to-speech
 
-The interface is bright and engaging — **your messages** appear on the right, and **AI replies** on the left.
-**Day 13** is about capturing this build in style, and I’ve made sure it shines! 🚀
-
+And wrapped in a **vibrant UI** where:
+- **User queries** dance on the **right** in blue-purple gradients ✨
+- **AI replies** appear on the **left** in red-purple gradients 🔥
+- **Errors** pop in bold red for quick visibility 🚨
 
 ---
 
@@ -25,20 +27,6 @@ The interface is bright and engaging — **your messages** appear on the right, 
 - 💬 **Live Chat View** – Real-time transcripts and AI replies.
 - 📥 **Audio Download** – Save your recordings locally.
 - 🧠 **Session Memory** – Keeps context across conversation turns.
-
----
-
-💡 Powered by:
-- 🧠 **xAI’s Grok API** for witty, context-aware answers
-- 📝 **AssemblyAI** for lightning-fast transcription
-- 🔊 **Murf AI** for crystal-clear text-to-speech
-
-And wrapped in a **vibrant UI** where:
-- **User queries** dance on the **right** in blue-purple gradients ✨
-- **AI replies** appear on the **left** in red-purple gradients 🔥
-- **Errors** pop in bold red for quick visibility 🚨
-
-Today’s focus: **Documenting this journey with flair** ✍️
 
 ---
 
@@ -209,6 +197,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
