@@ -1,7 +1,18 @@
 
 # 🎙️ AI Voice Agent — Day 13 of 30 Days of AI Voice Agents 🚀
 
-Welcome to my AI Voice Agent, a dazzling creation for the 30 Days of AI Voice Agents challenge with #BuildwithMurf! This project is a conversational powerhouse that lets you speak, listen, and engage with AI in a sleek, ChatGPT-inspired interface. Powered by xAI’s Grok API, it transcribes your voice with AssemblyAI, responds with natural audio via Murf AI, and wraps it all in a vibrant UI with messages dancing across the screen—user queries on the right, AI replies on the left. Day 13 is all about documenting this journey with flair, and I’ve poured my passion into making it shine! 🚀
+---
+
+Welcome to my **AI Voice Agent**, built for the **30 Days of AI Voice Agents** challenge with **#BuildwithMurf**! 🎙️
+It’s a powerful, ChatGPT-style assistant that lets you **talk, listen, and interact** in real time.
+
+* 🧠 **xAI’s Grok API** handles smart, context-aware answers.
+* 📝 **AssemblyAI** transcribes your voice.
+* 🔊 **Murf AI** replies with natural, human-like audio.
+
+The interface is bright and engaging — **your messages** appear on the right, and **AI replies** on the left.
+**Day 13** is about capturing this build in style, and I’ve made sure it shines! 🚀
+
 
 ---
 
@@ -198,6 +209,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
