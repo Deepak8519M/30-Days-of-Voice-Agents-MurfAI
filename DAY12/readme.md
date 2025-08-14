@@ -43,7 +43,7 @@ And wrapped in a **`vibrant UI`** where:
 | ------------------- | ----------------------------------------- |
 | **Frontend**        | HTML, CSS, JavaScript                     |
 | **Backend**         | FastAPI (Python)                          |
-| **Speech-to-Text**  | `[AssemblyAI](https://www.assemblyai.com/)` |
+| **Speech-to-Text**  | [AssemblyAI](https://www.assemblyai.com/) |
 | **AI Reasoning**    | [Google Gemini](https://ai.google.dev/)   |
 | **Text-to-Speech**  | [Murf AI](https://murf.ai/)               |
 | **Templating**      | Jinja2                                    |
@@ -63,10 +63,10 @@ And wrapped in a **`vibrant UI`** where:
 **`Backend`** (`main.py`)
 
 - Receives audio → Saves to `uploads/` 📂
-- Transcribes via AssemblyAI 📝
-- Gets AI response from Grok 🤖
-- Converts response to audio via Murf 🔊
-- Maintains **in-memory chat history** per session 🧠
+- Transcribes via `AssemblyAI 📝`
+- Gets `AI response` from `Grok 🤖`
+- Converts `response` to audio via `Murf 🔊`
+- Maintains **`in-memory chat history`** per `session 🧠`
 
 **`Flow Diagram`**
 
@@ -172,19 +172,20 @@ Coming soon:
 
 ## 💪 `Challenges Overcome`
 
-- Switched from Gemini to Grok API to dodge **429 quota errors**
-- Designed **ChatGPT-like UI** with clean message alignment and gradients
+- Switched from Gemini to `Grok API to dodge` **429 quota errors**
+- Designed **`ChatGPT-like UI`** with `clean message alignment` and `gradients`
 - Implemented **fallback audio** for API error resilience
 
 ---
 
 ## 🙌 `About Me`
 
-I’m a developer fueled by curiosity & creativity — blending **code**, **design**, and **AI** into magical projects.
+I’m a developer fueled by curiosity & creativity — blending **`code`**, **`design`**, and **`AI`** into magical projects.
 This challenge is my journey to push the limits of AI voice tech.
-**Join me** as I build the future, one voice at a time! 🚀
+**`Join me`** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
