@@ -112,7 +112,7 @@ git clone <your-repo-url>
 cd AiAgentChallenge/DAY13
 ```
 
-2️⃣ **Create Virtual Environment**
+2️⃣ **`Create Virtual Environment`**
 
 ```bash
 python -m venv venv
@@ -120,13 +120,13 @@ source venv/bin/activate   # Mac/Linux
 venv\Scripts\activate      # Windows
 ```
 
-3️⃣ **Install Dependencies**
+3️⃣ **`Install Dependencies`**
 
 ```bash
 pip install fastapi uvicorn aiohttp assemblyai python-dotenv
 ```
 
-4️⃣ **Set Environment Variables** in `.env`
+4️⃣ **`Set Environment Variables`** in `.env`
 
 ```env
 MURF_API_KEY=your_murf_api_key
@@ -134,13 +134,13 @@ ASSEMBLYAI_API_KEY=your_assemblyai_api_key
 GROK_API_KEY=your_grok_api_key
 ```
 
-5️⃣ **Run the Server**
+5️⃣ **`Run the Server`**
 
 ```bash
 uvicorn main:app --reload
 ```
 
-6️⃣ **Open in Browser**
+6️⃣ **`Open in Browser`**
 
 ```
 http://127.0.0.1:8000
@@ -185,6 +185,7 @@ This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **`#30DaysOfVoiceAgents`** with **`Murf AI`**
+
 
 
 
