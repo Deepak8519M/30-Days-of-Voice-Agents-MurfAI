@@ -37,7 +37,7 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 `Tech Stack`
 
 | Layer               | Technology                                |
 | ------------------- | ----------------------------------------- |
@@ -51,16 +51,16 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## 🏗 Architecture
+## 🏗 `Architecture`
 
-**Frontend** (`templates/index.html`, `static/style.css`)
+**`Frontend`** (`templates/index.html`, `static/style.css`)
 
 - Captures audio 🎙️ via MediaRecorder API
 - Sends to `/agent/chat/{session_id}` 📡
 - Displays **user messages** (right) & **AI replies** (left) 💬
 - Plays back generated AI audio 🎶
 
-**Backend** (`main.py`)
+**`Backend`** (`main.py`)
 
 - Receives audio → Saves to `uploads/` 📂
 - Transcribes via AssemblyAI 📝
@@ -68,7 +68,7 @@ And wrapped in a **vibrant UI** where:
 - Converts response to audio via Murf 🔊
 - Maintains **in-memory chat history** per session 🧠
 
-**Flow Diagram**
+**`Flow Diagram`**
 
 ```plaintext
 🎤 User Voice
@@ -86,7 +86,7 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## 📂 Project Structure
+## 📂 `Project Structure`
 
 ```
 📦 AiAgentChallenge/DAY13
@@ -103,7 +103,7 @@ And wrapped in a **vibrant UI** where:
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ `Setup Instructions`
 
 1️⃣ **Clone Repository**
 
@@ -148,7 +148,7 @@ http://127.0.0.1:8000
 
 ---
 
-## 🖼️ Screenshot
+## 🖼️ `Screenshot`
 
 ![AI Voice Agent UI](./Day13.png)
 
@@ -161,7 +161,7 @@ Coming soon:
 
 ---
 
-## 🌟 Future Enhancements
+## 🌟 `Future Enhancements`
 
 - 🎙️ Voice selection for Murf AI responses
 - 🧩 Intent recognition for smarter interactions
@@ -170,7 +170,7 @@ Coming soon:
 
 ---
 
-## 💪 Challenges Overcome
+## 💪 `Challenges Overcome`
 
 - Switched from Gemini to Grok API to dodge **429 quota errors**
 - Designed **ChatGPT-like UI** with clean message alignment and gradients
@@ -178,13 +178,14 @@ Coming soon:
 
 ---
 
-## 🙌 About Me
+## 🙌 `About Me`
 
 I’m a developer fueled by curiosity & creativity — blending **code**, **design**, and **AI** into magical projects.
 This challenge is my journey to push the limits of AI voice tech.
 **Join me** as I build the future, one voice at a time! 🚀
 
 Crafted with ❤️ for **#30DaysOfVoiceAgents** with **Murf AI**
+
 
 
 
