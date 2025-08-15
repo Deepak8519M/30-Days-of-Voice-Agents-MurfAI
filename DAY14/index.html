@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Day 12 - AI Voice Agent</title>
+    <title>AI Voice Agent</title>
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
       rel="stylesheet"
@@ -40,190 +40,214 @@
     </div>
 
     <script>
-      let sessionId = new URLSearchParams(window.location.search).get(
-        "session"
-      );
-      if (!sessionId) {
-        sessionId = crypto.randomUUID();
-        const url = new URL(window.location.href);
-        url.searchParams.set("session", sessionId);
-        window.history.replaceState(null, "", url.toString());
-      }
+      class VoiceAgentUI {
+        constructor() {
+          this.sessionId = this.getSessionId();
+          this.mediaRecorder = null;
+          this.audioChunks = [];
+          this.audioBlob = null;
+          this.elements = {
+            recordButton: document.getElementById("recordButton"),
+            downloadBtn: document.getElementById("downloadAudio"),
+            resetBtn: document.getElementById("resetAudio"),
+            agentAudio: document.getElementById("agentAudio"),
+            recordStatus: document.getElementById("recordStatus"),
+            transcriptContainer: document.getElementById("transcriptContainer"),
+            loadingSpinner: document.getElementById("loadingSpinner"),
+          };
+          this.setupEventListeners();
+        }
 
-      async function uploadAndTranscribe() {
-        const formData = new FormData();
-        formData.append("file", audioBlob, "agent_recording.webm");
-        const loadingSpinner = document.getElementById("loadingSpinner");
-        const recordStatus = document.getElementById("recordStatus");
-        const transcriptContainer = document.getElementById(
-          "transcriptContainer"
-        );
-        const agentAudio = document.getElementById("agentAudio");
-        const recordButton = document.getElementById("recordButton");
-        loadingSpinner.style.display = "inline-block";
-        recordStatus.classList.add("uploading");
-        recordStatus.textContent = "Status: Uploading...";
-        recordButton.setAttribute("data-state", "uploading");
-        recordButton.innerHTML =
-          'Uploading... <i class="ri-upload-cloud-2-line"></i>';
-        recordButton.disabled = true;
-        try {
-          agentAudio.pause();
-          agentAudio.src = "";
-          const res = await fetch(
-            `http://127.0.0.1:8000/agent/chat/${sessionId}?nocache=${Date.now()}`,
-            {
-              method: "POST",
-              body: formData,
-            }
+        getSessionId() {
+          let sessionId = new URLSearchParams(window.location.search).get(
+            "session"
           );
-          if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-          const data = await res.json();
-          console.log("Agent chat response:", data);
-          loadingSpinner.style.display = "none";
-          recordStatus.classList.remove("uploading");
-          recordStatus.textContent = "Status: Processed";
-          recordButton.setAttribute("data-state", "idle");
-          recordButton.innerHTML =
-            'Start Recording <i class="ri-mic-line"></i>';
-          recordButton.disabled = false;
-          const transcriptDiv = document.createElement("div");
-          transcriptDiv.className = "transcript";
-          if (data.audio_url && data.transcription && data.response) {
-            transcriptDiv.innerHTML = `
-              <div class="message user-message"><strong>User:</strong> ${data.transcription}</div>
-              <div class="message ai-message"><strong>AI:</strong> ${data.response}</div>
-            `;
-            transcriptContainer.appendChild(transcriptDiv);
-            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
-            agentAudio.src = data.audio_url;
-            agentAudio.play();
-          } else {
-            transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> ${
-              data.error || "No audio, transcription, or response returned."
-            }</div>`;
-            transcriptContainer.appendChild(transcriptDiv);
-            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
-            if (data.audio_url) {
-              agentAudio.src = data.audio_url;
-              agentAudio.play();
-            }
+          if (!sessionId) {
+            sessionId = crypto.randomUUID();
+            const url = new URL(window.location.href);
+            url.searchParams.set("session", sessionId);
+            window.history.replaceState(null, "", url.toString());
           }
-        } catch (e) {
-          console.error("Agent chat error:", e);
-          loadingSpinner.style.display = "none";
-          recordStatus.classList.remove("uploading");
-          recordStatus.textContent = "Status: Processing failed ❌";
-          recordButton.setAttribute("data-state", "idle");
+          return sessionId;
+        }
+
+        async uploadAndTranscribe() {
+          const formData = new FormData();
+          formData.append("file", this.audioBlob, "agent_recording.webm");
+          const {
+            loadingSpinner,
+            recordStatus,
+            transcriptContainer,
+            agentAudio,
+            recordButton,
+          } = this.elements;
+
+          loadingSpinner.style.display = "inline-block";
+          recordStatus.classList.add("uploading");
+          recordStatus.textContent = "Status: Uploading...";
+          recordButton.setAttribute("data-state", "uploading");
           recordButton.innerHTML =
-            'Start Recording <i class="ri-mic-line"></i>';
-          recordButton.disabled = false;
-          const transcriptDiv = document.createElement("div");
-          transcriptDiv.className = "transcript";
-          transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> Agent chat failed: ${e.message}</div>`;
-          transcriptContainer.appendChild(transcriptDiv);
-          transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
-        }
-      }
+            'Uploading... <i class="ri-upload-cloud-2-line"></i>';
+          recordButton.disabled = true;
 
-      let mediaRecorder;
-      let audioChunks = [];
-      let audioBlob;
-
-      const recordButton = document.getElementById("recordButton");
-      const downloadBtn = document.getElementById("downloadAudio");
-      const resetBtn = document.getElementById("resetAudio");
-      const agentAudio = document.getElementById("agentAudio");
-      const recordStatus = document.getElementById("recordStatus");
-      const transcriptContainer = document.getElementById(
-        "transcriptContainer"
-      );
-
-      agentAudio.addEventListener("ended", () => {
-        console.log("Agent audio ended, triggering auto-record");
-        if (recordButton.getAttribute("data-state") === "idle") {
-          recordButton.click();
-        }
-      });
-
-      recordButton.addEventListener("click", async () => {
-        const state = recordButton.getAttribute("data-state");
-        if (state === "idle") {
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-            });
-            mediaRecorder = new MediaRecorder(stream, {
-              mimeType: "audio/webm",
-            });
-            audioChunks = [];
-            mediaRecorder.ondataavailable = (e) => {
-              if (e.data.size > 0) {
-                audioChunks.push(e.data);
-              }
-            };
-            mediaRecorder.onstop = async () => {
-              audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-              downloadBtn.disabled = false;
-              resetBtn.disabled = false;
-              await uploadAndTranscribe();
-            };
-            mediaRecorder.start();
-            recordButton.setAttribute("data-state", "recording");
+            agentAudio.pause();
+            agentAudio.src = "";
+            const res = await fetch(
+              `http://127.0.0.1:8000/agent/chat/${
+                this.sessionId
+              }?nocache=${Date.now()}`,
+              { method: "POST", body: formData }
+            );
+            if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+            const data = await res.json();
+            console.log("Agent chat response:", data);
+
+            loadingSpinner.style.display = "none";
+            recordStatus.classList.remove("uploading");
+            recordStatus.textContent = "Status: Processed";
+            recordButton.setAttribute("data-state", "idle");
             recordButton.innerHTML =
-              'Stop Recording <i class="ri-stop-fill"></i>';
-            recordStatus.textContent = "Status: Recording...";
-            recordStatus.classList.add("recording");
-            console.log("Recording started");
-          } catch (e) {
-            console.error("Recording error:", e.message);
+              'Start Recording <i class="ri-mic-line"></i>';
+            recordButton.disabled = false;
+
             const transcriptDiv = document.createElement("div");
             transcriptDiv.className = "transcript";
-            transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> Failed to start recording: ${e.message}. Please ensure microphone permissions are granted.</div>`;
+            if (data.audio_url && data.transcription && data.response) {
+              transcriptDiv.innerHTML = `
+                <div class="message user-message"><strong>User:</strong> ${data.transcription}</div>
+                <div class="message ai-message"><strong>AI:</strong> ${data.response}</div>
+              `;
+              transcriptContainer.appendChild(transcriptDiv);
+              transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+              agentAudio.src = data.audio_url;
+              agentAudio.play();
+            } else {
+              transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> ${
+                data.error || "No audio, transcription, or response returned."
+              }</div>`;
+              transcriptContainer.appendChild(transcriptDiv);
+              transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+              if (data.audio_url) {
+                agentAudio.src = data.audio_url;
+                agentAudio.play();
+              }
+            }
+          } catch (e) {
+            console.error("Agent chat error:", e);
+            loadingSpinner.style.display = "none";
+            recordStatus.classList.remove("uploading");
+            recordStatus.textContent = "Status: Processing failed ❌";
+            recordButton.setAttribute("data-state", "idle");
+            recordButton.innerHTML =
+              'Start Recording <i class="ri-mic-line"></i>';
+            recordButton.disabled = false;
+            const transcriptDiv = document.createElement("div");
+            transcriptDiv.className = "transcript";
+            transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> Agent chat failed: ${e.message}</div>`;
             transcriptContainer.appendChild(transcriptDiv);
             transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
           }
-        } else if (state === "recording") {
-          if (mediaRecorder && mediaRecorder.state !== "inactive") {
-            mediaRecorder.stop();
-            recordButton.setAttribute("data-state", "uploading");
-            recordButton.innerHTML =
-              'Uploading... <i class="ri-upload-cloud-2-line"></i>';
-            recordButton.disabled = true;
-            recordStatus.classList.remove("recording");
-            console.log("Recording stopped by user");
-          }
         }
-      });
 
-      downloadBtn.addEventListener("click", () => {
-        if (!audioBlob) return;
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(audioBlob);
-        a.download = "agent_recording.webm";
-        a.click();
-        console.log("Audio downloaded");
-      });
+        setupEventListeners() {
+          const { recordButton, downloadBtn, resetBtn, agentAudio } =
+            this.elements;
 
-      resetBtn.addEventListener("click", () => {
-        agentAudio.pause();
-        agentAudio.src = "";
-        transcriptContainer.innerHTML = "";
-        downloadBtn.disabled = true;
-        resetBtn.disabled = true;
-        recordStatus.textContent = "Status: Idle";
-        recordStatus.classList.remove("recording", "uploading");
-        recordButton.setAttribute("data-state", "idle");
-        recordButton.innerHTML = 'Start Recording <i class="ri-mic-line"></i>';
-        recordButton.disabled = false;
-        audioChunks = [];
-        audioBlob = null;
-        console.log("Reset triggered");
-      });
+          agentAudio.addEventListener("ended", () => {
+            console.log("Agent audio ended, triggering auto-record");
+            if (recordButton.getAttribute("data-state") === "idle") {
+              recordButton.click();
+            }
+          });
+
+          recordButton.addEventListener("click", async () => {
+            const state = recordButton.getAttribute("data-state");
+            if (state === "idle") {
+              try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                  audio: true,
+                });
+                this.mediaRecorder = new MediaRecorder(stream, {
+                  mimeType: "audio/webm",
+                });
+                this.audioChunks = [];
+                this.mediaRecorder.ondataavailable = (e) => {
+                  if (e.data.size > 0) this.audioChunks.push(e.data);
+                };
+                this.mediaRecorder.onstop = async () => {
+                  this.audioBlob = new Blob(this.audioChunks, {
+                    type: "audio/webm",
+                  });
+                  downloadBtn.disabled = false;
+                  resetBtn.disabled = false;
+                  await this.uploadAndTranscribe();
+                };
+                this.mediaRecorder.start();
+                recordButton.setAttribute("data-state", "recording");
+                recordButton.innerHTML =
+                  'Stop Recording <i class="ri-stop-fill"></i>';
+                this.elements.recordStatus.textContent = "Status: Recording...";
+                this.elements.recordStatus.classList.add("recording");
+                console.log("Recording started");
+              } catch (e) {
+                console.error("Recording error:", e.message);
+                const transcriptDiv = document.createElement("div");
+                transcriptDiv.className = "transcript";
+                transcriptDiv.innerHTML = `<div class="message error-message"><strong>Error:</strong> Failed to start recording: ${e.message}. Please ensure microphone permissions are granted.</div>`;
+                this.elements.transcriptContainer.appendChild(transcriptDiv);
+                this.elements.transcriptContainer.scrollTop =
+                  this.elements.transcriptContainer.scrollHeight;
+              }
+            } else if (state === "recording") {
+              if (
+                this.mediaRecorder &&
+                this.mediaRecorder.state !== "inactive"
+              ) {
+                this.mediaRecorder.stop();
+                recordButton.setAttribute("data-state", "uploading");
+                recordButton.innerHTML =
+                  'Uploading... <i class="ri-upload-cloud-2-line"></i>';
+                recordButton.disabled = true;
+                this.elements.recordStatus.classList.remove("recording");
+                console.log("Recording stopped by user");
+              }
+            }
+          });
+
+          downloadBtn.addEventListener("click", () => {
+            if (!this.audioBlob) return;
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(this.audioBlob);
+            a.download = "agent_recording.webm";
+            a.click();
+            console.log("Audio downloaded");
+          });
+
+          resetBtn.addEventListener("click", () => {
+            agentAudio.pause();
+            agentAudio.src = "";
+            this.elements.transcriptContainer.innerHTML = "";
+            downloadBtn.disabled = true;
+            resetBtn.disabled = true;
+            this.elements.recordStatus.textContent = "Status: Idle";
+            this.elements.recordStatus.classList.remove(
+              "recording",
+              "uploading"
+            );
+            recordButton.setAttribute("data-state", "idle");
+            recordButton.innerHTML =
+              'Start Recording <i class="ri-mic-line"></i>';
+            recordButton.disabled = false;
+            this.audioChunks = [];
+            this.audioBlob = null;
+            console.log("Reset triggered");
+          });
+        }
+      }
+
+      // Initialize UI
+      const voiceAgent = new VoiceAgentUI();
     </script>
   </body>
 </html>
-
-
-
-
