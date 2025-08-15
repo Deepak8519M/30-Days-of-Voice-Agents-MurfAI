@@ -78,7 +78,7 @@ body {
 .transcript-container {
   width: 100%;
   min-height: 300px;
-  max-height: 400px;
+  max-height: 310px;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.7);
   border: 2px solid rgba(255, 255, 255, 0.91);
