@@ -38,7 +38,8 @@ body {
 }
 
 .card-agent {
-  width: 800px;
+  width: 600px;
+  cursor: pointer;
   background: rgba(0, 0, 0, 0.466);
   border: 3px solid rgba(255, 255, 255, 0.91);
   border-radius: 20px;
@@ -76,8 +77,8 @@ body {
 
 .transcript-container {
   width: 100%;
-  min-height: 500px;
-  max-height: 600px;
+  min-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.7);
   border: 2px solid rgba(255, 255, 255, 0.91);
