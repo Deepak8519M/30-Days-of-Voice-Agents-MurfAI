@@ -2,92 +2,99 @@
 
 Welcome to my **AI Voice Agent project**, built as part of the **30 Days of AI Voice Agents Challenge with #BuildwithMurf!** 🌟
 
-This repository showcases my journey to create a **cutting-edge, voice-powered conversational AI**, evolving daily with new features — from audio transcription and text-to-speech, to memory, real-time streaming, and multi-agent systems.
+This repository showcases my journey to create a **cutting-edge, voice-powered conversational AI**, evolving daily with new features — from **audio transcription** and **text-to-speech**, to **real-time streaming**, **context memory**, and even **multi-agent systems**.
 
-With a vibrant UI (user messages appear right in **blue-purple**, AI responses on the left in **red-purple**), this project blends **FastAPI, AssemblyAI, Murf AI, and Gemini API** to deliver seamless, real-time voice interactions. 💬
-
----
-
-## 📖 About the Project
-
-This repository documents my **end-to-end progress over 30 days**, where I’ve been building a **voice-driven AI agent from scratch**.
-
-Each day introduces new functionality, tackling real-world AI challenges such as:
-
-* Speech-to-text (STT)
-* Text-to-speech (TTS)
-* Conversational memory
-* Real-time WebSocket streaming
-* Personalization and context handling
-* Multi-agent experiments
-
-The ultimate goal?
-👉 A **robust, interactive voice agent** that feels alive, responsive, and production-ready! ⚡
+With a vibrant UI (💬 user messages appear on the **right in blue-purple**, AI responses on the **left in red-purple**), this project blends **FastAPI, AssemblyAI, Murf AI, and Gemini API** to deliver seamless, real-time voice interactions.
 
 ---
 
-## 🔑 Key Features (Progress Highlights)
+## 📖 `About the Project`
 
-* 🎤 **Voice Input & Output** → Record audio, transcribe with AssemblyAI, generate smart responses with Gemini API, and synthesize natural voices with Murf AI.
-* 🎨 **Vibrant UI** → Clean chat layout with **blue-purple user bubbles** and **red-purple AI bubbles**.
-* 📚 **Session Management** → Persistent chat history stored per session.
-* ⚡ **Performance Optimizations** → Cached greetings, async transcription, and faster response times.
-* 🔄 **WebSocket Streaming** → Real-time messaging via `/ws` endpoint, tested with Postman.
-* 🌍 **Scalability** → External API integrations, multi-language support, and personality tuning.
-* 🛡️ **Error Handling** → Robust checks for invalid audio, API key issues, and timeouts.
+This repo documents my **day-by-day progress** in building a **voice-driven AI assistant from scratch**.
+
+Each day focuses on solving real-world AI challenges like:
+
+* 🎤 **Speech-to-Text (STT)** with AssemblyAI
+* 🗣️ **Text-to-Speech (TTS)** with Murf AI
+* 🧠 **Conversational Memory**
+* 🔄 **Real-Time WebSocket Streaming**
+* 🤖 **Context + Multi-Agent experiments**
+
+👉 The ultimate goal: A **robust, interactive voice agent** that feels alive, responsive, and production-ready! ⚡
 
 ---
 
+## 🔑 `Key Features`
 
-## Architecture 
+✅ **Voice Input/Output** → Record audio → Transcribe with AssemblyAI → Generate replies with Gemini → Synthesize voice with Murf AI
+✅ **Vibrant UI** → Clean chat layout (blue-purple user bubbles, red-purple AI bubbles)
+✅ **Session Management** → Per-session chat history for continuity
+✅ **Optimizations** → Async polling, cached greetings, and reduced latency
+✅ **WebSockets** → Real-time communication with `/ws` endpoint
+✅ **Error Handling** → Robust API key, timeout, and invalid input handling
+✅ **Scalability** → Ready for multi-language & multi-agent setups
+
+---
+
+## 🏗️ `Architecture Overview`
 
 ```
-
 [Browser UI]
    │  record audio
    ▼
-[FastAPI /agent/chat/{session_id}]  ←——  WebSocket /ws (echo today, streaming later)
+[FastAPI /agent/chat/{session_id}]   ←—→   WebSocket /ws
    │  save file → transcribe (AssemblyAI)
    │  update chat_history
    │  generate reply (Gemini)
    │  synthesize speech (Murf)
    ▼
- JSON { transcription, response, audio_url, error? }
-
-```
-
-## 📂 Repo Structure
-
-```
-ai-voice-agent/
-├─ day01 … day15 … day30/        # daily progress folders (optional for readers)
-├─ templates/
-│   └─ index.html                 # chat UI (user right: blue‑purple, AI left: red‑purple)
-├─ static/
-│   ├─ style.css                  # UI styles
-│   ├─ screenshot_ui.png          # optional: UI screenshot
-│   └─ screenshot_websocket.png   # optional: Postman/WebSocket screenshot
-├─ uploads/                       # saved audio files (runtime only)
-├─ services/
-│   ├─ assemblyai.py              # AssemblyAIService – transcription
-│   ├─ murf.py                    # MurfService – TTS
-│   └─ gemini.py                  # GeminiService – LLM replies
-├─ schemas.py                     # Pydantic models (e.g., AgentChatResponse)
-├─ main.py                        # FastAPI app, routes, websocket, logging, caching
-├─ .env                           # API keys (NOT committed)
-├─ .gitignore                     # ignores .env, __pycache__, etc.
-└─ README.md                      # (this file)
+JSON { transcription, response, audio_url, error? }
 ```
 
 ---
 
-## 🚀 Getting Started
+## 📂 `Repo Structure`
+
+```bash
+ai-voice-agent/
+├─ day01 … day30/               # Daily progress folders
+├─ templates/
+│   └─ index.html                # Chat UI
+├─ static/
+│   ├─ style.css                 # Styles
+│   ├─ screenshot_ui.png         # UI screenshot
+│   └─ screenshot_websocket.png  # WebSocket screenshot
+├─ uploads/                      # Temporary audio storage
+├─ services/
+│   ├─ assemblyai.py             # Transcription service
+│   ├─ murf.py                   # Text-to-speech service
+│   └─ gemini.py                 # Gemini AI responses
+├─ schemas.py                    # Pydantic models
+├─ main.py                       # FastAPI app (routes, WebSocket, caching)
+├─ .env                          # API keys (ignored by git)
+├─ .gitignore                    # Ignore configs, env, caches
+└─ README.md                     # This file
+```
+
+---
+
+## 🚀 `Getting Started`
 
 ### Prerequisites
 
 * Python 3.10+
-* Dependencies: `fastapi`, `uvicorn`, `aiohttp`, `assemblyai`, `pydantic`, `python-dotenv`, `google-generativeai`
-* API Keys: AssemblyAI, Murf AI, Gemini API (add them to `.env`)
+* Dependencies:
+
+  ```bash
+  fastapi uvicorn aiohttp assemblyai pydantic python-dotenv google-generativeai
+  ```
+* API Keys → Add to `.env`:
+
+  ```ini
+  ASSEMBLYAI_API_KEY=your_assemblyai_key
+  MURF_API_KEY=your_murf_key
+  GEMINI_API_KEY=your_gemini_key
+  ```
 
 ### Setup
 
@@ -96,79 +103,68 @@ ai-voice-agent/
 git clone https://github.com/yourusername/ai-voice-agent.git
 cd ai-voice-agent
 
-# Navigate to latest stable day
-cd day30   # or main/ if consolidated
+# Navigate to the latest code
+cd day15   # or consolidated folder
 
 # Create venv & install dependencies
 python -m venv venv
-source venv/bin/activate   # (Linux/Mac)
-venv\Scripts\activate      # (Windows)
+source venv/bin/activate    # Mac/Linux
+venv\Scripts\activate       # Windows
 
 pip install -r requirements.txt
-```
 
-Add API keys to `.env`:
-
-```ini
-ASSEMBLYAI_API_KEY=your_assemblyai_key
-MURF_API_KEY=your_murf_key
-GEMINI_API_KEY=your_gemini_key
-```
-
-Run the server:
-
-```bash
+# Run server
 uvicorn main:app --reload
 ```
 
 ---
 
-## 🖥️ Usage
+## 🖥️ `Usage`
 
-* **UI** → Open [http://127.0.0.1:8000](http://127.0.0.1:8000) to interact with the voice agent.
-* **WebSocket** → Connect to `ws://127.0.0.1:8000/ws` for real-time echo/streaming.
-* **Sessions** → Conversations are tracked per `session_id`.
-
----
-
-## 🛠️ Progress Timeline
-
-* **Days 01–10** → Foundations: FastAPI setup, STT + TTS integration, session chat.
-* **Days 11–20** → Smarter AI: Gemini integration, memory handling, performance boosts.
-* **Days 21–30** → Advanced: Real-time WebSockets, multi-agent experiments, personalization, polish.
+* **Web UI** → Open: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+* **WebSocket** → Connect at: `ws://127.0.0.1:8000/ws`
+* **Sessions** → Use `session_id` in requests to maintain context
 
 ---
 
-## 📸 Screenshots
+## 📅 `Progress Timeline`
+
+* **Days 01–10** → FastAPI, STT/TTS pipeline, session management
+* **Days 11–20** → Gemini integration, memory, async + performance tuning
+* **Days 21–30** → WebSockets, streaming, multi-agent extensions
+
+---
+
+## 📸 `Screenshots`
 
 * UI → `static/screenshot_ui.png`
-* WebSocket Echo → `static/screenshot_websocket.png`
+* WebSocket → `static/screenshot_websocket.png`
 
 ---
 
-## 🌟 What’s Next?
+## 🌟 `What’s Next`
 
-Beyond Day 30:
-
-* 🎧 Real-time voice streaming into the browser via WebSockets.
-* 🗣️ Multi-lingual conversations.
-* 🤖 Deployable, production-ready AI voice assistant.
+* 🎧 Real-time **voice streaming in browser** with WebSockets
+* 🗣️ **Multi-lingual conversations**
+* 🤖 **Production deployment** for real-world use
 
 ---
 
-## 📜 License
+## 📜 `License`
 
-MIT License. Free to use and extend.
-
----
-
-## 🙌 Acknowledgments
-
-* **Murf AI** → For the awesome #30DaysOfVoiceAgents challenge.
-* **AssemblyAI, Murf AI, Gemini** → For their powerful APIs.
-* **Community + #BuildwithMurf** → For ideas and inspiration.
+MIT License — Free to use, extend, and share 🚀
 
 ---
 
-✨ Follow my journey on **LinkedIn/Twitter/GitHub** → \[https://www.linkedin.com/in/deepak-mallareddy-1b09b6274/]
-#30DaysofVoiceAgents #BuildwithMurf #AI #VoiceAgent #WebSocket
+## 🙌 `Acknowledgments`
+
+* **Murf AI** → for #30DaysOfVoiceAgents challenge
+* **AssemblyAI, Murf AI, Gemini** → for APIs
+* **Community (#BuildWithMurf)** → for support & inspiration
+
+---
+
+✨ `Follow my journey` → [LinkedIn](https://www.linkedin.com/in/deepak-mallareddy-1b09b6274/)
+
+#30DaysofVoiceAgents #BuildWithMurf #AI #VoiceAgent #WebSocket
+
