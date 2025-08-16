@@ -4,7 +4,7 @@ Welcome to my **AI Voice Agent project**, built as part of the **30 Days of AI V
 
 This repository showcases my journey to create a **cutting-edge, voice-powered conversational AI**, evolving daily with new features — from **audio transcription** and **text-to-speech**, to **real-time streaming**, **context memory**, and even **multi-agent systems**.
 
-With a vibrant UI (💬 user messages appear on the **right in blue-purple**, AI responses on the **left in red-purple**), this project blends **FastAPI, AssemblyAI, Murf AI, and Gemini API** to deliver seamless, real-time voice interactions.
+With a vibrant UI , this project blends **FastAPI, AssemblyAI, Murf AI, and Gemini API** to deliver seamless, real-time voice interactions.
 
 ---
 
