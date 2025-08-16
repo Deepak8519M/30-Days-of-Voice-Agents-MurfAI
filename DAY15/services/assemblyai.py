@@ -1,6 +1,5 @@
-import os
+import asyncio
 import requests
-import time
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,7 +28,7 @@ class AssemblyAIService:
                 return {"error": f"Failed to start transcription: {transcript_response.text}"}
 
             transcript_id = transcript_response.json()["id"]
-            max_attempts = 30
+            max_attempts = 15  # Reduced for short audio
             for attempt in range(max_attempts):
                 polling_response = requests.get(f"{self.base_url}/transcript/{transcript_id}", headers=headers)
                 result = polling_response.json()
@@ -39,7 +38,7 @@ class AssemblyAIService:
                 elif result["status"] == "error":
                     logger.error(f"Transcription failed: {result['error']}")
                     return {"error": f"Transcription failed: {result['error']}"}
-                time.sleep(2)
+                await asyncio.sleep(1)  # Faster polling
             logger.error("Transcription timed out")
             return {"error": "Transcription timed out."}
         except Exception as e:

@@ -7,6 +7,7 @@ class MurfService:
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.base_url = "https://api.murf.ai/v1/speech/generate"
+        self.cached_fallback = None
 
     def generate_audio(self, text: str, voice_id: str = "en-IN-aarav") -> dict:
         logger.info(f"Generating audio for text: {text[:50]}...")
@@ -34,8 +35,10 @@ class MurfService:
     def generate_fallback_audio(self) -> str:
         logger.info("Generating fallback audio")
         try:
-            result = self.generate_audio("I'm having trouble connecting right now.")
-            return result.get("audio_url") if "audio_url" in result else None
+            if not self.cached_fallback:
+                result = self.generate_audio("I'm having trouble connecting right now.", voice_id="en-IN-aarav")
+                self.cached_fallback = result.get("audio_url") if "audio_url" in result else None
+            return self.cached_fallback
         except Exception as e:
             logger.error(f"Fallback audio error: {str(e)}")
             return None

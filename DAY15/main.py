@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, Request
+from fastapi import FastAPI, UploadFile, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -8,8 +8,9 @@ import shutil
 import logging
 from services.assemblyai import AssemblyAIService
 from services.murf import MurfService
-from services.gemini import GeminiService  # Updated import
+from services.gemini import GeminiService
 from schemas import AgentChatResponse
+from functools import lru_cache
 
 # Setup logging
 logging.basicConfig(
@@ -23,12 +24,12 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Updated to Gemini
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Initialize services
 assemblyai_service = AssemblyAIService(ASSEMBLYAI_API_KEY) if ASSEMBLYAI_API_KEY else None
 murf_service = MurfService(MURF_API_KEY) if MURF_API_KEY else None
-gemini_service = GeminiService(GEMINI_API_KEY) if GEMINI_API_KEY else None  # Updated to Gemini
+gemini_service = GeminiService(GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 app = FastAPI(title="AI Voice Agent")
 
@@ -45,12 +46,33 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# In-memory chat history
+# In-memory chat history and cache
 chat_history = {}
+@lru_cache(maxsize=100)
+def get_cached_response(prompt: str, session_id: str) -> str:
+    result = gemini_service.generate_response(prompt, chat_history.get(session_id, []))
+    return result.get("response", "")
 
 # Create uploads directory
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = "uploads"  # Added to fix error
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# WebSocket endpoint for Day 15
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    logger.info("WebSocket connection established")
+    try:
+        while True:
+            data = await websocket.receive_text()
+            logger.info(f"Received WebSocket message: {data}")
+            await websocket.send_text(f"Echo: {data}")
+            logger.info(f"Sent WebSocket echo: Echo: {data}")
+    except Exception as e:
+        logger.error(f"WebSocket error: {str(e)}")
+    finally:
+        await websocket.close()
+        logger.info("WebSocket connection closed")
 
 @app.get("/")
 async def serve_index(request: Request):
@@ -91,12 +113,15 @@ async def agent_chat(session_id: str, file: UploadFile):
             chat_history[session_id] = []
         chat_history[session_id].append({"role": "user", "content": transcription})
 
-        # Generate Gemini response
-        gemini_result = await gemini_service.generate_response(transcription, chat_history[session_id])
-        if "error" in gemini_result:
-            logger.error(f"Gemini error: {gemini_result['error']}")
-            return AgentChatResponse(transcription=transcription, error=gemini_result["error"], audio_url=murf_service.generate_fallback_audio() if murf_service else None)
-        llm_response = gemini_result["response"]
+        # Generate Gemini response with caching
+        if transcription.lower() in ["hi", "hello"]:
+            llm_response = get_cached_response(transcription, session_id)
+        else:
+            gemini_result = await gemini_service.generate_response(transcription, chat_history[session_id])
+            if "error" in gemini_result:
+                logger.error(f"Gemini error: {gemini_result['error']}")
+                return AgentChatResponse(transcription=transcription, error=gemini_result["error"], audio_url=murf_service.generate_fallback_audio() if murf_service else None)
+            llm_response = gemini_result["response"]
         chat_history[session_id].append({"role": "assistant", "content": llm_response})
 
         if not murf_service:
