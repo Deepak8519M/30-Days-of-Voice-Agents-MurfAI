@@ -14,6 +14,6 @@
 - [Day 10](./Day10)
 - [Day 11](./Day11)
 - [Day 12](./Day12)
-- [Day 13](./Day13) _(coming soon 🚧)_
+- [Day 13](./Day13)
 - [Day 14](./Day14)
 - [Day 15](./Day15)
