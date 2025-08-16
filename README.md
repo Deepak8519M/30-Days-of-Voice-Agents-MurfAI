@@ -22,15 +22,15 @@ Each day focuses on solving real-world AI challenges like:
 
 ## 🔑 `Key Features`
 
-```
-✅ **Voice Input/Output** → Record audio → Transcribe with AssemblyAI → Generate replies with Gemini → Synthesize voice with Murf AI
-✅ **Vibrant UI** → Clean chat layout (blue-purple user bubbles, red-purple AI bubbles)
-✅ **Session Management** → Per-session chat history for continuity
-✅ **Optimizations** → Async polling, cached greetings, and reduced latency
-✅ **WebSockets** → Real-time communication with `/ws` endpoint
-✅ **Error Handling** → Robust API key, timeout, and invalid input handling
-✅ **Scalability** → Ready for multi-language & multi-agent setups
-```
+
+* ✅ **Voice Input/Output** → Record audio → Transcribe with AssemblyAI → Generate replies with Gemini → Synthesize voice with Murf AI
+* ✅ **Vibrant UI** → Clean chat layout (blue-purple user bubbles, red-purple AI bubbles)
+* ✅ **Session Management** → Per-session chat history for continuity
+* ✅ **Optimizations** → Async polling, cached greetings, and reduced latency
+* ✅ **WebSockets** → Real-time communication with `/ws` endpoint
+* ✅ **Error Handling** → Robust API key, timeout, and invalid input handling
+* ✅ **Scalability** → Ready for multi-language & multi-agent setups
+
 ---
 
 ## 🏗️ `Architecture Overview`
