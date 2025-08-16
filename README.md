@@ -1,10 +1,6 @@
 # 🎙️ `AI Voice Agent` – `30 Days of Voice Agents Challenge 🚀`
 
-Welcome to my **AI Voice Agent project**, built as part of the **30 Days of AI Voice Agents Challenge with #BuildwithMurf!** 🌟
-
-This repository showcases my journey to create a **cutting-edge, voice-powered conversational AI**, evolving daily with new features — from **audio transcription** and **text-to-speech**, to **real-time streaming**, **context memory**, and even **multi-agent systems**.
-
-With a vibrant UI , this project blends **FastAPI, AssemblyAI, Murf AI, and Gemini API** to deliver seamless, real-time voice interactions.
+Welcome to my AI Voice Agent project, crafted for the 30 Days of AI Voice Agents challenge with #BuildwithMurf! 🌟 This repo is my playground for building a next-level, voice-powered conversational AI that evolves daily with cutting-edge features. From audio transcription to real-time WebSocket streaming, context-aware memory, and future multi-agent systems, this project blends FastAPI, AssemblyAI, Murf AI, and Gemini API to deliver seamless, vibrant voice interactions. 💬 With a sleek UI showcasing user mess
 
 ---
 
