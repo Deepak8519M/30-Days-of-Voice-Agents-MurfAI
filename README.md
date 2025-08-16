@@ -38,21 +38,45 @@ The ultimate goal?
 
 ---
 
+
+## Architecture 
+
+```
+
+[Browser UI]
+   │  record audio
+   ▼
+[FastAPI /agent/chat/{session_id}]  ←——  WebSocket /ws (echo today, streaming later)
+   │  save file → transcribe (AssemblyAI)
+   │  update chat_history
+   │  generate reply (Gemini)
+   │  synthesize speech (Murf)
+   ▼
+ JSON { transcription, response, audio_url, error? }
+
+```
+
 ## 📂 Repo Structure
 
 ```
 ai-voice-agent/
-├── day01/ … day30/   # Daily progress folders
-├── main/             # Core project (latest stable build)
-│   ├── main.py       # FastAPI server
-│   ├── schemas.py    # Pydantic models
-│   ├── services/     # AssemblyAI, Murf AI, Gemini integration
-│   ├── templates/    # index.html (UI)
-│   ├── static/       # style.css, screenshots
-│   ├── uploads/      # User audio files
-├── .env              # API keys (not tracked)
-├── .gitignore        # Ignore .env, __pycache__, etc.
-└── README.md         # This file
+├─ day01 … day15 … day30/        # daily progress folders (optional for readers)
+├─ templates/
+│   └─ index.html                 # chat UI (user right: blue‑purple, AI left: red‑purple)
+├─ static/
+│   ├─ style.css                  # UI styles
+│   ├─ screenshot_ui.png          # optional: UI screenshot
+│   └─ screenshot_websocket.png   # optional: Postman/WebSocket screenshot
+├─ uploads/                       # saved audio files (runtime only)
+├─ services/
+│   ├─ assemblyai.py              # AssemblyAIService – transcription
+│   ├─ murf.py                    # MurfService – TTS
+│   └─ gemini.py                  # GeminiService – LLM replies
+├─ schemas.py                     # Pydantic models (e.g., AgentChatResponse)
+├─ main.py                        # FastAPI app, routes, websocket, logging, caching
+├─ .env                           # API keys (NOT committed)
+├─ .gitignore                     # ignores .env, __pycache__, etc.
+└─ README.md                      # (this file)
 ```
 
 ---
