@@ -3,28 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Voice Agent - Day 16 🎙️</title>
+    <title>AI Voice Agent - Day 16</title>
     <link rel="stylesheet" href="/static/style.css" />
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>AI Voice Agent - Day 16 🎙️</h1>
-        <p>Stream audio in real-time using WebSockets 🚀</p>
+        <h1>🎙️ AI Voice Agent - Day 16</h1>
+        <p>Stream your voice in real-time using WebSockets</p>
       </header>
+
       <div class="controls">
-        <button id="recordBtn" class="record-btn">Start Recording 🎵</button>
-        <div id="status" class="status">Status: Idle ⏳</div>
+        <button id="recordBtn" class="record-btn">Start Recording</button>
       </div>
+
+      <div id="status" class="status">Status: Idle</div>
+
       <div class="info-box">
         <p>
-          Click "Start Recording" to capture audio and stream it to the server.
-          The audio is saved as a .webm file in the
-          <code>uploads/</code> folder. ✅
+          Click <b>Start Recording</b> to capture audio and stream it to the
+          server.<br />
+          The audio is saved as a <code>.webm</code> file inside the
+          <code>uploads/</code> folder.
         </p>
       </div>
     </div>
+
     <script>
       class VoiceAgentUI {
         constructor() {
@@ -41,21 +45,16 @@
         setupWebSocket() {
           this.websocket = new WebSocket("ws://127.0.0.1:8000/ws");
           this.websocket.onopen = () => {
-            this.status.textContent = "Connected to server ✅";
-            this.status.classList.remove("error");
-            this.status.classList.add("connected");
+            this.setStatus("✅ Connected to server", "connected");
           };
           this.websocket.onmessage = (event) => {
-            this.status.textContent = `Server: ${event.data} 📡`;
-            this.status.classList.remove("error");
+            this.setStatus(`📩 ${event.data}`, "connected");
           };
           this.websocket.onerror = () => {
-            this.status.textContent = "WebSocket connection failed ❌";
-            this.status.classList.add("error");
+            this.setStatus("❌ WebSocket connection failed", "error");
           };
           this.websocket.onclose = () => {
-            this.status.textContent = "Disconnected from server 😞";
-            this.status.classList.add("error");
+            this.setStatus("⚠️ Disconnected from server", "error");
           };
         }
 
@@ -77,41 +76,44 @@
                     this.websocket.readyState === WebSocket.OPEN
                   ) {
                     this.websocket.send(e.data);
-                    this.status.textContent = `Sent chunk: ${e.data.size} bytes 📤`;
-                    this.status.classList.remove("error");
+                    this.setStatus(
+                      `📤 Sent chunk: ${e.data.size} bytes`,
+                      "connected"
+                    );
                   }
                 };
               })
               .catch((err) => {
-                this.status.textContent = `Microphone error: ${err.message} 🎤❌`;
-                this.status.classList.add("error");
+                this.setStatus(`🎤 Microphone error: ${err.message}`, "error");
               });
           } else {
-            this.status.textContent = "Microphone not supported 🎤🚫";
-            this.status.classList.add("error");
+            this.setStatus("🎤 Microphone not supported", "error");
           }
         }
 
         toggleRecording() {
           if (!this.isRecording) {
             if (this.mediaRecorder) {
-              this.mediaRecorder.start(1000); // Send chunks every 1s
-              this.recordBtn.textContent = "Stop Recording 🛑";
+              this.mediaRecorder.start(1000);
+              this.recordBtn.textContent = "⏹ Stop Recording";
               this.recordBtn.classList.add("recording");
-              this.status.textContent = "Recording... 🎙️";
-              this.status.classList.remove("error", "connected");
+              this.setStatus("🎙️ Recording...", "recording");
               this.isRecording = true;
             }
           } else {
             if (this.mediaRecorder) {
               this.mediaRecorder.stop();
-              this.recordBtn.textContent = "Start Recording 🎵";
+              this.recordBtn.textContent = "▶️ Start Recording";
               this.recordBtn.classList.remove("recording");
-              this.status.textContent = "Status: Idle ⏳";
-              this.status.classList.remove("error", "connected");
+              this.setStatus("⏸️ Status: Idle", "");
               this.isRecording = false;
             }
           }
+        }
+
+        setStatus(message, type) {
+          this.status.textContent = message;
+          this.status.className = `status ${type}`;
         }
       }
 
