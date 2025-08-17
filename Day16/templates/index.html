@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Voice Agent - Day 16</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>AI Voice Agent - Day 16</h1>
+        <p>Stream audio in real-time using WebSockets</p>
+      </header>
+      <div class="controls">
+        <button id="recordBtn" class="record-btn">Start Recording</button>
+        <div id="status" class="status">Status: Idle</div>
+      </div>
+      <div class="info-box">
+        <p>
+          Click "Start Recording" to capture audio and stream it to the server.
+          The audio is saved as a .webm file. Check the
+          <code>uploads/</code> folder to verify.
+        </p>
+      </div>
+    </div>
+    <script>
+      class VoiceAgentUI {
+        constructor() {
+          this.recordBtn = document.getElementById("recordBtn");
+          this.status = document.getElementById("status");
+          this.isRecording = false;
+          this.mediaRecorder = null;
+          this.websocket = null;
+
+          this.setupWebSocket();
+          this.setupEventListeners();
+        }
+
+        setupWebSocket() {
+          this.websocket = new WebSocket("ws://127.0.0.1:8000/ws");
+          this.websocket.onopen = () => {
+            this.status.textContent = "Connected to server";
+            this.status.classList.remove("error");
+            this.status.classList.add("connected");
+          };
+          this.websocket.onmessage = (event) => {
+            this.status.textContent = `Server: ${event.data}`;
+            this.status.classList.remove("error");
+          };
+          this.websocket.onerror = () => {
+            this.status.textContent = "WebSocket connection failed";
+            this.status.classList.add("error");
+          };
+          this.websocket.onclose = () => {
+            this.status.textContent = "Disconnected from server";
+            this.status.classList.add("error");
+          };
+        }
+
+        setupEventListeners() {
+          this.recordBtn.addEventListener("click", () =>
+            this.toggleRecording()
+          );
+
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices
+              .getUserMedia({ audio: true })
+              .then((stream) => {
+                this.mediaRecorder = new MediaRecorder(stream, {
+                  mimeType: "audio/webm",
+                });
+                this.mediaRecorder.ondataavailable = (e) => {
+                  if (
+                    e.data.size > 0 &&
+                    this.websocket.readyState === WebSocket.OPEN
+                  ) {
+                    this.websocket.send(e.data);
+                    this.status.textContent = `Sent chunk: ${e.data.size} bytes`;
+                    this.status.classList.remove("error");
+                  }
+                };
+              })
+              .catch((err) => {
+                this.status.textContent = `Microphone error: ${err.message}`;
+                this.status.classList.add("error");
+              });
+          } else {
+            this.status.textContent = "Microphone not supported";
+            this.status.classList.add("error");
+          }
+        }
+
+        toggleRecording() {
+          if (!this.isRecording) {
+            if (this.mediaRecorder) {
+              this.mediaRecorder.start(1000); // Send chunks every 1s
+              this.recordBtn.textContent = "Stop Recording";
+              this.recordBtn.classList.add("recording");
+              this.status.textContent = "Recording...";
+              this.status.classList.remove("error", "connected");
+              this.isRecording = true;
+            }
+          } else {
+            if (this.mediaRecorder) {
+              this.mediaRecorder.stop();
+              this.recordBtn.textContent = "Start Recording";
+              this.recordBtn.classList.remove("recording");
+              this.status.textContent = "Status: Idle";
+              this.status.classList.remove("error", "connected");
+              this.isRecording = false;
+            }
+          }
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new VoiceAgentUI();
+      });
+    </script>
+  </body>
+</html>
