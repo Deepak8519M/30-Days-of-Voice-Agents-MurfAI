@@ -17,6 +17,7 @@ from assemblyai.streaming.v3 import (
     StreamingParameters,
     StreamingEvents,
 )
+
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -53,7 +54,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
-FRAMES_PER_BUFFER = 800  # 50 ms
+FRAMES_PER_BUFFER = 1600  # Increased to 100 ms for stability
 
 # Utility to save audio
 def save_wav(frames: list[bytes]) -> str | None:
@@ -92,13 +93,11 @@ async def ws_handler(websocket: WebSocket):
     # Forward only transcript text
     async def forward_event(client, message):
         try:
-            # AssemblyAI sends different event types, only Turn has transcript
-            if hasattr(message, "transcript") and message.transcript:
+            if message.type == "Turn" and message.transcript:
                 await websocket.send_text(message.transcript)
-            else:
-                # ignore BEGIN, Termination, etc. or send short status
-                if message.type == "error":
-                    await websocket.send_text(f"Error: {message}")
+            elif message.type == "error":
+                await websocket.send_text(f"Error: {str(message)}")
+            # Ignore other events (Begin, Termination) to avoid clutter
         except Exception as e:
             log.error(f"forward_event error: {e}")
 
@@ -140,10 +139,14 @@ async def ws_handler(websocket: WebSocket):
                 frames_per_buffer=FRAMES_PER_BUFFER,
             )
             while not stop_event.is_set():
-                data = mic_stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
-                with frames_lock:
-                    recorded_frames.append(data)
-                client.stream(data)
+                try:
+                    data = mic_stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
+                    with frames_lock:
+                        recorded_frames.append(data)
+                    client.stream(data)
+                except IOError as e:
+                    log.warning(f"Audio read error: {e}, retrying...")
+                    time.sleep(0.01)  # Brief pause to recover
         except Exception as e:
             log.error(f"Audio thread error: {e}")
             asyncio.run_coroutine_threadsafe(queue.put(f"Transcription error: {e}"), loop)
@@ -185,7 +188,7 @@ async def ws_handler(websocket: WebSocket):
             elif msg == "stop":
                 stop_event.set()
                 if audio_thread and audio_thread.is_alive():
-                    audio_thread.join(timeout=2.0)
+                    audio_thread.join(timeout=5.0)  # Increased timeout
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
@@ -202,7 +205,7 @@ async def ws_handler(websocket: WebSocket):
     finally:
         stop_event.set()
         if audio_thread and audio_thread.is_alive():
-            audio_thread.join(timeout=2.0)
+            audio_thread.join(timeout=5.0)
         client.disconnect(terminate=True)
         queue_task.cancel()
         log.info("WebSocket closed")
