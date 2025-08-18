@@ -1,0 +1,6 @@
+fastapi==0.112.0
+uvicorn[standard]==0.30.3
+assemblyai==0.34.0
+pydub==0.25.1
+ffmpeg-python==0.2.0
+numpy==1.26.4
