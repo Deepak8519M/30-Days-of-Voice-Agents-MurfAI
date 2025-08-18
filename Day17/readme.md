@@ -1,7 +1,3 @@
-Got it! You want a **full, clean, detailed README.md specifically for Day 17** that reflects your workflow, tech, and functionality just like the example you shared. Here’s a polished version tailored for **Day 17 – AI Voice Agent with real-time transcription**:
-
----
-
 # 🎙️ `AI Voice Agent – Day 17` | `30 Days of Voice Agents Challenge 🚀`
 
 Welcome to **Day 17 of my AI Voice Agent journey**, part of the #BuildWithMurf challenge! 🌟
@@ -183,10 +179,11 @@ MIT License — Free to use, modify, and share 🚀
 
 ✨ `Follow my journey` → [LinkedIn](https://www.linkedin.com/in/deepak-mallareddy-1b09b6274/)
 
-\#Day17 #VoiceAgent #AssemblyAI #WebSocket #AI #BuildWithMurf
+#Day17 #VoiceAgent #AssemblyAI #WebSocket #AI #BuildWithMurf
 
 ---
 
 If you want, I can also **merge this Day 17 README into your full 30-day README** so it’s ready as a **continuous progression doc** for GitHub.
 
 Do you want me to do that?
+
