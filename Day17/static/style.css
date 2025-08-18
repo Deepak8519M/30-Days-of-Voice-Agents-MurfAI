@@ -9,6 +9,7 @@ body {
   justify-content: center;
   color: #e2e8f0;
 }
+
 .container {
   max-width: 850px;
   margin: 20px;
@@ -20,6 +21,7 @@ body {
   position: relative;
   overflow: hidden;
 }
+
 .container::before {
   content: "";
   position: absolute;
@@ -34,14 +36,17 @@ body {
   );
   z-index: -1;
 }
+
 .container:hover {
   transform: translateY(-10px);
   box-shadow: 0 16px 48px rgba(107, 91, 149, 0.6);
 }
+
 header {
   text-align: center;
   margin-bottom: 40px;
 }
+
 h1 {
   font-size: 38px;
   font-weight: 800;
@@ -51,11 +56,13 @@ h1 {
   margin: 0;
   animation: fadeIn 1s ease-in;
 }
+
 header p {
   font-size: 19px;
   color: #94a3b8;
   margin-top: 12px;
 }
+
 .controls {
   display: flex;
   gap: 20px;
@@ -63,6 +70,7 @@ header p {
   align-items: center;
   margin-bottom: 40px;
 }
+
 .record-btn,
 .retry-btn {
   background: linear-gradient(90deg, #6b5b95 0%, #7c3aed 100%);
@@ -77,24 +85,30 @@ header p {
   transition: all 0.3s ease;
   box-shadow: 0 8px 20px rgba(107, 91, 149, 0.6);
 }
+
 .retry-btn {
   background: linear-gradient(90deg, #2dd4bf 0%, #14b8a6 100%);
 }
+
 .stop-btn {
   background: linear-gradient(90deg, #d32f2f 0%, #f44336 100%);
 }
+
 .record-btn:hover,
 .retry-btn:hover,
 .stop-btn:hover {
   transform: scale(1.1);
   box-shadow: 0 10px 24px rgba(149, 117, 205, 0.7);
 }
+
 .retry-btn:hover {
   background: linear-gradient(90deg, #4dd0e1 0%, #26c6da 100%);
 }
+
 .stop-btn:hover {
   background: linear-gradient(90deg, #ef5350 0%, #ff6655 100%);
 }
+
 .status,
 .connection-status {
   font-size: 18px;
@@ -105,16 +119,19 @@ header p {
   background: #374151;
   transition: all 0.3s ease;
 }
+
 .status.error,
 .connection-status.error {
   color: #d95b95;
   background: #4c2c3e;
 }
+
 .status.connected,
 .connection-status.connected {
   color: #2dd4bf;
   background: #1e4e4c;
 }
+
 .transcription-box {
   background: #334155;
   padding: 30px;
@@ -124,6 +141,7 @@ header p {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   position: relative;
 }
+
 .transcription-box::before {
   content: "";
   position: absolute;
@@ -134,12 +152,14 @@ header p {
   background: linear-gradient(90deg, #6b5b95, #2dd4bf);
   animation: pulseGlow 2s ease-in-out infinite;
 }
+
 .transcription-box h2 {
   font-size: 24px;
   color: #f8fafc;
   margin: 0 0 15px 0;
   font-weight: 700;
 }
+
 .transcription-content {
   font-size: 16px;
   color: #e2e8f0;
@@ -153,22 +173,27 @@ header p {
   display: flex;
   align-items: flex-start;
 }
+
 .transcription-content .spinner {
   margin-right: 10px;
   font-size: 18px;
   animation: spin 0.8s linear infinite;
 }
+
 .transcription-content .text {
   flex: 1;
   font-family: "Courier New", monospace;
 }
+
 .transcription-content.fade-in {
   opacity: 0;
   animation: fadeInText 0.5s ease forwards;
 }
+
 .transcription-content.error {
   color: #d95b95;
 }
+
 .info-box {
   background: #334155;
   padding: 25px;
@@ -179,12 +204,14 @@ header p {
   border: 1px solid #4b5563;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
 .info-box code {
   background: #4b5563;
   padding: 4px 8px;
   border-radius: 6px;
   color: #93c5fd;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -195,6 +222,7 @@ header p {
     transform: translateY(0);
   }
 }
+
 @keyframes fadeInText {
   from {
     opacity: 0;
@@ -203,6 +231,7 @@ header p {
     opacity: 1;
   }
 }
+
 @keyframes pulseGlow {
   0% {
     opacity: 0.6;
@@ -214,6 +243,7 @@ header p {
     opacity: 0.6;
   }
 }
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -222,6 +252,7 @@ header p {
     transform: rotate(360deg);
   }
 }
+
 @media (max-width: 600px) {
   .container {
     margin: 15px;
