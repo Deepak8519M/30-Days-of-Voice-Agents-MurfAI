@@ -206,11 +206,7 @@ async def ws_handler(websocket: WebSocket):
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
                 if final_transcript:
-                    await websocket.send_text(final_transcript)  # Send only formatted transcript
-                else:
-                    final_transcript = " ".join(all_transcripts).strip()
-                    if final_transcript:
-                        await websocket.send_text(final_transcript)  # Fallback to joined transcript
+                    await websocket.send_text(final_transcript)  # Send final transcript first
                 await websocket.send_text(
                     "Stopped transcription"
                     + (f" (saved: {os.path.basename(saved)})" if saved else "")
