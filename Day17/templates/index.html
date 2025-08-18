@@ -14,7 +14,13 @@
         <p>Real-time audio streaming & transcription with WebSockets 🚀✨</p>
       </header>
       <div class="controls">
-        <button id="recordBtn" class="record-btn">Start Recording 🎵</button>
+        <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
+        <button id="stopBtn" class="record-btn stop-btn" style="display: none">
+          Stop Transcription 🛑
+        </button>
+        <button id="retryBtn" class="retry-btn" style="display: none">
+          Retry Transcription 🔄
+        </button>
         <div id="status" class="status">Status: Idle ⏳</div>
       </div>
       <div class="transcription-box">
@@ -23,24 +29,28 @@
           <span class="spinner" style="display: none">⏳</span>
           <span class="text">Waiting for transcription... ⏳</span>
         </div>
+        <div id="connectionStatus" class="connection-status">
+          Connecting to server... 🔌
+        </div>
       </div>
       <div class="info-box">
         <p>
-          Click "Start Recording" to stream audio and see live transcription
-          below. Audio saved in <code>uploads/</code>. ✅🔊
+          Click "Start Transcription" to begin streaming audio. Audio saved in
+          <code>uploads/</code>. ✅🔊
         </p>
       </div>
     </div>
     <script>
       class VoiceAgentUI {
         constructor() {
-          this.recordBtn = document.getElementById("recordBtn");
+          this.startBtn = document.getElementById("startBtn");
+          this.stopBtn = document.getElementById("stopBtn");
+          this.retryBtn = document.getElementById("retryBtn");
           this.status = document.getElementById("status");
+          this.connectionStatus = document.getElementById("connectionStatus");
           this.transcription = document.getElementById("transcription");
           this.transcriptionText = this.transcription.querySelector(".text");
           this.spinner = this.transcription.querySelector(".spinner");
-          this.isRecording = false;
-          this.mediaRecorder = null;
           this.websocket = null;
 
           this.setupWebSocket();
@@ -51,8 +61,14 @@
           this.websocket = new WebSocket("ws://127.0.0.1:8000/ws");
           this.websocket.onopen = () => {
             this.status.textContent = "Connected to server ✅";
+            this.connectionStatus.textContent = "Server connected ✅";
             this.status.classList.remove("error");
             this.status.classList.add("connected");
+            this.connectionStatus.classList.remove("error");
+            this.connectionStatus.classList.add("connected");
+            this.retryBtn.style.display = "none";
+            this.startBtn.style.display = "inline-block";
+            this.stopBtn.style.display = "none";
           };
           this.websocket.onmessage = (event) => {
             const timestamp = new Date().toLocaleTimeString();
@@ -63,6 +79,7 @@
                 : "Waiting for transcription... ⏳";
               this.transcription.classList.add("fade-in");
               this.spinner.style.display = "none";
+              this.retryBtn.style.display = "none";
               setTimeout(
                 () => this.transcription.classList.remove("fade-in"),
                 500
@@ -74,9 +91,7 @@
               )} ❌`;
               this.transcription.classList.add("error");
               this.spinner.style.display = "none";
-            } else if (event.data.startsWith("Invalid WebM chunk")) {
-              this.transcriptionText.textContent = `[${timestamp}] Recording... keep speaking ⏳`;
-              this.spinner.style.display = "inline";
+              this.retryBtn.style.display = "inline-block";
             } else {
               this.status.textContent = `Server: ${event.data} 📡`;
             }
@@ -84,79 +99,62 @@
           };
           this.websocket.onerror = () => {
             this.status.textContent = "WebSocket connection failed ❌";
+            this.connectionStatus.textContent = "Server disconnected 😞";
             this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
             this.transcriptionText.textContent = "Disconnected 😞";
             this.spinner.style.display = "none";
+            this.retryBtn.style.display = "inline-block";
+            this.startBtn.style.display = "none";
+            this.stopBtn.style.display = "none";
           };
           this.websocket.onclose = () => {
             this.status.textContent = "Disconnected from server 😞";
+            this.connectionStatus.textContent = "Server disconnected 😞";
             this.transcriptionText.textContent = "Disconnected 😞";
             this.spinner.style.display = "none";
             this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
+            this.retryBtn.style.display = "inline-block";
+            this.startBtn.style.display = "none";
+            this.stopBtn.style.display = "none";
           };
         }
 
         setupEventListeners() {
-          this.recordBtn.addEventListener("click", () =>
-            this.toggleRecording()
-          );
-
-          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices
-              .getUserMedia({ audio: true })
-              .then((stream) => {
-                this.mediaRecorder = new MediaRecorder(stream, {
-                  mimeType: "audio/webm",
-                  audioBitsPerSecond: 128000,
-                });
-                this.mediaRecorder.ondataavailable = (e) => {
-                  if (
-                    e.data.size > 0 &&
-                    this.websocket.readyState === WebSocket.OPEN
-                  ) {
-                    this.websocket.send(e.data);
-                    this.status.textContent = `Sent chunk: ${e.data.size} bytes 📤`;
-                    this.status.classList.remove("error");
-                  }
-                };
-              })
-              .catch((err) => {
-                this.status.textContent = `Microphone error: ${err.message} 🎤❌`;
-                this.status.classList.add("error");
-              });
-          } else {
-            this.status.textContent = "Microphone not supported 🎤🚫";
-            this.status.classList.add("error");
-          }
-        }
-
-        toggleRecording() {
-          if (!this.isRecording) {
-            if (this.mediaRecorder) {
-              this.mediaRecorder.start(2000); // 2s chunks
-              this.recordBtn.textContent = "Stop Recording 🛑";
-              this.recordBtn.classList.add("recording");
-              this.status.textContent = "Recording... 🎙️";
+          this.startBtn.addEventListener("click", () => {
+            if (this.websocket.readyState === WebSocket.OPEN) {
+              this.websocket.send("start");
+              this.startBtn.style.display = "none";
+              this.stopBtn.style.display = "inline-block";
+              this.status.textContent = "Transcribing... 🎙️";
               this.transcriptionText.textContent = "Transcribing... 🎙️";
               this.spinner.style.display = "inline";
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");
-              this.isRecording = true;
+              this.retryBtn.style.display = "none";
             }
-          } else {
-            if (this.mediaRecorder) {
-              this.mediaRecorder.stop();
-              this.recordBtn.textContent = "Start Recording 🎵";
-              this.recordBtn.classList.remove("recording");
+          });
+          this.stopBtn.addEventListener("click", () => {
+            if (this.websocket.readyState === WebSocket.OPEN) {
+              this.websocket.send("stop");
+              this.startBtn.style.display = "inline-block";
+              this.stopBtn.style.display = "none";
               this.status.textContent = "Status: Idle ⏳";
               this.transcriptionText.textContent =
                 "Waiting for transcription... ⏳";
               this.spinner.style.display = "none";
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");
-              this.isRecording = false;
             }
-          }
+          });
+          this.retryBtn.addEventListener("click", () => {
+            this.websocket.close();
+            this.connectionStatus.textContent = "Reconnecting to server... 🔌";
+            this.spinner.style.display = "inline";
+            this.transcription.classList.remove("error");
+            this.setupWebSocket();
+          });
         }
       }
 
