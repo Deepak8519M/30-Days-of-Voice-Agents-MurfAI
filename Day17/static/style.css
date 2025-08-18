@@ -39,7 +39,7 @@ body {
 
 .container:hover {
   transform: translateY(-10px);
-  box-shadow: 0 16px 48px rgba(107, 91, 149, 0.6);
+  /* box-shadow: 0 16px 48px rgba(107, 91, 149, 0.6); */
 }
 
 header {
