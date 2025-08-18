@@ -1,7 +1,5 @@
 import os
-import io
 import wave
-import time
 import logging
 import asyncio
 import threading
@@ -51,13 +49,13 @@ templates = Jinja2Templates(directory="templates")
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Audio config (Mono PCM16 as per docs)
+# Audio config
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 800  # 50 ms
 
-# Utility
+# Utility to save audio
 def save_wav(frames: list[bytes]) -> str | None:
     if not frames:
         return None
@@ -81,7 +79,6 @@ async def ws_handler(websocket: WebSocket):
     await websocket.accept()
     log.info("WebSocket connected")
 
-    # State for a single client
     py_audio: pyaudio.PyAudio | None = None
     mic_stream: pyaudio.Stream | None = None
     audio_thread: threading.Thread | None = None
@@ -89,13 +86,21 @@ async def ws_handler(websocket: WebSocket):
     recorded_frames: list[bytes] = []
     frames_lock = threading.Lock()
 
-    # Use the running loop for cross-thread posts
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str] = asyncio.Queue()
 
-    # StreamingClient callbacks with thread-safe handling
+    # Forward only transcript text
     async def forward_event(client, message):
-        await websocket.send_text(str(message))
+        try:
+            # AssemblyAI sends different event types, only Turn has transcript
+            if hasattr(message, "transcript") and message.transcript:
+                await websocket.send_text(message.transcript)
+            else:
+                # ignore BEGIN, Termination, etc. or send short status
+                if message.type == "error":
+                    await websocket.send_text(f"Error: {message}")
+        except Exception as e:
+            log.error(f"forward_event error: {e}")
 
     client = StreamingClient(
         StreamingClientOptions(api_key=AAI_API_KEY, api_host="streaming.assemblyai.com")
@@ -111,7 +116,6 @@ async def ws_handler(websocket: WebSocket):
 
     client.connect(StreamingParameters(sample_rate=SAMPLE_RATE, format_turns=True))
 
-    # Task: forward queued messages to the client
     async def pump_queue():
         try:
             while True:
@@ -119,11 +123,10 @@ async def ws_handler(websocket: WebSocket):
                 await websocket.send_text(msg)
                 queue.task_done()
         except Exception:
-            pass  # socket will be closed in finally
+            pass
 
     queue_task = asyncio.create_task(pump_queue())
 
-    # Audio streaming worker (runs in a thread)
     def stream_audio():
         nonlocal mic_stream, py_audio
         log.info("Starting audio streaming thread")
@@ -162,7 +165,6 @@ async def ws_handler(websocket: WebSocket):
             log.info("Audio streaming thread ended")
 
     try:
-        # Main ws loop: handle start/stop commands
         while True:
             try:
                 msg = await websocket.receive_text()
@@ -187,7 +189,10 @@ async def ws_handler(websocket: WebSocket):
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
-                await websocket.send_text("Stopped transcription" + (f" (saved: {os.path.basename(saved)})" if saved else ""))
+                await websocket.send_text(
+                    "Stopped transcription"
+                    + (f" (saved: {os.path.basename(saved)})" if saved else "")
+                )
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")
@@ -201,8 +206,3 @@ async def ws_handler(websocket: WebSocket):
         client.disconnect(terminate=True)
         queue_task.cancel()
         log.info("WebSocket closed")
-
-@app.get("/")
-async def index(request: Request):
-    log.info("Serving index page")
-    return templates.TemplateResponse("index.html", {"request": request})
