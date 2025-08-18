@@ -54,7 +54,6 @@
           this.transcriptionText = document.getElementById("transcriptionText");
           this.spinner = this.transcription.querySelector(".spinner");
           this.websocket = null;
-          this.transcriptBuffer = ""; // Buffer to accumulate transcript
 
           this.setupWebSocket();
           this.setupEventListeners();
@@ -75,20 +74,33 @@
           };
           this.websocket.onmessage = (event) => {
             const message = event.data.trim();
+            const timestamp = new Date().toLocaleTimeString();
 
-            // Buffer transcript during recording
+            // Handle only the final transcript or status messages
             if (
               message &&
               !message.startsWith("Started") &&
               !message.startsWith("Stopped") &&
               !message.startsWith("Already") &&
-              !message.startsWith("Unknown")
+              !message.startsWith("Unknown") &&
+              !message.startsWith("Error")
             ) {
-              this.transcriptBuffer += message + " ";
+              this.transcriptionText.textContent = `[${timestamp}] ${message} 📜`;
+              this.transcription.classList.add("fade-in");
+              this.spinner.style.display = "none";
+              setTimeout(
+                () => this.transcription.classList.remove("fade-in"),
+                500
+              );
             }
             // Handle status messages
             else if (message) {
               this.status.textContent = `Server: ${message} 📡`;
+              if (message.startsWith("Stopped")) {
+                this.transcriptionText.textContent = `[${timestamp}] ${
+                  message.split(" (")[0]
+                } 📜`; // Show final transcript
+              }
             }
             this.status.classList.remove("error");
           };
@@ -128,7 +140,6 @@
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");
               this.retryBtn.style.display = "none";
-              this.transcriptBuffer = ""; // Reset buffer on new session
             }
           });
           this.stopBtn.addEventListener("click", () => {
@@ -137,8 +148,6 @@
               this.startBtn.style.display = "inline-block";
               this.stopBtn.style.display = "none";
               this.status.textContent = "Status: Idle ⏳";
-              const timestamp = new Date().toLocaleTimeString();
-              this.transcriptionText.textContent = `[${timestamp}] ${this.transcriptBuffer.trim()} 📜`;
               this.spinner.style.display = "none";
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");

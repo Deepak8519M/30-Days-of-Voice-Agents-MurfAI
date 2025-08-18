@@ -54,7 +54,7 @@
           this.transcriptionText = document.getElementById("transcriptionText");
           this.spinner = this.transcription.querySelector(".spinner");
           this.websocket = null;
-          this.transcriptBuffer = ""; // Buffer to accumulate partial transcripts
+          this.finalTranscript = ""; // Store the final transcript
 
           this.setupWebSocket();
           this.setupEventListeners();
@@ -74,30 +74,36 @@
             this.stopBtn.style.display = "none";
           };
           this.websocket.onmessage = (event) => {
-            const timestamp = new Date().toLocaleTimeString();
             const message = event.data.trim();
+            const timestamp = new Date().toLocaleTimeString();
 
-            // Handle transcription text
+            // Capture the final transcript
             if (
               message &&
               !message.startsWith("Started") &&
               !message.startsWith("Stopped") &&
               !message.startsWith("Already") &&
-              !message.startsWith("Unknown")
+              !message.startsWith("Unknown") &&
+              !message.startsWith("Error")
             ) {
-              this.transcriptBuffer += message + " ";
-              this.transcriptionText.textContent = `[${timestamp}] ${this.transcriptBuffer.trim()} 📜`;
-              this.transcription.classList.add("fade-in");
-              this.spinner.style.display = "none";
-              this.retryBtn.style.display = "none";
-              setTimeout(
-                () => this.transcription.classList.remove("fade-in"),
-                500
-              );
+              this.finalTranscript = message; // Store the last received transcript
             }
-            // Handle status messages
+            // Handle status messages and display final transcript
             else if (message) {
               this.status.textContent = `Server: ${message} 📡`;
+              if (message.startsWith("Stopped")) {
+                if (this.finalTranscript) {
+                  this.transcriptionText.textContent = `[${timestamp}] ${this.finalTranscript} 📜`;
+                } else {
+                  this.transcriptionText.textContent = `[${timestamp}] No transcription available 📜`;
+                }
+                this.spinner.style.display = "none";
+                this.transcription.classList.add("fade-in");
+                setTimeout(
+                  () => this.transcription.classList.remove("fade-in"),
+                  500
+                );
+              }
             }
             this.status.classList.remove("error");
           };
@@ -137,7 +143,7 @@
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");
               this.retryBtn.style.display = "none";
-              this.transcriptBuffer = ""; // Reset buffer on new session
+              this.finalTranscript = ""; // Reset final transcript
             }
           });
           this.stopBtn.addEventListener("click", () => {
@@ -146,8 +152,6 @@
               this.startBtn.style.display = "inline-block";
               this.stopBtn.style.display = "none";
               this.status.textContent = "Status: Idle ⏳";
-              this.transcriptionText.textContent =
-                "Waiting for transcription... ⏳";
               this.spinner.style.display = "none";
               this.transcription.classList.remove("error");
               this.status.classList.remove("error", "connected");
