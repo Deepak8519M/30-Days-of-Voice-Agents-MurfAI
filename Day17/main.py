@@ -101,6 +101,7 @@ async def ws_handler(websocket: WebSocket):
                 transcript_text = message.transcript.strip()
                 all_transcripts.append(transcript_text)  # Collect all transcripts
                 log.info(f"Transcription: {transcript_text}")  # Log partial transcript
+                await websocket.send_text(transcript_text)  # Send to UI
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text  # Store formatted final transcript
                     log.info(f"Final Formatted Transcription: {final_transcript}")
@@ -207,6 +208,8 @@ async def ws_handler(websocket: WebSocket):
                     recorded_frames.clear()
                 if final_transcript:
                     await websocket.send_text(final_transcript)  # Send final transcript first
+                elif all_transcripts:
+                    await websocket.send_text(all_transcripts[-1])  # Send last transcript if no formatted one
                 await websocket.send_text(
                     "Stopped transcription"
                     + (f" (saved: {os.path.basename(saved)})" if saved else "")
