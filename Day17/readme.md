@@ -183,7 +183,5 @@ MIT License — Free to use, modify, and share 🚀
 
 ---
 
-If you want, I can also **merge this Day 17 README into your full 30-day README** so it’s ready as a **continuous progression doc** for GitHub.
 
-Do you want me to do that?
 
