@@ -90,14 +90,22 @@ async def ws_handler(websocket: WebSocket):
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str] = asyncio.Queue()
 
-    # Forward only transcript text
+    # Buffer to collect full transcript
+    full_transcript = []
+
+    # Forward and log transcript text
     async def forward_event(client, message):
         try:
             if message.type == "Turn" and message.transcript:
-                await websocket.send_text(message.transcript)
+                transcript_text = message.transcript.strip()
+                full_transcript.append(transcript_text)  # Collect transcript
+                log.info(f"Transcription: {transcript_text}")  # Log to console
+                await websocket.send_text(transcript_text)  # Send to UI
             elif message.type == "error":
-                await websocket.send_text(f"Error: {str(message)}")
-            # Ignore other events (Begin, Termination) to avoid clutter
+                error_msg = f"Error: {str(message)}"
+                log.error(error_msg)
+                await websocket.send_text(error_msg)
+            # Ignore other events (Begin, Termination)
         except Exception as e:
             log.error(f"forward_event error: {e}")
 
@@ -181,6 +189,7 @@ async def ws_handler(websocket: WebSocket):
                 stop_event.clear()
                 with frames_lock:
                     recorded_frames.clear()
+                full_transcript.clear()  # Reset transcript buffer
                 audio_thread = threading.Thread(target=stream_audio, daemon=True)
                 audio_thread.start()
                 await websocket.send_text("Started transcription")
@@ -192,6 +201,10 @@ async def ws_handler(websocket: WebSocket):
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
+                final_transcript = " ".join(full_transcript).strip()
+                if final_transcript:
+                    log.info(f"Final Transcription: {final_transcript}")  # Log final transcript
+                    await websocket.send_text(final_transcript)  # Send final transcript to UI
                 await websocket.send_text(
                     "Stopped transcription"
                     + (f" (saved: {os.path.basename(saved)})" if saved else "")

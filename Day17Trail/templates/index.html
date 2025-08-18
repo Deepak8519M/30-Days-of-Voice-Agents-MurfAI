@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Voice Agent - Day 17</title>
+<style>
+  body { font-family:sans-serif; background:#0f172a; color:white; text-align:center; padding:20px;}
+  button { padding:10px 20px; margin:5px; font-size:16px;}
+  .stop { background:red; color:white;}
+  #transcription { margin-top:20px; border:1px solid white; padding:10px; border-radius:8px;}
+</style>
+</head>
+<body>
+<h1>AI Voice Agent - Day 17 🎙️</h1>
+<p>Real-time transcription using AssemblyAI + WebSockets</p>
+
+<button id="startBtn">Start Transcription</button>
+<button id="stopBtn" class="stop" style="display:none;">Stop Transcription</button>
+
+<div id="status">Status: Idle ⏳</div>
+<div id="transcription">Waiting for transcription...</div>
+
+<script>
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const statusEl = document.getElementById("status");
+const transcriptionEl = document.getElementById("transcription");
+let ws = null;
+
+startBtn.onclick = () => {
+  ws = new WebSocket("ws://127.0.0.1:8000/ws");
+  ws.onopen = () => {
+    statusEl.textContent = "Status: Connected ✅";
+    ws.send("start");
+    startBtn.style.display = "none";
+    stopBtn.style.display = "inline-block";
+  };
+
+  ws.onmessage = (event) => {
+    const msg = event.data.trim();
+    // Only display final transcription
+    if(msg.startsWith("Final:")) {
+      transcriptionEl.textContent = msg.replace("Final:","");
+    } 
+  };
+
+  ws.onclose = () => { statusEl.textContent = "Disconnected ❌"; };
+  ws.onerror = () => { statusEl.textContent = "Connection error ❌"; };
+};
+
+stopBtn.onclick = () => {
+  if(ws && ws.readyState === WebSocket.OPEN){
+    ws.send("stop");
+    startBtn.style.display = "inline-block";
+    stopBtn.style.display = "none";
+    statusEl.textContent = "Status: Idle ⏳";
+  }
+};
+</script>
+</body>
+</html>
