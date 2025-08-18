@@ -1,6 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 import os
 import io
 import wave
@@ -16,18 +13,21 @@ from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from assemblyai.streaming.v3 import (
+    StreamingClient,
+    StreamingClientOptions,
+    StreamingParameters,
+    StreamingEvents,
+)
+from dotenv import load_dotenv
 
-# ---------- CONFIG ----------
+# Load environment variables
+load_dotenv()
 
-# 1) Install deps (Windows): 
-#    pip install -U assemblyai fastapi uvicorn pyaudio
-# 2) Set your key once (PowerShell): 
-#    $env:AAI_API_KEY="YOUR_KEY_HERE"
+# Configuration
 AAI_API_KEY = os.getenv("AAI_API_KEY")
 if not AAI_API_KEY:
     raise RuntimeError("Missing AAI_API_KEY environment variable.")
-
-# AssemblyAI SDK
 aai.settings.api_key = AAI_API_KEY
 
 # Logging
@@ -51,14 +51,13 @@ templates = Jinja2Templates(directory="templates")
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Audio config
+# Audio config (Mono PCM16 as per docs)
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
-FRAMES_PER_BUFFER = 800   # 50 ms
+FRAMES_PER_BUFFER = 800  # 50 ms
 
-# ---------- UTIL ----------
-
+# Utility
 def save_wav(frames: list[bytes]) -> str | None:
     if not frames:
         return None
@@ -71,8 +70,7 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.writeframes(b"".join(frames))
     return path
 
-# ---------- ROUTES ----------
-
+# Routes
 @app.get("/")
 async def index(request: Request):
     log.info("Serving index page")
@@ -95,30 +93,23 @@ async def ws_handler(websocket: WebSocket):
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str] = asyncio.Queue()
 
-    # ---- AAI realtime callbacks (run in SDK threads) ----
-    def on_data(tr: aai.RealtimeTranscript):
-        if not getattr(tr, "text", None):
-            return
-        asyncio.run_coroutine_threadsafe(queue.put(f"Transcription: {tr.text}"), loop)
+    # StreamingClient callbacks with thread-safe handling
+    async def forward_event(client, message):
+        await websocket.send_text(str(message))
 
-    def on_error(err: aai.RealtimeError):
-        asyncio.run_coroutine_threadsafe(queue.put(f"Transcription error: {err.message}"), loop)
-
-    # Create transcriber using Universal model (prevents deprecation errors)
-   
-
-    transcriber = aai.RealtimeTranscriber(
-    sample_rate=SAMPLE_RATE,
-    encoding=aai.AudioEncoding.pcm_s16le,
-    on_data=on_data,
-    on_error=on_error,
+    client = StreamingClient(
+        StreamingClientOptions(api_key=AAI_API_KEY, api_host="streaming.assemblyai.com")
     )
-    try:
-        transcriber.connect()
-    except Exception as e:
-        await websocket.send_text(f"Transcription error: {e}")
-        await websocket.close()
-        return
+    client.on(StreamingEvents.Begin, lambda client, message: loop.call_soon_threadsafe(
+        lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
+    client.on(StreamingEvents.Turn, lambda client, message: loop.call_soon_threadsafe(
+        lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
+    client.on(StreamingEvents.Termination, lambda client, message: loop.call_soon_threadsafe(
+        lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
+    client.on(StreamingEvents.Error, lambda client, message: loop.call_soon_threadsafe(
+        lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
+
+    client.connect(StreamingParameters(sample_rate=SAMPLE_RATE, format_turns=True))
 
     # Task: forward queued messages to the client
     async def pump_queue():
@@ -149,7 +140,7 @@ async def ws_handler(websocket: WebSocket):
                 data = mic_stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
                 with frames_lock:
                     recorded_frames.append(data)
-                transcriber.stream(data)
+                client.stream(data)
         except Exception as e:
             log.error(f"Audio thread error: {e}")
             asyncio.run_coroutine_threadsafe(queue.put(f"Transcription error: {e}"), loop)
@@ -179,7 +170,6 @@ async def ws_handler(websocket: WebSocket):
                 break
 
             if msg == "start":
-                # create a FRESH thread each time
                 if audio_thread and audio_thread.is_alive():
                     await websocket.send_text("Already transcribing")
                     continue
@@ -194,7 +184,6 @@ async def ws_handler(websocket: WebSocket):
                 stop_event.set()
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=2.0)
-                # Save wav
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
@@ -206,27 +195,14 @@ async def ws_handler(websocket: WebSocket):
             await asyncio.sleep(0.01)
 
     finally:
-        # Cleanup
-        try:
-            stop_event.set()
-            if audio_thread and audio_thread.is_alive():
-                audio_thread.join(timeout=2.0)
-        except Exception:
-            pass
-
-        try:
-            transcriber.close()
-        except Exception:
-            pass
-
-        try:
-            queue_task.cancel()
-        except Exception:
-            pass
-
-        try:
-            await websocket.close()
-        except Exception:
-            pass
-
+        stop_event.set()
+        if audio_thread and audio_thread.is_alive():
+            audio_thread.join(timeout=2.0)
+        client.disconnect(terminate=True)
+        queue_task.cancel()
         log.info("WebSocket closed")
+
+@app.get("/")
+async def index(request: Request):
+    log.info("Serving index page")
+    return templates.TemplateResponse("index.html", {"request": request})
