@@ -31,10 +31,10 @@ aai.settings.api_key = AAI_API_KEY
 
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day17")
+log = logging.getLogger("day18")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 17")
+app = FastAPI(title="AI Voice Agent - Day 18")
 
 # CORS
 app.add_middleware(
@@ -105,11 +105,15 @@ async def ws_handler(websocket: WebSocket):
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text  # Store formatted final transcript
                     log.info(f"Final Formatted Transcription: {final_transcript}")
+            elif message.type == "Termination":
+                log.info("Turn ended detected")
+                if final_transcript or all_transcripts:
+                    await websocket.send_text(final_transcript or all_transcripts[-1])  # Send final transcript
+                await websocket.send_text("turn_ended")  # Notify client of turn end
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
                 await websocket.send_text(error_msg)
-            # Ignore other events (Begin, Termination)
         except Exception as e:
             log.error(f"forward_event error: {e}")
 
@@ -206,10 +210,6 @@ async def ws_handler(websocket: WebSocket):
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
-                if final_transcript:
-                    await websocket.send_text(final_transcript)  # Send final transcript first
-                elif all_transcripts:
-                    await websocket.send_text(all_transcripts[-1])  # Send last transcript if no formatted one
                 await websocket.send_text(
                     "Stopped transcription"
                     + (f" (saved: {os.path.basename(saved)})" if saved else "")
