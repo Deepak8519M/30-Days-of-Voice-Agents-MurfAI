@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Voice Agent - Day 18 🎙️</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <style>
+      .transcription-box {
+        background: #334155;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 40px;
+        border: 1px solid #4b5563;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        position: relative;
+        max-width: 100%;
+      }
+      .transcription-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6b5b95, #2dd4bf);
+        animation: pulseGlow 2s ease-in-out infinite;
+      }
+      .transcription-content {
+        font-size: 16px;
+        color: #e2e8f0;
+        background: #1f2937;
+        padding: 20px;
+        border-radius: 10px;
+        min-height: 150px;
+        max-height: 300px;
+        overflow-y: auto;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: flex-start;
+      }
+      .transcription-content .spinner {
+        margin-right: 10px;
+        font-size: 18px;
+        animation: spin 0.8s linear infinite;
+      }
+      .transcription-content .text {
+        flex: 1;
+        font-family: "Courier New", monospace;
+        word-wrap: break-word;
+      }
+      .transcription-content.fade-in {
+        opacity: 0;
+        animation: fadeInText 0.5s ease forwards;
+      }
+      @media (max-width: 600px) {
+        .transcription-box {
+          max-width: 100%;
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>AI Voice Agent - Day 18 🎙️</h1>
+        <p>Turn Detection Transcription 🚀✨</p>
+      </header>
+      <div class="controls">
+        <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
+        <button id="stopBtn" class="record-btn stop-btn" style="display: none">
+          Stop Transcription 🛑
+        </button>
+        <button id="retryBtn" class="retry-btn" style="display: none">
+          Retry Transcription 🔄
+        </button>
+        <div id="status" class="status">Status: Idle ⏳</div>
+      </div>
+      <div class="transcription-box">
+        <h2>Transcription 📝</h2>
+        <div id="transcription" class="transcription-content">
+          <span class="spinner" style="display: none">⏳</span>
+          <span id="transcriptionText" class="text"
+            >Waiting for transcription... ⏳</span
+          >
+        </div>
+      </div>
+      <div id="connectionStatus" class="connection-status">
+        Connecting to server... 🔌
+      </div>
+      <div class="info-box">
+        <p>
+          Click "Start Transcription" to begin. Transcription updates live while
+          speaking and finalizes when you stop talking. Audio saved in
+          <code>uploads/</code>. ✅🔊
+        </p>
+      </div>
+    </div>
+    <script>
+      class VoiceAgentUI {
+        constructor() {
+          this.startBtn = document.getElementById("startBtn");
+          this.stopBtn = document.getElementById("stopBtn");
+          this.retryBtn = document.getElementById("retryBtn");
+          this.status = document.getElementById("status");
+          this.connectionStatus = document.getElementById("connectionStatus");
+          this.transcriptionText = document.getElementById("transcriptionText");
+          this.spinner = document
+            .getElementById("transcription")
+            .querySelector(".spinner");
+          this.websocket = null;
+          this.finalTranscript = ""; // Store the final transcription
+
+          this.setupWebSocket();
+          this.setupEventListeners();
+        }
+
+        setupWebSocket() {
+          this.websocket = new WebSocket("ws://127.0.0.1:8000/ws");
+          this.websocket.onopen = () => {
+            this.status.textContent = "Status: Connected ✅";
+            this.connectionStatus.textContent = "Server connected ✅";
+            this.status.classList.remove("error");
+            this.status.classList.add("connected");
+            this.connectionStatus.classList.remove("error");
+            this.connectionStatus.classList.add("connected");
+            this.retryBtn.style.display = "none";
+            this.startBtn.style.display = "inline-block";
+            this.stopBtn.style.display = "none";
+          };
+          this.websocket.onmessage = (event) => {
+            const message = event.data.trim();
+            const timestamp = new Date().toLocaleTimeString();
+
+            // Update live transcription
+            if (
+              message &&
+              !message.startsWith("Started") &&
+              !message.startsWith("Stopped") &&
+              !message.startsWith("Already") &&
+              !message.startsWith("Unknown") &&
+              !message.startsWith("Error") &&
+              message !== "turn_ended"
+            ) {
+              this.transcriptionText.textContent = `[${timestamp}] ${message} 📝`;
+              this.spinner.style.display = "inline";
+            }
+            // Handle turn end and set final transcription
+            else if (message === "turn_ended") {
+              this.finalTranscript = this.transcriptionText.textContent.replace(
+                "📝",
+                "📜"
+              ); // Preserve the last live text as final
+              this.transcriptionText.textContent = this.finalTranscript;
+              this.spinner.style.display = "none";
+              this.transcription.classList.add("fade-in");
+              setTimeout(
+                () => this.transcription.classList.remove("fade-in"),
+                500
+              );
+            }
+            // Handle status messages
+            else if (message) {
+              this.status.textContent = `Server: ${message} 📡`;
+              if (message.startsWith("Stopped")) {
+                this.stopBtn.style.display = "none";
+                this.startBtn.style.display = "inline-block";
+                this.status.textContent = "Status: Idle ⏳";
+                this.spinner.style.display = "none";
+                // Do not reset transcriptionText if finalTranscript exists
+                if (!this.finalTranscript) {
+                  this.transcriptionText.textContent =
+                    "Waiting for transcription... ⏳";
+                }
+              } else if (message.startsWith("Started")) {
+                this.startBtn.style.display = "none";
+                this.stopBtn.style.display = "inline-block";
+                this.status.textContent = "Status: Transcribing... 🎙️";
+                this.spinner.style.display = "inline";
+                this.finalTranscript = ""; // Reset final transcript on start
+                this.transcriptionText.textContent = "Transcribing... 🎙️";
+              }
+            }
+            this.status.classList.remove("error");
+          };
+          this.websocket.onerror = () => {
+            this.status.textContent = "Status: WebSocket connection failed ❌";
+            this.connectionStatus.textContent = "Server disconnected 😞";
+            this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
+            this.transcriptionText.textContent = "Disconnected 😞";
+            this.spinner.style.display = "none";
+            this.retryBtn.style.display = "inline-block";
+            this.startBtn.style.display = "none";
+            this.stopBtn.style.display = "none";
+          };
+          this.websocket.onclose = () => {
+            this.status.textContent = "Status: Disconnected from server 😞";
+            this.connectionStatus.textContent = "Server disconnected 😞";
+            this.transcriptionText.textContent = "Disconnected 😞";
+            this.spinner.style.display = "none";
+            this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
+            this.retryBtn.style.display = "inline-block";
+            this.startBtn.style.display = "none";
+            this.stopBtn.style.display = "none";
+          };
+        }
+
+        setupEventListeners() {
+          this.startBtn.addEventListener("click", () => {
+            if (this.websocket.readyState === WebSocket.OPEN) {
+              this.websocket.send("start");
+            }
+          });
+          this.stopBtn.addEventListener("click", () => {
+            if (this.websocket.readyState === WebSocket.OPEN) {
+              this.websocket.send("stop");
+            }
+          });
+          this.retryBtn.addEventListener("click", () => {
+            this.websocket.close();
+            this.connectionStatus.textContent = "Reconnecting to server... 🔌";
+            this.spinner.style.display = "inline";
+            this.setupWebSocket();
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new VoiceAgentUI();
+      });
+    </script>
+  </body>
+</html>
