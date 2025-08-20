@@ -1,4 +1,5 @@
 import os
+import time  # ✅ needed for time.sleep in audio loop
 import wave
 import logging
 import asyncio
@@ -54,7 +55,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
-FRAMES_PER_BUFFER = 1600  # Increased to 100 ms for stability
+FRAMES_PER_BUFFER = 1600  # ~100 ms
 
 # Utility to save audio
 def save_wav(frames: list[bytes]) -> str | None:
@@ -91,8 +92,13 @@ async def ws_handler(websocket: WebSocket):
     queue: asyncio.Queue[str] = asyncio.Queue()
 
     # Buffers
-    all_transcripts = []
-    final_transcript = None
+    all_transcripts = []        # live snippets for current run
+    final_transcript = None     # most recent formatted sentence
+    session_transcripts = []    # ✅ accumulate formatted sentences across turns (internal)
+
+    # Transcribing state guard (prevents multiple threads)
+    is_transcribing = False
+    state_lock = threading.Lock()
 
     # Forward and log transcript text
     async def forward_event(client, message):
@@ -103,18 +109,24 @@ async def ws_handler(websocket: WebSocket):
                 all_transcripts.append(transcript_text)
                 log.info(f"Live Transcription: {transcript_text}")
                 await websocket.send_text(transcript_text)
+
+                # If AssemblyAI marks the turn as formatted, cache it
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text
+                    session_transcripts.append(transcript_text)  # ✅ keep history internally
                     log.info(f"Final Formatted Transcription: {final_transcript}")
+
             elif message.type == "Termination":
                 log.info("Turn ended detected")
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
+
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
                 await websocket.send_text(error_msg)
+
         except Exception as e:
             log.error(f"forward_event error: {e}")
 
@@ -192,26 +204,38 @@ async def ws_handler(websocket: WebSocket):
                 break
 
             if msg == "start":
-                if audio_thread and audio_thread.is_alive():
-                    await websocket.send_text("Already transcribing")
-                    continue
+                with state_lock:
+                    if is_transcribing:
+                        await websocket.send_text("Already transcribing")
+                        continue
+                    is_transcribing = True
+
                 stop_event.clear()
                 with frames_lock:
                     recorded_frames.clear()
                 all_transcripts.clear()
                 final_transcript = None
+
                 audio_thread = threading.Thread(target=stream_audio, daemon=True)
                 audio_thread.start()
                 await websocket.send_text("Started transcription")
 
             elif msg == "stop":
+                with state_lock:
+                    if not is_transcribing:
+                        await websocket.send_text("Stopped transcription (idle)")
+                        continue
+                    is_transcribing = False
+
                 stop_event.set()
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=5.0)
 
                 # ✅ Ensure final transcript is sent before stopping
-                if final_transcript or all_transcripts:
-                    await websocket.send_text(final_transcript or all_transcripts[-1])
+                last_text = final_transcript or (all_transcripts[-1] if all_transcripts else None)
+                if last_text:
+                    log.info(f"Final transcript on stop: {last_text}")
+                    await websocket.send_text(last_text)
                     await websocket.send_text("turn_ended")
 
                 with frames_lock:
@@ -230,8 +254,16 @@ async def ws_handler(websocket: WebSocket):
 
     finally:
         stop_event.set()
+        try:
+            with state_lock:
+                pass
+        except Exception:
+            pass
         if audio_thread and audio_thread.is_alive():
             audio_thread.join(timeout=5.0)
-        client.disconnect(terminate=True)
+        try:
+            client.disconnect(terminate=True)
+        except Exception:
+            pass
         queue_task.cancel()
         log.info("WebSocket closed")

@@ -104,7 +104,7 @@
               this.startBtn.style.display = "inline-block";
               this.status.textContent = "Status: Idle ⏳";
               this.spinner.style.display = "none";
-              // Preserve final transcript
+              // Preserve final transcript (no clearing)
             } else if (message.startsWith("Started")) {
               this.startBtn.style.display = "none";
               this.stopBtn.style.display = "inline-block";
