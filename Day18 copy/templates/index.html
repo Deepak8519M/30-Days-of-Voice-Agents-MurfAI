@@ -11,7 +11,7 @@
     <div class="container">
       <header>
         <h1>AI Voice Agent - Day 18 🎙️</h1>
-        <p>Turn Detection Transcription 🚀✨</p>
+        <p>Advanced Turn Detection Transcription 🚀✨</p>
       </header>
       <div class="controls">
         <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
@@ -69,6 +69,8 @@
             this.retryBtn.style.display = "none";
             this.startBtn.style.display = "inline-block";
             this.stopBtn.style.display = "none";
+            this.status.classList.add("connected");
+            this.connectionStatus.classList.add("connected");
           };
           this.websocket.onmessage = (event) => {
             const message = event.data.trim();
@@ -102,7 +104,7 @@
               this.startBtn.style.display = "inline-block";
               this.status.textContent = "Status: Idle ⏳";
               this.spinner.style.display = "none";
-              // ✅ Do not clear final transcript anymore
+              // Preserve final transcript
             } else if (message.startsWith("Started")) {
               this.startBtn.style.display = "none";
               this.stopBtn.style.display = "inline-block";
@@ -110,11 +112,18 @@
               this.spinner.style.display = "inline";
               this.finalTranscript = "";
               this.transcriptionText.textContent = "Transcribing... 🎙️";
+            } else if (message.startsWith("Error")) {
+              this.status.textContent = `Status: Error ⚠️`;
+              this.status.classList.add("error");
+              this.transcriptionText.textContent = "Error occurred 😞";
+              this.spinner.style.display = "none";
             }
           };
           this.websocket.onerror = () => {
             this.status.textContent = "Status: WebSocket connection failed ❌";
             this.connectionStatus.textContent = "Server disconnected 😞";
+            this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
             this.transcriptionText.textContent = "Disconnected 😞";
             this.spinner.style.display = "none";
             this.retryBtn.style.display = "inline-block";
@@ -124,6 +133,8 @@
           this.websocket.onclose = () => {
             this.status.textContent = "Status: Disconnected from server 😞";
             this.connectionStatus.textContent = "Server disconnected 😞";
+            this.status.classList.add("error");
+            this.connectionStatus.classList.add("error");
             this.transcriptionText.textContent = "Disconnected 😞";
             this.spinner.style.display = "none";
             this.retryBtn.style.display = "inline-block";
