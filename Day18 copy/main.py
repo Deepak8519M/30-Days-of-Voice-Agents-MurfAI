@@ -90,26 +90,27 @@ async def ws_handler(websocket: WebSocket):
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str] = asyncio.Queue()
 
-    # Buffer to collect all transcripts
+    # Buffers
     all_transcripts = []
     final_transcript = None
 
     # Forward and log transcript text
     async def forward_event(client, message):
+        nonlocal final_transcript
         try:
             if message.type == "Turn" and message.transcript:
                 transcript_text = message.transcript.strip()
-                all_transcripts.append(transcript_text)  # Collect all transcripts
-                log.info(f"Live Transcription: {transcript_text}")  # Log partial transcript
-                await websocket.send_text(transcript_text)  # Send live transcript to UI
+                all_transcripts.append(transcript_text)
+                log.info(f"Live Transcription: {transcript_text}")
+                await websocket.send_text(transcript_text)
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
-                    final_transcript = transcript_text  # Store formatted final transcript
+                    final_transcript = transcript_text
                     log.info(f"Final Formatted Transcription: {final_transcript}")
             elif message.type == "Termination":
                 log.info("Turn ended detected")
                 if final_transcript or all_transcripts:
-                    await websocket.send_text(final_transcript or all_transcripts[-1])  # Send final transcript
-                await websocket.send_text("turn_ended")  # Notify client of turn end
+                    await websocket.send_text(final_transcript or all_transcripts[-1])
+                await websocket.send_text("turn_ended")
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -162,7 +163,7 @@ async def ws_handler(websocket: WebSocket):
                     client.stream(data)
                 except IOError as e:
                     log.warning(f"Audio read error: {e}, retrying...")
-                    time.sleep(0.01)  # Brief pause to recover
+                    time.sleep(0.01)
         except Exception as e:
             log.error(f"Audio thread error: {e}")
             asyncio.run_coroutine_threadsafe(queue.put(f"Transcription error: {e}"), loop)
@@ -197,8 +198,8 @@ async def ws_handler(websocket: WebSocket):
                 stop_event.clear()
                 with frames_lock:
                     recorded_frames.clear()
-                all_transcripts.clear()  # Reset transcript buffer
-                final_transcript = None  # Reset final transcript
+                all_transcripts.clear()
+                final_transcript = None
                 audio_thread = threading.Thread(target=stream_audio, daemon=True)
                 audio_thread.start()
                 await websocket.send_text("Started transcription")
@@ -206,11 +207,21 @@ async def ws_handler(websocket: WebSocket):
             elif msg == "stop":
                 stop_event.set()
                 if audio_thread and audio_thread.is_alive():
-                    audio_thread.join(timeout=5.0)  # Increased timeout
+                    audio_thread.join(timeout=5.0)
+
+                # ✅ Ensure final transcript is sent before stopping
+                if final_transcript or all_transcripts:
+                    await websocket.send_text(final_transcript or all_transcripts[-1])
+                    await websocket.send_text("turn_ended")
+
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
                     recorded_frames.clear()
-                await websocket.send_text("Stopped transcription" + (f" (saved: {os.path.basename(saved)})" if saved else ""))
+
+                await websocket.send_text(
+                    "Stopped transcription"
+                    + (f" (saved: {os.path.basename(saved)})" if saved else "")
+                )
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")
