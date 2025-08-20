@@ -6,61 +6,6 @@
     <title>AI Voice Agent - Day 18 🎙️</title>
     <link rel="stylesheet" href="/static/style.css" />
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
-    <style>
-      .transcription-box {
-        background: #334155;
-        padding: 30px;
-        border-radius: 16px;
-        margin-bottom: 40px;
-        border: 1px solid #4b5563;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        position: relative;
-        max-width: 100%;
-      }
-      .transcription-box::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #6b5b95, #2dd4bf);
-        animation: pulseGlow 2s ease-in-out infinite;
-      }
-      .transcription-content {
-        font-size: 16px;
-        color: #e2e8f0;
-        background: #1f2937;
-        padding: 20px;
-        border-radius: 10px;
-        min-height: 150px;
-        max-height: 300px;
-        overflow-y: auto;
-        transition: opacity 0.3s ease;
-        display: flex;
-        align-items: flex-start;
-      }
-      .transcription-content .spinner {
-        margin-right: 10px;
-        font-size: 18px;
-        animation: spin 0.8s linear infinite;
-      }
-      .transcription-content .text {
-        flex: 1;
-        font-family: "Courier New", monospace;
-        word-wrap: break-word;
-      }
-      .transcription-content.fade-in {
-        opacity: 0;
-        animation: fadeInText 0.5s ease forwards;
-      }
-      @media (max-width: 600px) {
-        .transcription-box {
-          max-width: 100%;
-          padding: 20px;
-        }
-      }
-    </style>
   </head>
   <body>
     <div class="container">
