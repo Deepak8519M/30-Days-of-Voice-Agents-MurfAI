@@ -17,7 +17,7 @@ from assemblyai.streaming.v3 import (
     StreamingParameters,
     StreamingEvents,
 )
-
+from google.generativeai import GenerativeModel, configure
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -25,16 +25,18 @@ load_dotenv()
 
 # Configuration
 AAI_API_KEY = os.getenv("AAI_API_KEY")
-if not AAI_API_KEY:
-    raise RuntimeError("Missing AAI_API_KEY environment variable.")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not AAI_API_KEY or not GEMINI_API_KEY:
+    raise RuntimeError("Missing AAI_API_KEY or GEMINI_API_KEY environment variable.")
 aai.settings.api_key = AAI_API_KEY
+configure(api_key=GEMINI_API_KEY)
 
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day18")
+log = logging.getLogger("day19")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 18")
+app = FastAPI(title="AI Voice Agent - Day 19")
 
 # CORS
 app.add_middleware(
@@ -68,6 +70,29 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(b"".join(frames))
     return path
+
+# Initialize Gemini model
+model = GenerativeModel(model_name="gemini-2.0-flash")
+
+async def stream_gemini_response(transcript: str):
+    """Stream Gemini response and print to console."""
+    try:
+        response = await asyncio.to_thread(
+            model.generate_content,
+            transcript,
+            stream=True
+        )
+        accumulated_response = ""
+        for chunk in response:
+            if chunk.text:
+                content = chunk.text
+                accumulated_response += content
+                print(content, end="", flush=True)  # Stream to console
+        print("\nGemini Response Complete.")  # Final newline
+        return accumulated_response
+    except Exception as e:
+        log.error(f"Gemini streaming error: {e}")
+        return None
 
 # Routes
 @app.get("/")
@@ -111,6 +136,8 @@ async def ws_handler(websocket: WebSocket):
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
+                if final_transcript:
+                    await stream_gemini_response(final_transcript)  # Stream Gemini response
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -209,10 +236,12 @@ async def ws_handler(websocket: WebSocket):
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=5.0)
 
-                # ✅ Ensure final transcript is sent before stopping
+                # Send final transcript and trigger Gemini
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
+                    if final_transcript:
+                        await stream_gemini_response(final_transcript)  # Stream Gemini response
 
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
