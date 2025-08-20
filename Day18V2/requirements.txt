@@ -1,0 +1,8 @@
+fastapi==0.112.0
+uvicorn[standard]==0.30.3
+assemblyai>=0.36.0
+pyaudio==0.2.14
+ffmpeg-python==0.2.0
+pydub==0.25.1
+numpy==1.26.4
+python-dotenv==1.0.1
