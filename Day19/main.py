@@ -3,6 +3,8 @@ import wave
 import logging
 import asyncio
 import threading
+import json
+import websockets
 from datetime import datetime
 
 import pyaudio
@@ -26,17 +28,24 @@ load_dotenv()
 # Configuration
 AAI_API_KEY = os.getenv("AAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not AAI_API_KEY or not GEMINI_API_KEY:
-    raise RuntimeError("Missing AAI_API_KEY or GEMINI_API_KEY environment variable.")
+MURF_API_KEY = os.getenv("MURF_API_KEY")
+
+if not AAI_API_KEY or not GEMINI_API_KEY or not MURF_API_KEY:
+    raise RuntimeError("Missing AAI_API_KEY, GEMINI_API_KEY, or MURF_API_KEY environment variable.")
+
 aai.settings.api_key = AAI_API_KEY
 configure(api_key=GEMINI_API_KEY)
 
+# Murf config
+MURF_WS_URL = "wss://api.murf.ai/v1/speech/ws"
+MURF_CONTEXT_ID = "static_context_id_123"
+
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day19")
+log = logging.getLogger("day20")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 19")
+app = FastAPI(title="AI Voice Agent - Day 20")
 
 # CORS
 app.add_middleware(
@@ -74,8 +83,37 @@ def save_wav(frames: list[bytes]) -> str | None:
 # Initialize Gemini model
 model = GenerativeModel(model_name="gemini-2.0-flash")
 
+# Murf WebSocket call
+async def send_to_murf(text: str, context_id: str = MURF_CONTEXT_ID):
+    """Send text to Murf TTS via WebSocket and print base64 audio."""
+    async with websockets.connect(
+        MURF_WS_URL,
+        extra_headers={"Authorization": f"Bearer {MURF_API_KEY}"}
+    ) as ws:
+        # Request payload
+        request = {
+            "context_id": context_id,
+            "voiceId": "matthew",   # You can change this voice ID from Murf docs
+            "format": "wav",
+            "sampleRate": 16000,
+            "text": text
+        }
+
+        await ws.send(json.dumps(request))
+
+        # Listen for responses
+        async for message in ws:
+            response = json.loads(message)
+            if "audio" in response:
+                base64_audio = response["audio"]
+                print("Base64 audio chunk:", base64_audio[:100], "...")  # print partial
+            if response.get("type") == "end":
+                print("Murf TTS streaming completed.")
+                break
+
+# Gemini → Murf flow
 async def stream_gemini_response(transcript: str):
-    """Stream Gemini response and print to console."""
+    """Stream Gemini response and then send to Murf TTS."""
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -87,8 +125,13 @@ async def stream_gemini_response(transcript: str):
             if chunk.text:
                 content = chunk.text
                 accumulated_response += content
-                print(content, end="", flush=True)  # Stream to console
-        print("\nGemini Response Complete.")  # Final newline
+                print(content, end="", flush=True)
+
+        print("\nGemini Response Complete.")
+
+        if accumulated_response.strip():
+            await send_to_murf(accumulated_response)  # 🚀 Forward to Murf
+
         return accumulated_response
     except Exception as e:
         log.error(f"Gemini streaming error: {e}")
@@ -137,7 +180,7 @@ async def ws_handler(websocket: WebSocket):
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
                 if final_transcript:
-                    await stream_gemini_response(final_transcript)  # Stream Gemini response
+                    await stream_gemini_response(final_transcript)
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -236,12 +279,12 @@ async def ws_handler(websocket: WebSocket):
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=5.0)
 
-                # Send final transcript and trigger Gemini
+                # Send final transcript and trigger Gemini → Murf
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
                     if final_transcript:
-                        await stream_gemini_response(final_transcript)  # Stream Gemini response
+                        await stream_gemini_response(final_transcript)
 
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
