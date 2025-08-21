@@ -1,7 +1,5 @@
 import os
 import wave
-import time
-import uuid
 import logging
 import asyncio
 import threading
@@ -30,7 +28,8 @@ load_dotenv()
 # Configuration
 AAI_API_KEY = os.getenv("AAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MURF_API_KEY = os.getenv("MURF_API_KEY")  # Add Murf API key to .env file
+MURF_API_KEY = os.getenv("MURF_API_KEY")
+MURF_WS_URL = os.getenv("MURF_WS_URL", "wss://api.murf.ai/v1/speech/stream-input")  # Updated endpoint
 if not AAI_API_KEY or not GEMINI_API_KEY or not MURF_API_KEY:
     raise RuntimeError("Missing AAI_API_KEY, GEMINI_API_KEY, or MURF_API_KEY environment variable.")
 aai.settings.api_key = AAI_API_KEY
@@ -63,9 +62,6 @@ CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 1600  # Increased to 100 ms for stability
 
-# Murf WebSocket configuration
-MURF_WS_URL = "wss://realtime.murf.ai/v1/speech/synthesize/stream"
-
 # Utility to save audio
 def save_wav(frames: list[bytes]) -> str | None:
     if not frames:
@@ -79,11 +75,14 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.writeframes(b"".join(frames))
     return path
 
+# Static context_id to avoid context limit exceeded
+CONTEXT_ID = "static_context_20"
+
 # Initialize Gemini model
 model = GenerativeModel(model_name="gemini-2.0-flash")
 
-async def stream_gemini_response(transcript: str, ws_murf):
-    """Stream Gemini response to Murf WebSocket and print base64 audio."""
+async def stream_gemini_response(transcript: str):
+    """Stream Gemini response and send to Murf via WebSocket."""
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -91,63 +90,44 @@ async def stream_gemini_response(transcript: str, ws_murf):
             stream=True
         )
         accumulated_response = ""
-        static_context_id = str(uuid.uuid4())  # Static context_id to avoid limit issues
-        for chunk in response:
-            if chunk.text:
-                content = chunk.text
-                accumulated_response += content
-                print(content, end="", flush=True)  # Stream to console
-
-                # Send text to Murf WebSocket
-                murf_payload = {
-                    "context_id": static_context_id,
-                    "text": content,
-                    "voiceId": "en-US-natalie",  # Example voice
-                    "format": "PCM",
-                    "sampleRate": 16000,
-                    "base64": True  # Request base64-encoded audio
-                }
-                await ws_murf.send(json.dumps(murf_payload))
-                log.info(f"Sent to Murf: {content}")
+        murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}"
+        log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
+        try:
+            async with websockets.connect(murf_ws_url) as murf_ws:
+                # Initial connection message
+                await murf_ws.send(json.dumps({"init": True}))
+                for chunk in response:
+                    if chunk.text:
+                        content = chunk.text
+                        accumulated_response += content
+                        # Send text chunk to Murf
+                        log.info(f"Sending to Murf: {content}")
+                        await murf_ws.send(json.dumps({"text": content}))
+                        # Receive base64 audio from Murf
+                        murf_response = await murf_ws.recv()
+                        log.info(f"Received from Murf: {murf_response}")
+                        murf_data = json.loads(murf_response)
+                        base64_audio = murf_data.get("audio", "")
+                        is_final = murf_data.get("is_final", False)
+                        print(f"Base64 Audio: {base64_audio} (Final: {is_final})")
+                        if is_final:
+                            break  # End loop when final audio is received
+        except websockets.exceptions.ConnectionClosedError as e:
+            log.error(f"WebSocket connection closed: {e}")
+        except websockets.exceptions.InvalidStatusCode as e:
+            log.error(f"WebSocket error: HTTP {e.status_code} - {e.reason}")
+        except Exception as e:
+            log.error(f"Murf WebSocket error: {e}")
         print("\nGemini Response Complete.")
         return accumulated_response
     except Exception as e:
-        log.error(f"Gemini streaming error: {e}")
+        log.error(f"Streaming error: {e}")
         return None
-
-async def handle_murf_websocket():
-    """Handle Murf WebSocket connection and print base64 audio."""
-    headers = {"Authorization": f"Bearer {MURF_API_KEY}"}
-    async with websockets.connect(MURF_WS_URL, extra_headers=headers) as ws_murf:
-        log.info("Connected to Murf WebSocket")
-        try:
-            async def receive_murf_audio():
-                while True:
-                    try:
-                        message = await ws_murf.recv()
-                        response = json.loads(message)
-                        if "audio" in response and response["audio"]:
-                            base64_audio = response["audio"]
-                            print(f"\nBase64 Audio: {base64_audio}\n")
-                            log.info("Received and printed base64 audio from Murf")
-                        if response.get("is_final"):
-                            log.info("Received final audio chunk for context")
-                    except websockets.exceptions.ConnectionClosed:
-                        log.info("Murf WebSocket closed")
-                        break
-                    except Exception as e:
-                        log.error(f"Murf WebSocket error: {e}")
-            # Run receive task in background
-            asyncio.create_task(receive_murf_audio())
-            return ws_murf
-        except Exception as e:
-            log.error(f"Murf WebSocket connection error: {e}")
-            return None
 
 # Routes
 @app.get("/")
 async def index(request: Request):
-    log.info("Serving index page")
+    log.info("Sending index page")
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
@@ -169,13 +149,6 @@ async def ws_handler(websocket: WebSocket):
     all_transcripts = []
     final_transcript = None
 
-    # Connect to Murf WebSocket
-    ws_murf = await handle_murf_websocket()
-    if not ws_murf:
-        await websocket.send_text("Failed to connect to Murf WebSocket")
-        await websocket.close()
-        return
-
     # Forward and log transcript text
     async def forward_event(client, message):
         nonlocal final_transcript
@@ -194,7 +167,7 @@ async def ws_handler(websocket: WebSocket):
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
                 if final_transcript:
-                    await stream_gemini_response(final_transcript, ws_murf)  # Stream to Murf
+                    await stream_gemini_response(final_transcript)  # Stream Gemini response and send to Murf
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -293,12 +266,12 @@ async def ws_handler(websocket: WebSocket):
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=5.0)
 
-                # Send final transcript and trigger Gemini
+                # Send final transcript and trigger Gemini with Murf integration
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
                     if final_transcript:
-                        await stream_gemini_response(final_transcript, ws_murf)  # Stream to Murf
+                        await stream_gemini_response(final_transcript)  # Stream Gemini response and send to Murf
 
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
@@ -320,6 +293,4 @@ async def ws_handler(websocket: WebSocket):
             audio_thread.join(timeout=5.0)
         client.disconnect(terminate=True)
         queue_task.cancel()
-        if ws_murf:
-            await ws_murf.close()
         log.info("WebSocket closed")
