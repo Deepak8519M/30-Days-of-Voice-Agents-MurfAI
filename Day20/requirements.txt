@@ -10,3 +10,4 @@ google-generativeai
 requests==2.32.3
 python-multipart==0.0.9
 murf
+websockets==12.0

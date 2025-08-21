@@ -3,6 +3,8 @@ import wave
 import logging
 import asyncio
 import threading
+import json
+import websockets
 from datetime import datetime
 
 import pyaudio
@@ -26,17 +28,19 @@ load_dotenv()
 # Configuration
 AAI_API_KEY = os.getenv("AAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not AAI_API_KEY or not GEMINI_API_KEY:
-    raise RuntimeError("Missing AAI_API_KEY or GEMINI_API_KEY environment variable.")
+MURF_API_KEY = os.getenv("MURF_API_KEY")
+MURF_WS_URL = os.getenv("MURF_WS_URL", "wss://api.murf.ai/v1/speech/stream-input")  # Updated endpoint
+if not AAI_API_KEY or not GEMINI_API_KEY or not MURF_API_KEY:
+    raise RuntimeError("Missing AAI_API_KEY, GEMINI_API_KEY, or MURF_API_KEY environment variable.")
 aai.settings.api_key = AAI_API_KEY
 configure(api_key=GEMINI_API_KEY)
 
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day19")
+log = logging.getLogger("day20")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 19")
+app = FastAPI(title="AI Voice Agent - Day 20")
 
 # CORS
 app.add_middleware(
@@ -71,11 +75,13 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.writeframes(b"".join(frames))
     return path
 
+# Static context_id to avoid context limit exceeded
+CONTEXT_ID = "static_context_20"
+
 # Initialize Gemini model
 model = GenerativeModel(model_name="gemini-2.0-flash")
-
 async def stream_gemini_response(transcript: str):
-    """Stream Gemini response and print to console."""
+    """Stream Gemini response and send to Murf via WebSocket."""
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -83,21 +89,61 @@ async def stream_gemini_response(transcript: str):
             stream=True
         )
         accumulated_response = ""
-        for chunk in response:
-            if chunk.text:
-                content = chunk.text
-                accumulated_response += content
-                print(content, end="", flush=True)  # Stream to console
-        print("\nGemini Response Complete.")  # Final newline
+        murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}"
+        log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
+        try:
+            async with websockets.connect(murf_ws_url) as murf_ws:
+                # ✅ FIX: Send voice_config first (instead of {"init": true})
+                voice_config = {
+                    "voice_config": {
+                        "voice": "en-IN-aarav",  # pick any Murf voice
+                        "sample_rate": 44100,
+                        "channel_type": "MONO"
+                    }
+                }
+                await murf_ws.send(json.dumps(voice_config))
+                log.info("Sent voice config to Murf")
+
+                # Stream Gemini text -> Murf
+                for chunk in response:
+                    if chunk.text:
+                        content = chunk.text
+                        accumulated_response += content
+
+                        log.info(f"Sending to Murf: {content}")
+                        await murf_ws.send(json.dumps({"text": content}))
+
+                        # ✅ receive audio back
+                        murf_response = await murf_ws.recv()
+                        murf_data = json.loads(murf_response)
+
+                        base64_audio = murf_data.get("audio", "")
+                        is_final = murf_data.get("is_final", False)
+                        if base64_audio:
+                            print(f"Base64 Audio: {base64_audio[:40]}... (Final: {is_final})")
+
+                        if is_final:
+                            break  # stop when Murf signals completion
+
+        except websockets.exceptions.ConnectionClosedError as e:
+            log.error(f"WebSocket connection closed: {e}")
+        except websockets.exceptions.InvalidStatusCode as e:
+            log.error(f"WebSocket error: HTTP {e.status_code} - {e.reason}")
+        except Exception as e:
+            log.error(f"Murf WebSocket error: {e}")
+
+        print("\nGemini Response Complete.")
         return accumulated_response
+
     except Exception as e:
-        log.error(f"Gemini streaming error: {e}")
+        log.error(f"Streaming error: {e}")
         return None
+
 
 # Routes
 @app.get("/")
 async def index(request: Request):
-    log.info("Serving index page")
+    log.info("Sending index page")
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
@@ -137,7 +183,7 @@ async def ws_handler(websocket: WebSocket):
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
                 if final_transcript:
-                    await stream_gemini_response(final_transcript)  # Stream Gemini response
+                    await stream_gemini_response(final_transcript)  # Stream Gemini response and send to Murf
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -236,12 +282,12 @@ async def ws_handler(websocket: WebSocket):
                 if audio_thread and audio_thread.is_alive():
                     audio_thread.join(timeout=5.0)
 
-                # Send final transcript and trigger Gemini
+                # Send final transcript and trigger Gemini with Murf integration
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
                     if final_transcript:
-                        await stream_gemini_response(final_transcript)  # Stream Gemini response
+                        await stream_gemini_response(final_transcript)  # Stream Gemini response and send to Murf
 
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
