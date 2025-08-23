@@ -3,6 +3,11 @@ let audioContext = null;
 let audioQueue = [];
 let isPlaying = false;
 let nextStartTime = 0;
+let isFirstAudio = true;
+
+const SAMPLE_RATE = 44100; // Murf output sample rate
+const CHANNELS = 1;
+const BITS_PER_SAMPLE = 16;
 
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
@@ -25,7 +30,7 @@ function connectWebSocket() {
 
   ws.onmessage = async (event) => {
     const data = event.data;
-    console.log("WebSocket message received:", data);
+    console.log("WebSocket message received:", data.substring(0, 100) + "...");
 
     // Handle JSON audio data
     if (data.startsWith("{")) {
@@ -82,6 +87,7 @@ function connectWebSocket() {
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
+      // Append transcription text
       transcriptionText.textContent = data;
     }
   };
@@ -97,8 +103,7 @@ function connectWebSocket() {
     spinner.style.display = "none";
   };
 
-  ws.onerror = (error) => {
-    console.error("WebSocket error:", error);
+  ws.onerror = () => {
     connectionStatus.textContent = "Error connecting to server ❌";
     connectionStatus.classList.remove("connected");
     startBtn.disabled = true;
@@ -108,7 +113,9 @@ function connectWebSocket() {
 // Initialize AudioContext
 function initAudioContext() {
   if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioContext = new (window.AudioContext || window.webkitAudioContext)({
+      sampleRate: SAMPLE_RATE,
+    });
     console.log(
       "AudioContext initialized, sampleRate:",
       audioContext.sampleRate
@@ -116,67 +123,42 @@ function initAudioContext() {
   }
 }
 
-// Create WAV header for raw PCM data
-function createWavHeader(
-  dataLength,
-  sampleRate = 16000,
-  channels = 1,
-  bitsPerSample = 16
-) {
-  const buffer = new ArrayBuffer(44);
-  const view = new DataView(buffer);
-
-  // RIFF header
-  writeString(view, 0, "RIFF");
-  view.setUint32(4, 36 + dataLength, true); // Chunk size
-  writeString(view, 8, "WAVE");
-
-  // fmt sub-chunk
-  writeString(view, 12, "fmt ");
-  view.setUint32(16, 16, true); // Sub-chunk size
-  view.setUint16(20, 1, true); // Audio format (PCM = 1)
-  view.setUint16(22, channels, true); // Number of channels
-  view.setUint32(24, sampleRate, true); // Sample rate
-  view.setUint32(28, (sampleRate * channels * bitsPerSample) / 8, true); // Byte rate
-  view.setUint16(32, (channels * bitsPerSample) / 8, true); // Block align
-  view.setUint16(34, bitsPerSample, true); // Bits per sample
-
-  // data sub-chunk
-  writeString(view, 36, "data");
-  view.setUint32(40, dataLength, true); // Data size
-
-  return buffer;
-}
-
-function writeString(view, offset, string) {
-  for (let i = 0; i < string.length; i++) {
-    view.setUint8(offset + i, string.charCodeAt(i));
+// Decode base64 to ArrayBuffer
+function base64ToArrayBuffer(base64) {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
   }
+  return bytes.buffer;
 }
 
-// Decode base64 audio and queue for playback
+// Queue audio chunk
 async function queueAudio(base64Audio, isFinal) {
   try {
-    if (!base64Audio || typeof base64Audio !== "string") {
-      throw new Error("Invalid base64 audio data");
+    let pcmBuffer = base64ToArrayBuffer(base64Audio);
+    if (isFirstAudio) {
+      console.log("First audio chunk: skipping 44-byte WAV header");
+      pcmBuffer = pcmBuffer.slice(44);
+      isFirstAudio = false;
     }
 
-    console.log("Decoding audio chunk, length:", base64Audio.length);
-    const audioData = atob(base64Audio);
-    const pcmArray = new Uint8Array(audioData.length);
-    for (let i = 0; i < audioData.length; i++) {
-      pcmArray[i] = audioData.charCodeAt(i);
+    const int16 = new Int16Array(pcmBuffer);
+    const float32 = new Float32Array(int16.length);
+    for (let i = 0; i < int16.length; i++) {
+      float32[i] = int16[i] / 32768;
     }
 
-    // Assume Murf sends raw PCM; create WAV header
-    const wavHeader = createWavHeader(pcmArray.length);
-    const wavArray = new Uint8Array(wavHeader.byteLength + pcmArray.length);
-    wavArray.set(new Uint8Array(wavHeader), 0);
-    wavArray.set(pcmArray, wavHeader.byteLength);
+    const audioBuffer = audioContext.createBuffer(
+      CHANNELS,
+      float32.length,
+      SAMPLE_RATE
+    );
+    audioBuffer.copyToChannel(float32, 0);
 
-    const audioBuffer = await audioContext.decodeAudioData(wavArray.buffer);
     console.log(
-      "Audio decoded, duration:",
+      "Audio chunk processed, duration:",
       audioBuffer.duration,
       "isFinal:",
       isFinal
@@ -184,7 +166,7 @@ async function queueAudio(base64Audio, isFinal) {
     audioQueue.push({ buffer: audioBuffer, isFinal });
     playNextAudio();
   } catch (error) {
-    console.error("Error decoding audio:", error);
+    console.error("Error processing audio:", error);
     status.textContent = "Error: Failed to play audio ❌";
   }
 }
@@ -202,19 +184,14 @@ function playNextAudio() {
   const currentTime = audioContext.currentTime;
   source.start(Math.max(nextStartTime, currentTime));
   nextStartTime = Math.max(nextStartTime, currentTime) + buffer.duration;
-  console.log(
-    "Playing audio chunk, duration:",
-    buffer.duration,
-    "startTime:",
-    nextStartTime
-  );
 
   source.onended = () => {
     isPlaying = false;
     if (isFinal) {
       audioQueue = [];
       nextStartTime = 0;
-      console.log("Audio playback completed");
+      isFirstAudio = true; // Reset for next session
+      console.log("Audio playback complete");
       status.textContent = "Status: Audio playback complete ✅";
     } else {
       playNextAudio();
@@ -225,23 +202,20 @@ function playNextAudio() {
 // Event listeners
 startBtn.addEventListener("click", () => {
   initAudioContext();
+  isFirstAudio = true;
   ws.send("start");
-  console.log("Start transcription requested");
 });
 
 stopBtn.addEventListener("click", () => {
   ws.send("stop");
-  console.log("Stop transcription requested");
 });
 
 retryBtn.addEventListener("click", () => {
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send("start");
-    console.log("Retry transcription requested");
   } else {
     connectWebSocket();
     status.textContent = "Status: Reconnecting... 🔄";
-    console.log("Reconnecting WebSocket");
   }
 });
 
