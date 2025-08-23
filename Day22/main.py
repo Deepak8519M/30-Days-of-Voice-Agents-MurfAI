@@ -37,11 +37,11 @@ aai.settings.api_key = AAI_API_KEY
 configure(api_key=GEMINI_API_KEY)
 
 # Logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day21")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+log = logging.getLogger("day22")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 21")
+app = FastAPI(title="AI Voice Agent - Day 22")
 
 # CORS
 app.add_middleware(
@@ -74,10 +74,11 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.setsampwidth(2)  # 16-bit
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(b"".join(frames))
+    log.debug(f"Audio saved to {path}")
     return path
 
 # Static context_id
-CONTEXT_ID = "static_context_21"
+CONTEXT_ID = "static_context_22"
 
 # Initialize Gemini model
 model = GenerativeModel(model_name="gemini-2.0-flash")
@@ -85,6 +86,7 @@ model = GenerativeModel(model_name="gemini-2.0-flash")
 async def stream_gemini_response(transcript: str, websocket: WebSocket):
     """Stream Gemini response, send to Murf, and forward audio to client."""
     try:
+        log.debug(f"Generating Gemini response for transcript: {transcript}")
         response = await asyncio.to_thread(
             model.generate_content,
             transcript,
@@ -92,36 +94,40 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket):
         )
         accumulated_response = ""
         murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}"
-        log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
+        log.debug(f"Connecting to Murf WebSocket: {murf_ws_url}")
         async with websockets.connect(murf_ws_url) as murf_ws:
             # Initial connection message
             await murf_ws.send(json.dumps({"init": True}))
+            log.debug("Sent init message to Murf")
             for chunk in response:
                 if chunk.text:
                     content = chunk.text
                     accumulated_response += content
-                    log.info(f"Sending to Murf: {content}")
+                    log.debug(f"Sending text to Murf: {content}")
                     await murf_ws.send(json.dumps({"text": content}))
                     # Receive base64 audio from Murf
                     murf_response = await murf_ws.recv()
-                    log.info(f"Received from Murf: {murf_response}")
+                    log.debug(f"Received from Murf: {murf_response}")
                     murf_data = json.loads(murf_response)
                     base64_audio = murf_data.get("audio", "")
-                    is_final = murf_data.get("is_final", False) if "is_final" in murf_data else False
-                    # Send base64 audio to client
+                    is_final = murf_data.get("is_final", False)
                     if base64_audio:
+                        log.debug(f"Sending audio to client, is_final: {is_final}, length: {len(base64_audio)}")
                         try:
                             await websocket.send_json({
                                 "type": "audio",
                                 "data": base64_audio,
                                 "is_final": is_final
                             })
-                            log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                            log.debug("Audio sent to client successfully")
                         except Exception as e:
                             log.error(f"Failed to send audio to client: {e}")
+                    else:
+                        log.warning("No audio data in Murf response")
                     if is_final:
+                        log.debug("Final audio chunk received from Murf")
                         break
-        log.info("Gemini Response Complete.")
+        log.debug("Gemini response and audio streaming complete")
         return accumulated_response
     except websockets.exceptions.ConnectionClosedError as e:
         log.error(f"Murf WebSocket connection closed: {e}")
@@ -134,13 +140,13 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket):
 # Routes
 @app.get("/")
 async def index(request: Request):
-    log.info("Sending index page")
+    log.debug("Serving index page")
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
 async def ws_handler(websocket: WebSocket):
     await websocket.accept()
-    log.info("WebSocket connected")
+    log.debug("WebSocket connected to client")
 
     py_audio: pyaudio.PyAudio | None = None
     mic_stream: pyaudio.Stream | None = None
@@ -163,13 +169,13 @@ async def ws_handler(websocket: WebSocket):
             if message.type == "Turn" and message.transcript:
                 transcript_text = message.transcript.strip()
                 all_transcripts.append(transcript_text)
-                log.info(f"Live Transcription: {transcript_text}")
+                log.debug(f"Live Transcription: {transcript_text}")
                 await websocket.send_text(transcript_text)
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text
-                    log.info(f"Final Formatted Transcription: {final_transcript}")
+                    log.debug(f"Final Formatted Transcription: {final_transcript}")
             elif message.type == "Termination":
-                log.info("Turn ended detected")
+                log.debug("Turn ended detected")
                 if final_transcript or all_transcripts:
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
@@ -195,6 +201,7 @@ async def ws_handler(websocket: WebSocket):
         lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
 
     client.connect(StreamingParameters(sample_rate=SAMPLE_RATE, format_turns=True))
+    log.debug("Connected to AssemblyAI streaming")
 
     async def pump_queue():
         try:
@@ -209,7 +216,7 @@ async def ws_handler(websocket: WebSocket):
 
     def stream_audio():
         nonlocal mic_stream, py_audio
-        log.info("Starting audio streaming thread")
+        log.debug("Starting audio streaming thread")
         try:
             py_audio = pyaudio.PyAudio()
             mic_stream = py_audio.open(
@@ -246,13 +253,13 @@ async def ws_handler(websocket: WebSocket):
                 except Exception:
                     pass
                 py_audio = None
-            log.info("Audio streaming thread ended")
+            log.debug("Audio streaming thread ended")
 
     try:
         while True:
             try:
                 msg = await websocket.receive_text()
-                log.info(f"Received client command: {msg}")
+                log.debug(f"Received client command: {msg}")
             except Exception as e:
                 log.error(f"WebSocket receive error: {e}")
                 break
@@ -269,6 +276,7 @@ async def ws_handler(websocket: WebSocket):
                 audio_thread = threading.Thread(target=stream_audio, daemon=True)
                 audio_thread.start()
                 await websocket.send_text("Started transcription")
+                log.debug("Started transcription thread")
 
             elif msg == "stop":
                 stop_event.set()
@@ -289,9 +297,11 @@ async def ws_handler(websocket: WebSocket):
                     "Stopped transcription"
                     + (f" (saved: {os.path.basename(saved)})" if saved else "")
                 )
+                log.debug("Stopped transcription, audio saved: %s", saved)
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")
+                log.warning("Unknown command received: %s", msg)
 
             await asyncio.sleep(0.01)
 
@@ -301,4 +311,4 @@ async def ws_handler(websocket: WebSocket):
             audio_thread.join(timeout=5.0)
         client.disconnect(terminate=True)
         queue_task.cancel()
-        log.info("WebSocket closed")
+        log.debug("WebSocket closed")
