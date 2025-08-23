@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Voice Agent - Day 21 🎙️</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>AI Voice Agent - Day 21 🎙️</h1>
+        <p>Streaming Audio Data to Client 🚀✨</p>
+      </header>
+      <div class="controls">
+        <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
+        <button id="stopBtn" class="record-btn stop-btn" style="display: none">
+          Stop Transcription 🛑
+        </button>
+        <button id="retryBtn" class="retry-btn" style="display: none">
+          Retry Transcription 🔄
+        </button>
+        <div id="status" class="status">Status: Idle ⏳</div>
+      </div>
+      <div class="transcription-box">
+        <h2>Transcription 📝</h2>
+        <div id="transcription" class="transcription-content">
+          <span class="spinner" style="display: none">⏳</span>
+          <span id="transcriptionText" class="text"
+            >Waiting for transcription... ⏳</span
+          >
+        </div>
+      </div>
+      <div id="connectionStatus" class="connection-status">
+        Connecting to server... 🔌
+      </div>
+      <div class="info-box">
+        <p>
+          Click "Start Transcription" to begin. Transcription updates live while
+          speaking and finalizes when you stop talking. Audio saved in
+          <code>uploads/</code>. Check the console for audio chunk logs. ✅🔊
+        </p>
+      </div>
+    </div>
+    <script src="/static/index.js"></script>
+  </body>
+</html>
