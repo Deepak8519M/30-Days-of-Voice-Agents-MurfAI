@@ -10,15 +10,15 @@
     <div class="container">
       <header>
         <h1>AI Voice Chat Agent - Day 22 🎙️</h1>
-        <p>Live Transcription & AI Voice Responses 🚀✨</p>
+        <p>Chat with AI through Voice 🚀✨</p>
       </header>
       <div class="controls">
-        <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
+        <button id="startBtn" class="record-btn">Start Asking 🎵</button>
         <button id="stopBtn" class="record-btn stop-btn" style="display: none">
-          Stop Transcription 🛑
+          Stop Asking 🛑
         </button>
         <button id="retryBtn" class="retry-btn" style="display: none">
-          Retry Transcription 🔄
+          Retry 🔄
         </button>
         <div id="status" class="status">Status: Idle ⏳</div>
       </div>
@@ -27,8 +27,8 @@
         <div id="chatWindow" class="chat-content">
           <div class="message received">
             <span class="text"
-              >Welcome! Start speaking to transcribe your message, and I'll
-              respond. ⏳</span
+              >Hi! Start asking by clicking the button above, and I'll respond.
+              ⏳</span
             >
           </div>
         </div>
@@ -38,9 +38,9 @@
       </div>
       <div class="info-box">
         <p>
-          Click "Start Transcription" to begin. Your speech appears as sent
-          messages, and AI responses appear as received messages. Audio saved in
-          <code>uploads/</code>. Check the console for logs. ✅🔊
+          Click "Start Asking" to speak. Your words appear as sent messages, and
+          AI responses appear below. Audio saved in <code>uploads/</code>. Check
+          the console for logs. ✅🔊
         </p>
       </div>
       <audio id="audioPlayer" style="display: none"></audio>

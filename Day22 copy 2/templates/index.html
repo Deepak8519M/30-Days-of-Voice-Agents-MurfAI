@@ -3,14 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Voice Chat Agent - Day 22 🎙️</title>
+    <title>AI Voice Agent - Day 22 🎙️</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <!-- <link rel="icon" href="/static/favicon.ico" type="image/x-icon" /> -->
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>AI Voice Chat Agent - Day 22 🎙️</h1>
-        <p>Live Transcription & AI Voice Responses 🚀✨</p>
+        <h1>AI Voice Agent - Day 22 🎙️</h1>
+        <p>Streaming Audio Data to Client 🚀✨</p>
       </header>
       <div class="controls">
         <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
@@ -22,15 +23,13 @@
         </button>
         <div id="status" class="status">Status: Idle ⏳</div>
       </div>
-      <div class="chat-box">
-        <h2>Chat 📝</h2>
-        <div id="chatWindow" class="chat-content">
-          <div class="message received">
-            <span class="text"
-              >Welcome! Start speaking to transcribe your message, and I'll
-              respond. ⏳</span
-            >
-          </div>
+      <div class="transcription-box">
+        <h2>Transcription 📝</h2>
+        <div id="transcription" class="transcription-content">
+          <span class="spinner" style="display: none">⏳</span>
+          <span id="transcriptionText" class="text"
+            >Waiting for transcription... ⏳</span
+          >
         </div>
       </div>
       <div id="connectionStatus" class="connection-status">
@@ -38,12 +37,11 @@
       </div>
       <div class="info-box">
         <p>
-          Click "Start Transcription" to begin. Your speech appears as sent
-          messages, and AI responses appear as received messages. Audio saved in
-          <code>uploads/</code>. Check the console for logs. ✅🔊
+          Click "Start Transcription" to begin. Transcription updates live while
+          speaking and finalizes when you stop talking. Audio saved in
+          <code>uploads/</code>. Check the console for audio chunk logs. ✅🔊
         </p>
       </div>
-      <audio id="audioPlayer" style="display: none"></audio>
     </div>
     <script src="/static/index.js"></script>
   </body>
