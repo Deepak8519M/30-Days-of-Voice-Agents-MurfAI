@@ -97,7 +97,7 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket):
             # Initial connection message
             await murf_ws.send(json.dumps({"init": True}))
             # Set voice config to avoid default warning
-            voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational"}}
+            voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational",  }}
             await murf_ws.send(json.dumps(voice_config))
             log.info(f"Sent voice config: {voice_config}")
             for chunk in response:
