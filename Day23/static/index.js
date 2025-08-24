@@ -14,6 +14,7 @@ const stopBtn = document.getElementById("stopBtn");
 const retryBtn = document.getElementById("retryBtn");
 const status = document.getElementById("status");
 const transcriptionText = document.getElementById("transcriptionText");
+const chatHistory = document.getElementById("chatHistory");
 const spinner = document.querySelector(".spinner");
 const connectionStatus = document.getElementById("connectionStatus");
 
@@ -32,7 +33,7 @@ function connectWebSocket() {
     const data = event.data;
     console.log("WebSocket message received:", data.substring(0, 100) + "...");
 
-    // Handle JSON audio data
+    // Handle JSON messages (audio or response)
     if (data.startsWith("{")) {
       try {
         const jsonData = JSON.parse(data);
@@ -44,12 +45,17 @@ function connectWebSocket() {
             jsonData.data.length
           );
           await queueAudio(jsonData.data, jsonData.is_final);
+        } else if (jsonData.type === "response" && jsonData.data) {
+          // Append AI response to transcription
+          transcriptionText.textContent += `\nAI: ${jsonData.data}`;
+          // Refresh chat history
+          await fetchChatHistory();
         } else {
-          console.warn("Invalid audio message format:", jsonData);
+          console.warn("Invalid JSON message format:", jsonData);
         }
       } catch (e) {
         console.error("Error parsing JSON message:", e);
-        status.textContent = "Error: Invalid audio data received ❌";
+        status.textContent = "Error: Invalid data received ❌";
       }
       return;
     }
@@ -190,13 +196,45 @@ function playNextAudio() {
     if (isFinal) {
       audioQueue = [];
       nextStartTime = 0;
-      isFirstAudio = true; // Reset for next session
+      isFirstAudio = true;
       console.log("Audio playback complete");
       status.textContent = "Status: Audio playback complete ✅";
     } else {
       playNextAudio();
     }
   };
+}
+
+// Fetch and display chat history
+async function fetchChatHistory() {
+  try {
+    const response = await fetch("/chat_history");
+    const history = await response.json();
+    if (Array.isArray(history)) {
+      chatHistory.innerHTML = history.length
+        ? history
+            .map(
+              (entry) => `
+                <div class="chat-entry">
+                  <div class="timestamp">${new Date(
+                    entry.timestamp
+                  ).toLocaleString()}</div>
+                  <div class="user-query">You: ${entry.user_query}</div>
+                  <div class="ai-response">AI: ${entry.ai_response}</div>
+                </div>
+              `
+            )
+            .join("")
+        : "<span class='text'>No chat history yet.</span>";
+    } else {
+      chatHistory.innerHTML =
+        "<span class='text'>Error loading chat history.</span>";
+    }
+  } catch (error) {
+    console.error("Error fetching chat history:", error);
+    chatHistory.innerHTML =
+      "<span class='text'>Error loading chat history.</span>";
+  }
 }
 
 // Event listeners
@@ -221,3 +259,4 @@ retryBtn.addEventListener("click", () => {
 
 // Initialize
 connectWebSocket();
+fetchChatHistory();

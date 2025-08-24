@@ -104,6 +104,18 @@ def save_chat_history(user_query: str, ai_response: str) -> bool:
         log.error(f"Failed to save chat history: {e}")
         return False
 
+# Utility to get chat history
+@app.get("/chat_history")
+async def get_chat_history():
+    try:
+        if os.path.exists(CHAT_HISTORY_FILE):
+            with open(CHAT_HISTORY_FILE, "r") as f:
+                return json.load(f)
+        return []
+    except Exception as e:
+        log.error(f"Failed to read chat history: {e}")
+        return {"error": str(e)}
+
 # Static context_id
 CONTEXT_ID = "static_context_23"
 
@@ -176,6 +188,11 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
         # Save chat history
         if accumulated_response:
             save_chat_history(transcript, accumulated_response)
+            # Send response text to client for display
+            await websocket.send_json({
+                "type": "response",
+                "data": accumulated_response
+            })
         log.info("Gemini Response Complete.")
         return accumulated_response
     except websockets.exceptions.ConnectionClosedError as e:

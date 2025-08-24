@@ -3,5 +3,30 @@
     "timestamp": "2025-08-24T20:42:16.695886",
     "user_query": "Who is the prime minister of india.",
     "ai_response": "The current Prime Minister of India is Narendra Modi.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:03:29.538645",
+    "user_query": "Who is the prime minister of india.",
+    "ai_response": "The current Prime Minister of India is Narendra Modi.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:03:56.481559",
+    "user_query": "What is a capital of usa?",
+    "ai_response": "The capital of the USA is **Washington, D.C.**\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:19:44.581976",
+    "user_query": "Let's stop the recording.",
+    "ai_response": "Okay, stopping the recording now.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:19:53.882136",
+    "user_query": "Let's stop the recording.",
+    "ai_response": "Okay, I have stopped the recording.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:20:10.420808",
+    "user_query": "Who is the Prime Minister of recipe.",
+    "ai_response": "There is no Prime Minister of Recipe. Recipes are instructions for preparing food and do not have a governing body or leader.\n"
   }
 ]
