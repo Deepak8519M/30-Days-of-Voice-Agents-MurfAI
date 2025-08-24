@@ -1,12 +1,12 @@
 import os
 import wave
+import json
 import logging
 import asyncio
 import threading
-import json
-import websockets
 import time
 from datetime import datetime
+from typing import Optional, List, Dict
 
 import pyaudio
 import assemblyai as aai
@@ -21,6 +21,7 @@ from assemblyai.streaming.v3 import (
     StreamingEvents,
 )
 from google.generativeai import GenerativeModel, configure
+import websockets
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -38,15 +39,18 @@ configure(api_key=GEMINI_API_KEY)
 
 # Logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day22")
+log = logging.getLogger("day23")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 22")
+app = FastAPI(title="AI Voice Agent - Day 23")
 
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Static + templates
@@ -63,8 +67,11 @@ CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 1600
 
+# Chat history file
+CHAT_HISTORY_FILE = os.path.join(UPLOAD_DIR, "chat_history.json")
+
 # Utility to save audio
-def save_wav(frames: list[bytes]) -> str | None:
+def save_wav(frames: List[bytes]) -> Optional[str]:
     if not frames:
         return None
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -76,14 +83,35 @@ def save_wav(frames: list[bytes]) -> str | None:
         wf.writeframes(b"".join(frames))
     return path
 
+# Utility to save chat history
+def save_chat_history(user_query: str, ai_response: str) -> bool:
+    try:
+        history = []
+        if os.path.exists(CHAT_HISTORY_FILE):
+            with open(CHAT_HISTORY_FILE, "r") as f:
+                history = json.load(f)
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "user_query": user_query,
+            "ai_response": ai_response,
+        }
+        history.append(entry)
+        with open(CHAT_HISTORY_FILE, "w") as f:
+            json.dump(history, f, indent=2)
+        log.info(f"Chat history saved: {entry}")
+        return True
+    except Exception as e:
+        log.error(f"Failed to save chat history: {e}")
+        return False
+
 # Static context_id
-CONTEXT_ID = "static_context_22"
+CONTEXT_ID = "static_context_23"
 
 # Initialize Gemini model
 model = GenerativeModel(model_name="gemini-2.0-flash")
 
-async def stream_gemini_response(transcript: str, websocket: WebSocket):
-    """Stream Gemini response, send to Murf, and forward audio to client."""
+async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optional[str]:
+    """Stream Gemini response, send to Murf, save chat history, and forward audio to client."""
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -96,8 +124,8 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket):
         async with websockets.connect(murf_ws_url) as murf_ws:
             # Initial connection message
             await murf_ws.send(json.dumps({"init": True}))
-            # Set voice config to avoid default warning
-            voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational",  }}
+            # Set voice config
+            voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational"}}
             await murf_ws.send(json.dumps(voice_config))
             log.info(f"Sent voice config: {voice_config}")
             for chunk in response:
@@ -145,6 +173,9 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket):
                 except asyncio.TimeoutError:
                     log.warning("Timeout waiting for additional Murf audio, assuming complete")
                     break
+        # Save chat history
+        if accumulated_response:
+            save_chat_history(transcript, accumulated_response)
         log.info("Gemini Response Complete.")
         return accumulated_response
     except websockets.exceptions.ConnectionClosedError as e:
@@ -166,11 +197,11 @@ async def ws_handler(websocket: WebSocket):
     await websocket.accept()
     log.info("WebSocket connected")
 
-    py_audio: pyaudio.PyAudio | None = None
-    mic_stream: pyaudio.Stream | None = None
-    audio_thread: threading.Thread | None = None
+    py_audio: Optional[pyaudio.PyAudio] = None
+    mic_stream: Optional[pyaudio.Stream] = None
+    audio_thread: Optional[threading.Thread] = None
     stop_event = threading.Event()
-    recorded_frames: list[bytes] = []
+    recorded_frames: List[bytes] = []
     frames_lock = threading.Lock()
 
     loop = asyncio.get_running_loop()
