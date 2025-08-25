@@ -3,6 +3,7 @@ let audioContext = null;
 let audioQueue = [];
 let isPlaying = false;
 let nextStartTime = 0;
+let isFirstAudio = true;
 
 const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
@@ -143,7 +144,11 @@ function base64ToArrayBuffer(base64) {
 async function queueAudio(base64Audio, isFinal) {
   try {
     let pcmBuffer = base64ToArrayBuffer(base64Audio);
-    // No header skip since using PCM format
+    if (isFirstAudio) {
+      console.log("First audio chunk: skipping 44-byte WAV header");
+      pcmBuffer = pcmBuffer.slice(44);
+      isFirstAudio = false;
+    }
 
     const int16 = new Int16Array(pcmBuffer);
     const float32 = new Float32Array(int16.length);
@@ -191,6 +196,7 @@ function playNextAudio() {
     if (isFinal) {
       audioQueue = [];
       nextStartTime = 0;
+      isFirstAudio = true;
       console.log("Audio playback complete");
       status.textContent = "Status: Audio playback complete ✅";
     } else {
@@ -234,6 +240,7 @@ async function fetchChatHistory() {
 // Event listeners
 startBtn.addEventListener("click", () => {
   initAudioContext();
+  isFirstAudio = true;
   ws.send("start");
 });
 

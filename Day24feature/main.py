@@ -131,9 +131,11 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
             stream=True
         )
         accumulated_response = ""
-        murf_ws_url = f"{MURF_WS_URL}?api-key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=PCM&sample_rate=44100&channel_type=MONO"
+        murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
         log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
         async with websockets.connect(murf_ws_url) as murf_ws:
+            # Initial connection message
+            await murf_ws.send(json.dumps({"init": True}))
             # Set voice config
             voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational"}}
             await murf_ws.send(json.dumps(voice_config))
@@ -144,17 +146,12 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                     accumulated_response += content
                     log.info(f"Sending to Murf: {content}")
                     await murf_ws.send(json.dumps({"text": content}))
-            # Signal end of text input
-            await murf_ws.send(json.dumps({"end": True}))
-            log.info("Sent end signal to Murf")
-            # Receive audio chunks until final
-            while True:
-                try:
-                    murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
+                    # Receive base64 audio from Murf
+                    murf_response = await murf_ws.recv()
                     log.info(f"Received from Murf: {murf_response[:100]}...")
                     murf_data = json.loads(murf_response)
                     base64_audio = murf_data.get("audio", "")
-                    is_final = murf_data.get("final", False)  # Changed to "final" based on docs
+                    is_final = murf_data.get("is_final", False) if "is_final" in murf_data else False
                     # Send base64 audio to client
                     if base64_audio:
                         try:
@@ -168,8 +165,25 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                             log.error(f"Failed to send audio to client: {e}")
                     if is_final:
                         break
+            # Continue receiving remaining audio chunks until final
+            while True:
+                try:
+                    murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
+                    log.info(f"Received additional from Murf: {murf_response[:100]}...")
+                    murf_data = json.loads(murf_response)
+                    base64_audio = murf_data.get("audio", "")
+                    is_final = murf_data.get("is_final", False)
+                    if base64_audio:
+                        await websocket.send_json({
+                            "type": "audio",
+                            "data": base64_audio,
+                            "is_final": is_final
+                        })
+                        log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                    if is_final:
+                        break
                 except asyncio.TimeoutError:
-                    log.warning("Timeout waiting for Murf audio, assuming complete")
+                    log.warning("Timeout waiting for additional Murf audio, assuming complete")
                     break
         # Save chat history
         if accumulated_response:

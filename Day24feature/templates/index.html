@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Voice Agent - Day 24 🎙️</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>AI Voice Agent - Day 24 🎙️</h1>
+        <p>Streaming Audio Data to Client 🚀✨</p>
+      </header>
+      <div class="controls">
+        <button id="startBtn" class="record-btn">Start Transcription 🎵</button>
+        <button id="stopBtn" class="record-btn stop-btn" style="display: none">
+          Stop Transcription 🛑
+        </button>
+        <button id="retryBtn" class="retry-btn" style="display: none">
+          Retry Transcription 🔄
+        </button>
+        <div id="status" class="status">Status: Idle ⏳</div>
+      </div>
+      <div class="transcription-box">
+        <h2>Transcription 📝</h2>
+        <div id="transcription" class="transcription-content">
+          <span class="spinner" style="display: none">⏳</span>
+          <span id="transcriptionText" class="text"
+            >Waiting for transcription... ⏳</span
+          >
+        </div>
+      </div>
+      <div class="chat-history-box">
+        <h2>Chat History 📜</h2>
+        <div id="chatHistory" class="chat-history-content">
+          <span class="text">Loading chat history... ⏳</span>
+        </div>
+      </div>
+      <div id="connectionStatus" class="connection-status">
+        Connecting to server... 🔌
+      </div>
+    </div>
+    <script src="/static/index.js"></script>
+  </body>
+</html>
