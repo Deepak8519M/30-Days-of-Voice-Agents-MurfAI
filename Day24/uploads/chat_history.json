@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2025-08-24T21:26:47.742263",
+    "user_query": "Who is the prime minister of india.",
+    "ai_response": "The current Prime Minister of India is Narendra Modi.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:27:07.308260",
+    "user_query": "What is the capital of India?",
+    "ai_response": "The capital of India is **New Delhi**.\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:30:58.173982",
+    "user_query": "So tell me the name of any three cities that start with the name a.",
+    "ai_response": "Okay, here are three cities that start with the letter \"A\":\n\n1.  **Atlanta** (Georgia, USA)\n2.  **Amsterdam** (Netherlands)\n3.  **Athens** (Greece)\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:31:59.695867",
+    "user_query": "So tell me the name of any three cities that start with the letter Z.",
+    "ai_response": "Okay, here are three cities that start with the letter \"Z\":\n\n1.  **Zurich**, Switzerland\n2.  **Zagreb**, Croatia\n3.  **Zaragoza**, Spain\n"
+  },
+  {
+    "timestamp": "2025-08-24T21:34:17.431168",
+    "user_query": "So tell me the name of cities that start with the letter L.",
+    "ai_response": "Okay, here's a list of cities starting with the letter L:\n\n*   **London** (Multiple, most famously in England, but also in the US and Canada)\n*   **Los Angeles** (USA)\n*   **Las Vegas** (USA)\n*   **Lima** (Peru)\n*   **Leeds** (England)\n*   **Liverpool** (England)\n*   **Lyon** (France)\n*   **Lisbon** (Portugal)\n*   **Lagos** (Nigeria)\n*   **Lahore** (Pakistan)\n*   **Lille** (France)\n*   **Luxembourg City** (Luxembourg)\n\nThis is not an exhaustive list, as there are many smaller towns and cities beginning with \"L\" around the world."
+  },
+  {
+    "timestamp": "2025-08-24T21:38:55.776427",
+    "user_query": "So tell me the name of any three cities that start with the letter K.",
+    "ai_response": "Okay, here are three cities that start with the letter \"K\":\n\n1.  **Karachi**, Pakistan\n2.  **Kansas City**, Missouri, USA\n3.  **Kyoto**, Japan\n"
+  }
+]
