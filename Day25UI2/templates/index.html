@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Storyteller Voice Agent - Day 24 📖</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Text&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>AI Storyteller Voice Agent - Day 24 📖</h1>
+        <p>Gather 'round for Tales Woven by Voice! ✨</p>
+      </header>
+      <div class="controls">
+        <button id="startBtn" class="record-btn">Begin the Tale 🎤</button>
+        <button id="stopBtn" class="record-btn stop-btn" style="display: none">
+          End the Chapter 🛑
+        </button>
+        <button id="retryBtn" class="retry-btn" style="display: none">
+          Spin Another Yarn 🔄
+        </button>
+        <div id="status" class="status">
+          Status: Awaiting Your Words, Listener! ⏳
+        </div>
+      </div>
+      <div class="chat-window-box">
+        <h2>Tale of the Moment 📜</h2>
+        <div id="chatWindow" class="chat-window-content">
+          <span class="text">Awaiting the first tale... ⏳</span>
+        </div>
+      </div>
+      <div class="chat-history-box">
+        <h2>Chronicles of Discourse 📜</h2>
+        <div id="chatHistory" class="chat-history-content">
+          <span class="text">Loading the chronicles... ⏳</span>
+        </div>
+      </div>
+      <div id="connectionStatus" class="connection-status">
+        Connecting to the storyteller’s realm... 🔌
+      </div>
+    </div>
+    <script src="/static/index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+body {
+  font-family: "Crimson Text", serif;
+  background-color: #f5e6cc; /* Parchment-like background */
+  color: #3c2f2f; /* Dark ink color */
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background-color: #fff8e1; /* Light parchment */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #8b5a2b; /* Wooden book spine */
+}
+
+header {
+  text-align: center;
+  border-bottom: 2px solid #8b5a2b;
+  padding-bottom: 10px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+  color: #4a2c2a; /* Deep burgundy */
+}
+
+header p {
+  margin: 5px 0;
+  font-style: italic;
+  color: #6b4e31;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.record-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #4a2c2a; /* Burgundy for storytelling */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.record-btn:hover {
+  background-color: #5c3a36;
+}
+
+.stop-btn {
+  background-color: #6b4e31; /* Darker brown */
+}
+
+.stop-btn:hover {
+  background-color: #8b5a2b;
+}
+
+.retry-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #8b5a2b; /* Warm brown */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background-color: #a3724b;
+}
+
+.status {
+  font-size: 1em;
+  color: #3c2f2f;
+}
+
+.chat-window-box {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f9edcf; /* Light parchment */
+  border-radius: 5px;
+  border: 1px solid #8b5a2b;
+}
+
+.chat-window-box h2 {
+  margin: 0 0 10px;
+  font-size: 1.5em;
+  color: #4a2c2a;
+}
+
+.chat-window-content {
+  background-color: #fff8e1;
+  padding: 15px;
+  border-radius: 5px;
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-window-content .chat-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chat-window-content .user-query {
+  align-self: flex-end;
+  background-color: #8b5a2b; /* Warm brown for user */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px 10px 0 10px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.chat-window-content .ai-response {
+  align-self: flex-start;
+  background-color: #4a2c2a; /* Burgundy for AI */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px 10px 10px 0;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.chat-history-box {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f9edcf; /* Light parchment */
+  border-radius: 5px;
+  border: 1px solid #8b5a2b;
+}
+
+.chat-history-box h2 {
+  margin: 0 0 10px;
+  font-size: 1.5em;
+  color: #4a2c2a;
+}
+
+.chat-history-content {
+  background-color: #fff8e1;
+  padding: 10px;
+  border-radius: 5px;
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.chat-history-content .chat-entry {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #8b5a2b;
+}
+
+.chat-history-content .timestamp {
+  font-size: 0.8em;
+  color: #6b4e31;
+}
+
+.chat-history-content .user-query {
+  font-weight: bold;
+  color: #3c2f2f;
+}
+
+.chat-history-content .ai-response {
+  color: #4a2c2a;
+}
+
+.text {
+  white-space: pre-wrap;
+  color: #3c2f2f;
+  text-align: center;
+}
+
+.connection-status {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.connection-status.connected {
+  color: #2e8b57; /* Forest green for connected */
+}
+
+@media (max-width: 650px) {
+  .container {
+    padding: 15px;
+  }
+  header h1 {
+    font-size: 1.5em;
+  }
+  header p {
+    font-size: 0.9em;
+  }
+  .controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .record-btn,
+  .retry-btn,
+  .stop-btn {
+    width: 100%;
+    font-size: 0.9em;
+    padding: 8px;
+  }
+  .chat-window-content,
+  .chat-history-content {
+    min-height: 100px;
+    max-height: 250px;
+  }
+}
