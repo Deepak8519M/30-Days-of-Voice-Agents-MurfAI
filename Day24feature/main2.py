@@ -39,10 +39,10 @@ configure(api_key=GEMINI_API_KEY)
 
 # Logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day24")
+log = logging.getLogger("day23")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 24: Storyteller Persona")
+app = FastAPI(title="AI Voice Agent - Day 23")
 
 # CORS
 app.add_middleware(
@@ -61,7 +61,7 @@ templates = Jinja2Templates(directory="templates")
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Audio config
+# Audio config (AssemblyAI input is 16000, Murf output is 44100)
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
@@ -78,7 +78,7 @@ def save_wav(frames: List[bytes]) -> Optional[str]:
     path = os.path.join(UPLOAD_DIR, f"recorded_audio_{ts}.wav")
     with wave.open(path, "wb") as wf:
         wf.setnchannels(CHANNELS)
-        wf.setsampwidth(2)
+        wf.setsampwidth(2)  # 16-bit
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(b"".join(frames))
     return path
@@ -117,15 +117,13 @@ async def get_chat_history():
         return {"error": str(e)}
 
 # Static context_id
-CONTEXT_ID = "storyteller_context_24"
+CONTEXT_ID = "static_context_23"
 
-# Initialize Gemini model with Storyteller persona
-model = GenerativeModel(
-    model_name="gemini-2.0-flash",
-    system_instruction="You are a masterful Storyteller, weaving responses as captivating tales. Use vivid, evocative language, framing answers as stories or chapters with phrases like 'Let me spin you a tale,' 'Imagine this,' or 'In a world where.' Keep responses engaging, natural, and immersive, as if narrating by a fireside, without being overly dramatic."
-)
+# Initialize Gemini model
+model = GenerativeModel(model_name="gemini-2.0-flash")
 
 async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optional[str]:
+    """Stream Gemini response, send to Murf, save chat history, and forward audio to client."""
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -136,8 +134,10 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
         murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
         log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
         async with websockets.connect(murf_ws_url) as murf_ws:
+            # Initial connection message
             await murf_ws.send(json.dumps({"init": True}))
-            voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
+            # Set voice config
+            voice_config = {"voice_config": {"voiceId": "en-US-amara", "style": "Conversational"}}
             await murf_ws.send(json.dumps(voice_config))
             log.info(f"Sent voice config: {voice_config}")
             for chunk in response:
@@ -146,11 +146,13 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                     accumulated_response += content
                     log.info(f"Sending to Murf: {content}")
                     await murf_ws.send(json.dumps({"text": content}))
+                    # Receive base64 audio from Murf
                     murf_response = await murf_ws.recv()
                     log.info(f"Received from Murf: {murf_response[:100]}...")
                     murf_data = json.loads(murf_response)
                     base64_audio = murf_data.get("audio", "")
                     is_final = murf_data.get("is_final", False) if "is_final" in murf_data else False
+                    # Send base64 audio to client
                     if base64_audio:
                         try:
                             await websocket.send_json({
@@ -163,6 +165,7 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                             log.error(f"Failed to send audio to client: {e}")
                     if is_final:
                         break
+            # Continue receiving remaining audio chunks until final
             while True:
                 try:
                     murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
@@ -182,8 +185,10 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                 except asyncio.TimeoutError:
                     log.warning("Timeout waiting for additional Murf audio, assuming complete")
                     break
+        # Save chat history
         if accumulated_response:
             save_chat_history(transcript, accumulated_response)
+            # Send response text to client for display
             await websocket.send_json({
                 "type": "response",
                 "data": accumulated_response
@@ -219,9 +224,11 @@ async def ws_handler(websocket: WebSocket):
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str] = asyncio.Queue()
 
+    # Buffers
     all_transcripts = []
     final_transcript = None
 
+    # Forward and log transcript text
     async def forward_event(client, message):
         nonlocal final_transcript
         try:
