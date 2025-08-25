@@ -140,7 +140,7 @@ header p {
 .transcription-box h2 {
   font-size: 20px;
   color: #ffffff;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -152,8 +152,8 @@ header p {
   background: rgba(30, 41, 59, 0.7);
   padding: 20px;
   border-radius: 10px;
-  min-height: 50px;
-  max-height: 120px;
+  min-height: 20px;
+  max-height: 90px;
   overflow-y: auto;
   line-height: 1.6;
   display: flex;
@@ -191,7 +191,7 @@ header p {
   position: relative;
   overflow: hidden;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .chat-history-box::before {
@@ -206,7 +206,7 @@ header p {
 }
 
 .chat-history-box h2 {
-  font-size: 20px;
+  font-size: 18px;
   color: #ffffff;
   margin-bottom: 20px;
   font-weight: 700;

@@ -28,5 +28,10 @@
     "timestamp": "2025-08-24T21:38:55.776427",
     "user_query": "So tell me the name of any three cities that start with the letter K.",
     "ai_response": "Okay, here are three cities that start with the letter \"K\":\n\n1.  **Karachi**, Pakistan\n2.  **Kansas City**, Missouri, USA\n3.  **Kyoto**, Japan\n"
+  },
+  {
+    "timestamp": "2025-08-25T12:50:24.725741",
+    "user_query": "What is the capital of India?",
+    "ai_response": "The capital of India is **New Delhi**.\n"
   }
 ]
