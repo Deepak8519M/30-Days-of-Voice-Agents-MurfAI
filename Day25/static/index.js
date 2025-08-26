@@ -6,6 +6,7 @@ let nextStartTime = 0;
 let isFirstAudio = true;
 let currentChatId = "1";
 let currentTranscript = "";
+let rippleInterval = null;
 
 const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
@@ -247,12 +248,18 @@ function connectWebSocket() {
             jsonData.data.length
           );
           await queueAudio(jsonData.data, jsonData.is_final);
+          // Trigger ripple effect during audio playback
+          const ripples = document.querySelectorAll(".ripple");
+          ripples.forEach((ripple) => ripple.classList.add("active"));
         } else if (jsonData.type === "response" && jsonData.data) {
           // Append AI response to transcription
           transcription.innerHTML += `<div class="ai-message">${jsonData.data}</div>`;
           transcription.scrollTop = transcription.scrollHeight;
           // Refresh chat history
           await fetchChatHistory();
+          // Reset ripple effect
+          const ripples = document.querySelectorAll(".ripple");
+          ripples.forEach((ripple) => ripple.classList.remove("active"));
         } else {
           console.warn("Invalid JSON message format:", jsonData);
         }
@@ -268,6 +275,15 @@ function connectWebSocket() {
       status.textContent = "Status: Transcribing 🎤";
       spinner.style.display = "inline-block";
       currentTranscript = "";
+      listeningModal.style.display = "flex";
+      // Start ripple animation loop
+      rippleInterval = setInterval(() => {
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => {
+          ripple.classList.remove("active");
+          setTimeout(() => ripple.classList.add("active"), 50);
+        });
+      }, 1500);
     } else if (data === "turn_ended") {
       spinner.style.display = "none";
       status.textContent = "Status: Processing response 🤖";
@@ -277,6 +293,9 @@ function connectWebSocket() {
         transcription.scrollTop = transcription.scrollHeight;
         currentTranscript = "";
       }
+      clearInterval(rippleInterval);
+      const ripples = document.querySelectorAll(".ripple");
+      ripples.forEach((ripple) => ripple.classList.remove("active"));
     } else if (data === "Stopped transcription") {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
@@ -286,6 +305,9 @@ function connectWebSocket() {
       setTimeout(() => {
         notification.style.display = "none";
       }, 2500);
+      clearInterval(rippleInterval);
+      const ripples = document.querySelectorAll(".ripple");
+      ripples.forEach((ripple) => ripple.classList.remove("active"));
     } else if (
       data.startsWith("Error:") ||
       data.startsWith("Transcription error:")
@@ -293,6 +315,9 @@ function connectWebSocket() {
       status.textContent = `Error: ${data}`;
       spinner.style.display = "none";
       listeningModal.style.display = "none";
+      clearInterval(rippleInterval);
+      const ripples = document.querySelectorAll(".ripple");
+      ripples.forEach((ripple) => ripple.classList.remove("active"));
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
@@ -307,11 +332,13 @@ function connectWebSocket() {
     connectionStatus.classList.remove("connected");
     status.textContent = "Status: Disconnected 🔌";
     spinner.style.display = "none";
+    clearInterval(rippleInterval);
   };
 
   ws.onerror = () => {
     connectionStatus.textContent = "Error connecting to server ❌";
     connectionStatus.classList.remove("connected");
+    clearInterval(rippleInterval);
   };
 }
 
