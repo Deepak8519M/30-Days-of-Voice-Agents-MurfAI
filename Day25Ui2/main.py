@@ -235,54 +235,27 @@ async def tavily_search(query: str) -> str:
 # Static context_id
 CONTEXT_ID = "storyteller_context_25"
 
-# Initialize Gemini model with Storyteller persona and function calling
-def get_system_instruction():
-    knowledge_context = "\n\nKnowledge Base Content:\n"
-    if KNOWLEDGE_BASE:
-        for filename, content in KNOWLEDGE_BASE.items():
-            knowledge_context += f"\nFile: {filename}\n{content[:2000]}...\n"
-    else:
-        knowledge_context += "No knowledge base content available."
-    return (
+# Initialize Gemini model with simplified system instruction
+model = GenerativeModel(
+    model_name="gemini-1.5-flash",
+    system_instruction=(
         "You are a wise and gentle guide. Your tone is calm, clear, and comforting, like a thoughtful elder or a trusted friend. "
         "You explain things in a simple way, sometimes using small analogies or everyday examples if they help. "
         "Keep responses natural and conversational — never too formal, never dramatic, and not motivational. "
-        "The goal is to make the user feel relaxed, understood, and stress-free, while still giving useful and thoughtful answers. "
-        "For queries containing 'search', 'find', or 'look up', use the tavily_search function to fetch real-time web results. "
-        "When asked to summarize or provide information about a specific topic or file (e.g., 'Ultimate React Course' or 'Unit 2'), use the content from the knowledge base to provide a concise and accurate summary or answer. "
-        "For general queries (e.g., 'What is AI'), provide a clear and concise answer based on your knowledge, referencing the knowledge base if relevant. "
-        "Prioritize the content from the knowledge base file that most closely matches the query topic or filename." + knowledge_context
+        "The goal is to make the user feel relaxed, understood, and stress-free, while still giving useful and thoughtful answers."
     )
-
-model = GenerativeModel(
-    model_name="gemini-1.5-flash",
-    system_instruction=get_system_instruction(),
-    tools=[{
-        "function_declarations": [
-            {
-                "name": "tavily_search",
-                "description": "Perform a web search to get the latest information.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "string",
-                            "description": "The search query string"
-                        }
-                    },
-                    "required": ["query"]
-                }
-            }
-        ]
-    }]
 )
 
 async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSocket) -> Optional[str]:
     try:
-        # Update system instruction with latest knowledge base
-        model._system_instruction = get_system_instruction()
-        # Rewrite query to match knowledge base filenames for summary requests
+        # Ensure transcript is a valid string
+        if not isinstance(transcript, str) or not transcript.strip():
+            log.error(f"Invalid transcript: {transcript}")
+            await websocket.send_json({"type": "error", "data": "Invalid query provided"})
+            return None
+
         original_transcript = transcript
+        # Handle summary requests using KNOWLEDGE_BASE
         if "summary" in transcript.lower():
             query_words = set(re.sub(r'[^\w\s]', '', transcript.lower()).split())
             for filename in KNOWLEDGE_BASE:
@@ -291,138 +264,95 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                     transcript = f"Summarize the content of the file '{filename}'"
                     log.info(f"Rewrote query '{original_transcript}' to '{transcript}'")
                     break
-        # Ensure transcript is a valid string
-        if not isinstance(transcript, str) or not transcript.strip():
-            log.error(f"Invalid transcript: {transcript}")
-            await websocket.send_json({"type": "error", "data": "Invalid query provided"})
-            return None
-        # Log the exact input to Gemini
+
+        # Handle search queries
+        if any(word in transcript.lower() for word in ["search", "find", "look up"]):
+            log.info(f"Performing search for: {transcript}")
+            search_result = await tavily_search(transcript)
+            accumulated_response = search_result
+            murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
+            async with websockets.connect(murf_ws_url) as murf_ws:
+                await murf_ws.send(json.dumps({"init": True}))
+                voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
+                await murf_ws.send(json.dumps(voice_config))
+                await murf_ws.send(json.dumps({"text": search_result}))
+                murf_response = await murf_ws.recv()
+                murf_data = json.loads(murf_response)
+                base64_audio = murf_data.get("audio", "")
+                is_final = murf_data.get("is_final", False)
+                if base64_audio:
+                    await websocket.send_json({
+                        "type": "audio",
+                        "data": base64_audio,
+                        "is_final": is_final
+                    })
+                    log.info(f"Sent search audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                while not is_final:
+                    try:
+                        murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
+                        murf_data = json.loads(murf_response)
+                        base64_audio = murf_data.get("audio", "")
+                        is_final = murf_data.get("is_final", False)
+                        if base64_audio:
+                            await websocket.send_json({
+                                "type": "audio",
+                                "data": base64_audio,
+                                "is_final": is_final
+                            })
+                            log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                    except asyncio.TimeoutError:
+                        log.warning("Timeout waiting for additional Murf audio, assuming complete")
+                        break
+            if accumulated_response:
+                save_chat_history(chat_id, original_transcript, accumulated_response)
+                await websocket.send_json({
+                    "type": "response",
+                    "data": accumulated_response
+                })
+            return accumulated_response
+
+        # Handle general queries with Gemini
         log.debug(f"Calling Gemini with transcript: {transcript}")
-        # Generate content with Gemini
         contents = [{"role": "user", "parts": [{"text": transcript}]}]
         log.debug(f"Gemini request contents: {json.dumps(contents)}")
-        try:
-            # Try streaming first
-            response = model.generate_content(contents, stream=True)
-        except Exception as e:
-            log.warning(f"Streaming failed: {e}. Falling back to non-streaming.")
-            try:
-                # Fallback to non-streaming
-                response = model.generate_content(contents, stream=False)
-                accumulated_response = response.text
-                murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
-                log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
-                async with websockets.connect(murf_ws_url) as murf_ws:
-                    await murf_ws.send(json.dumps({"init": True}))
-                    voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
-                    await murf_ws.send(json.dumps(voice_config))
-                    log.info(f"Sent voice config: {voice_config}")
-                    await murf_ws.send(json.dumps({"text": accumulated_response}))
-                    murf_response = await murf_ws.recv()
-                    murf_data = json.loads(murf_response)
-                    base64_audio = murf_data.get("audio", "")
-                    is_final = murf_data.get("is_final", False)
-                    if base64_audio:
-                        await websocket.send_json({
-                            "type": "audio",
-                            "data": base64_audio,
-                            "is_final": is_final
-                        })
-                        log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                    # Handle remaining audio
-                    while not is_final:
-                        try:
-                            murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
-                            murf_data = json.loads(murf_response)
-                            base64_audio = murf_data.get("audio", "")
-                            is_final = murf_data.get("is_final", False)
-                            if base64_audio:
-                                await websocket.send_json({
-                                    "type": "audio",
-                                    "data": base64_audio,
-                                    "is_final": is_final
-                                })
-                                log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                        except asyncio.TimeoutError:
-                            log.warning("Timeout waiting for additional Murf audio, assuming complete")
-                            break
-                    if accumulated_response:
-                        save_chat_history(chat_id, original_transcript, accumulated_response)
-                        await websocket.send_json({
-                            "type": "response",
-                            "data": accumulated_response
-                        })
-                    log.info("Gemini Response Complete (non-streaming).")
-                    return accumulated_response
-            except Exception as e:
-                log.error(f"Non-streaming failed: {e}")
-                await websocket.send_json({"type": "error", "data": f"Failed to generate response: {str(e)}"})
-                return None
+        
+        # Add KNOWLEDGE_BASE context for general queries if relevant
+        if KNOWLEDGE_BASE:
+            knowledge_context = "\n\nKnowledge Base Content:\n"
+            for filename, content in KNOWLEDGE_BASE.items():
+                knowledge_context += f"\nFile: {filename}\n{content[:2000]}...\n"
+            contents[0]["parts"].append({"text": knowledge_context})
 
-        accumulated_response = ""
+        try:
+            response = model.generate_content(contents, stream=False)
+            accumulated_response = response.text
+        except Exception as e:
+            log.error(f"Gemini call failed: {e}")
+            await websocket.send_json({"type": "error", "data": f"Failed to generate response: {str(e)}"})
+            return None
+
         murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
         log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
-        
         async with websockets.connect(murf_ws_url) as murf_ws:
             await murf_ws.send(json.dumps({"init": True}))
             voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
             await murf_ws.send(json.dumps(voice_config))
             log.info(f"Sent voice config: {voice_config}")
-
-            for chunk in response:
-                try:
-                    if chunk.candidates and chunk.candidates[0].content.parts:
-                        for part in chunk.candidates[0].content.parts:
-                            if part.function_call:
-                                if part.function_call.name == "tavily_search":
-                                    query = part.function_call.args.get("query", "")
-                                    log.info(f"Performing search for: {query}")
-                                    search_result = await tavily_search(query)
-                                    accumulated_response += search_result
-                                    await websocket.send_json({
-                                        "type": "search",
-                                        "data": search_result
-                                    })
-                                    await murf_ws.send(json.dumps({"text": search_result}))
-                                    murf_response = await murf_ws.recv()
-                                    murf_data = json.loads(murf_response)
-                                    base64_audio = murf_data.get("audio", "")
-                                    is_final = murf_data.get("is_final", False)
-                                    if base64_audio:
-                                        await websocket.send_json({
-                                            "type": "audio",
-                                            "data": base64_audio,
-                                            "is_final": is_final
-                                        })
-                                        log.info(f"Sent search audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                                    if is_final:
-                                        break
-                            elif part.text:
-                                content = part.text
-                                accumulated_response += content
-                                log.info(f"Sending to Murf: {content}")
-                                await murf_ws.send(json.dumps({"text": content}))
-                                murf_response = await murf_ws.recv()
-                                murf_data = json.loads(murf_response)
-                                base64_audio = murf_data.get("audio", "")
-                                is_final = murf_data.get("is_final", False)
-                                if base64_audio:
-                                    await websocket.send_json({
-                                        "type": "audio",
-                                        "data": base64_audio,
-                                        "is_final": is_final
-                                    })
-                                    log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                                if is_final:
-                                    break
-                except AttributeError as e:
-                    log.error(f"Error processing chunk: {e}")
-                    continue
-
-            while True:
+            await murf_ws.send(json.dumps({"text": accumulated_response}))
+            murf_response = await murf_ws.recv()
+            murf_data = json.loads(murf_response)
+            base64_audio = murf_data.get("audio", "")
+            is_final = murf_data.get("is_final", False)
+            if base64_audio:
+                await websocket.send_json({
+                    "type": "audio",
+                    "data": base64_audio,
+                    "is_final": is_final
+                })
+                log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+            while not is_final:
                 try:
                     murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
-                    log.info(f"Received additional from Murf: {murf_response[:100]}...")
                     murf_data = json.loads(murf_response)
                     base64_audio = murf_data.get("audio", "")
                     is_final = murf_data.get("is_final", False)
@@ -433,8 +363,6 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                             "is_final": is_final
                         })
                         log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                    if is_final:
-                        break
                 except asyncio.TimeoutError:
                     log.warning("Timeout waiting for additional Murf audio, assuming complete")
                     break
@@ -533,7 +461,7 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
             while True:
                 msg = await queue.get()
                 await websocket.send_text(msg)
-                queue_task.done()
+                queue.task_done()
         except Exception:
             pass
 
