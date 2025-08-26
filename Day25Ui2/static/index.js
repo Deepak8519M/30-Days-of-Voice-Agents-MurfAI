@@ -126,7 +126,7 @@ async function loadChats() {
       .map(
         (id) => `
       <li data-id="${id}" class="${
-          id === currentChatId ? "active " : ""
+          id === currentChatId ? "active glossy" : "glossy"
         }">Conversation ${id}</li>
     `
       )
