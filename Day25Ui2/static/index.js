@@ -126,7 +126,7 @@ async function loadChats() {
       .map(
         (id) => `
       <li data-id="${id}" class="${
-          id === currentChatId ? "active" : ""
+          id === currentChatId ? "active glossy" : "glossy"
         }">Conversation ${id}</li>
     `
       )
@@ -190,8 +190,8 @@ async function loadCurrentConversation() {
       transcription.innerHTML = history
         .map(
           (entry) => `
-        <div class="user-message">${entry.user_query}</div>
-        <div class="ai-message">${entry.ai_response}</div>
+        <div class="user-message ">${entry.user_query}</div>
+        <div class="ai-message ">${entry.ai_response}</div>
       `
         )
         .join("");
@@ -214,7 +214,7 @@ uploadForm.addEventListener("submit", async (e) => {
     notification.textContent = result.message;
     notification.style.display = "block";
     setTimeout(() => (notification.style.display = "none"), 2500);
-    transcription.innerHTML += `<div class="ai-message">${result.message}</div>`;
+    transcription.innerHTML += `<div class="ai-message message-glossy">${result.message}</div>`;
     transcription.scrollTop = transcription.scrollHeight;
   } catch (error) {
     notification.textContent = "Error uploading file ❌";
@@ -275,7 +275,7 @@ function connectWebSocket() {
           const ripples = document.querySelectorAll(".ripple");
           ripples.forEach((ripple) => ripple.classList.add("active"));
         } else if (jsonData.type === "response" && jsonData.data) {
-          transcription.innerHTML += `<div class="ai-message">${jsonData.data}</div>`;
+          transcription.innerHTML += `<div class="ai-message ">${jsonData.data}</div>`;
           transcription.scrollTop = transcription.scrollHeight;
           await fetchChatHistory();
           const ripples = document.querySelectorAll(".ripple");
@@ -312,7 +312,7 @@ function connectWebSocket() {
       status.textContent = "Status: Processing response 🤖";
       listeningModal.style.display = "none";
       if (currentTranscript) {
-        transcription.innerHTML += `<div class="user-message">${currentTranscript}</div>`;
+        transcription.innerHTML += `<div class="user-message message-glossy">${currentTranscript}</div>`;
         transcription.scrollTop = transcription.scrollHeight;
         currentTranscript = "";
       }
@@ -376,7 +376,7 @@ stopBtn.addEventListener("click", () => {
 sendBtn.addEventListener("click", () => {
   const text = chatInput.value.trim();
   if (text) {
-    transcription.innerHTML += `<div class="user-message">${text}</div>`;
+    transcription.innerHTML += `<div class="user-message ">${text}</div>`;
     transcription.scrollTop = transcription.scrollHeight;
     ws.send(`text:${text}`);
     chatInput.value = "";
