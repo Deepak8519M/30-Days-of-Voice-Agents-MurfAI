@@ -13,5 +13,10 @@
     "timestamp": "2025-08-26T17:20:13.763731",
     "user_query": "What is AI in 10 words?",
     "ai_response": "AI is computers mimicking human intelligence to perform tasks.\n"
+  },
+  {
+    "timestamp": "2025-08-26T17:31:48.120224",
+    "user_query": "And see what is being happening.",
+    "ai_response": "I understand you'd like to stay informed about what's going on around you. To best help you, could you clarify what you're interested in? For example, are you curious about:\n\n*   **Local events or news?** (e.g., \"What's happening in my town this weekend?\")\n*   **World news?** (e.g., \"What are the major events happening globally?\")\n*   **Social trends?** (e.g., \"What are people talking about online?\")\n*   **Something else entirely?**\n\nOnce I know what you're looking for, I can offer some helpful suggestions.\n"
   }
 ]

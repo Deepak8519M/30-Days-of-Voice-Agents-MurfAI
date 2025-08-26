@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Voice Agent 🎙️</title>
     <link rel="stylesheet" href="/static/style.css" />
-    <script
-      src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js"
-      type="module"
-    ></script>
   </head>
   <body>
     <div class="app">
@@ -23,7 +19,7 @@
       </div>
       <div class="main-content">
         <header>
-          <h1>AI Voice Agent 🎙️</h1>
+          <h1>AI Voice Agent - Day 25 🎙️</h1>
           <p>Streaming Audio Data to Client 🚀✨</p>
         </header>
         <div class="transcription-box">
@@ -51,6 +47,25 @@
           <h2>Conversation History 📜</h2>
           <div id="chatHistory" class="chat-history-content">
             <span class="text">Loading chat history... ⏳</span>
+          </div>
+        </div>
+        <div class="settings-box">
+          <h2>Settings ⚙️</h2>
+          <div class="settings-content">
+            <label for="volumeSlider">Volume:</label>
+            <input
+              type="range"
+              id="volumeSlider"
+              min="0"
+              max="100"
+              value="50"
+            />
+            <label for="animationSpeed">Animation Speed:</label>
+            <select id="animationSpeed">
+              <option value="1">Normal</option>
+              <option value="1.5">Fast</option>
+              <option value="0.5">Slow</option>
+            </select>
           </div>
         </div>
       </div>

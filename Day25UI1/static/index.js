@@ -7,6 +7,9 @@ let isFirstAudio = true;
 let currentChatId = "1";
 let currentTranscript = "";
 let rippleInterval = null;
+let mediaStream = null;
+let audioAnalyser = null;
+let animationSpeed = 1;
 
 const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
@@ -25,6 +28,8 @@ const notification = document.getElementById("notification");
 const listeningModal = document.getElementById("listeningModal");
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
+const volumeSlider = document.getElementById("volumeSlider");
+const animationSpeedSelect = document.getElementById("animationSpeed");
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -37,6 +42,38 @@ function initAudioContext() {
       audioContext.sampleRate
     );
   }
+}
+
+// Setup Web Audio API for voice volume detection
+async function setupAudioAnalyser() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const source = audioContext.createMediaStreamSource(mediaStream);
+    audioAnalyser = audioContext.createAnalyser();
+    audioAnalyser.fftSize = 256;
+    source.connect(audioAnalyser);
+    console.log("Audio analyser set up");
+  } catch (error) {
+    console.error("Error setting up audio analyser:", error);
+    status.textContent = "Error: Microphone access denied ❌";
+  }
+}
+
+// Get voice volume
+function getVoiceVolume() {
+  if (!audioAnalyser) return 0;
+  const dataArray = new Uint8Array(audioAnalyser.frequencyBinCount);
+  audioAnalyser.getByteFrequencyData(dataArray);
+  const average =
+    dataArray.reduce((sum, val) => sum + val, 0) / dataArray.length;
+  return average / 255; // Normalize to 0-1
+}
+
+// Update ripple size based on volume
+function updateRippleSize() {
+  const volume = getVoiceVolume();
+  const maxScale = 2.5 + volume * 2; // Scale from 2.5 to 4.5 based on volume
+  document.documentElement.style.setProperty("--ripple-scale", maxScale);
 }
 
 // Decode base64 to ArrayBuffer
@@ -95,7 +132,10 @@ function playNextAudio() {
   const { buffer, isFinal } = audioQueue.shift();
   const source = audioContext.createBufferSource();
   source.buffer = buffer;
-  source.connect(audioContext.destination);
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = volumeSlider.value / 100;
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
 
   const currentTime = audioContext.currentTime;
   source.start(Math.max(nextStartTime, currentTime));
@@ -123,14 +163,16 @@ async function loadChats() {
     chatList.innerHTML = chats
       .map(
         (id) => `
-      <li data-id="${id}" class="${
-          id === currentChatId ? "active" : ""
-        }">Conversation ${id}</li>
+      <li data-id="${id}" class="${id === currentChatId ? "active" : ""}">
+        Conversation ${id}
+        <button class="delete-btn" data-id="${id}">🗑️</button>
+      </li>
     `
       )
       .join("");
     document.querySelectorAll("#chatList li").forEach((li) => {
-      li.addEventListener("click", () => {
+      li.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-btn")) return;
         currentChatId = li.dataset.id;
         document
           .querySelectorAll("#chatList li")
@@ -142,8 +184,54 @@ async function loadChats() {
         connectWebSocket();
       });
     });
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const chatId = btn.dataset.id;
+        await deleteChat(chatId);
+      });
+    });
   } catch (error) {
     console.error("Error loading chats:", error);
+  }
+}
+
+// Delete chat
+async function deleteChat(chatId) {
+  try {
+    const res = await fetch(`/delete_chat?chat_id=${chatId}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      if (chatId === currentChatId) {
+        const chats = await (await fetch("/chats")).json();
+        currentChatId = chats.length ? chats[chats.length - 1] : null;
+        if (currentChatId) {
+          await loadCurrentConversation();
+          await fetchChatHistory();
+          if (ws) ws.close();
+          connectWebSocket();
+        } else {
+          transcription.innerHTML = "";
+          chatHistory.innerHTML =
+            "<span class='text'>No chat history yet.</span>";
+        }
+      }
+      await loadChats();
+      notification.textContent = "Conversation deleted! 🗑️";
+      notification.style.display = "block";
+      setTimeout(() => {
+        notification.style.display = "none";
+      }, 2500);
+    } else {
+      throw new Error("Failed to delete chat");
+    }
+  } catch (error) {
+    console.error("Error deleting chat:", error);
+    notification.textContent = "Error deleting conversation ❌";
+    notification.style.display = "block";
+    setTimeout(() => {
+      notification.style.display = "none";
+    }, 2500);
   }
 }
 
@@ -222,6 +310,7 @@ async function initApp() {
 
 // Initialize WebSocket connection
 function connectWebSocket() {
+  if (!currentChatId) return;
   ws = new WebSocket(
     `ws://${window.location.host}/ws?chat_id=${currentChatId}`
   );
@@ -276,14 +365,16 @@ function connectWebSocket() {
       spinner.style.display = "inline-block";
       currentTranscript = "";
       listeningModal.style.display = "flex";
-      // Start ripple animation loop
+      // Start audio analyser and ripple animation
+      await setupAudioAnalyser();
       rippleInterval = setInterval(() => {
+        updateRippleSize();
         const ripples = document.querySelectorAll(".ripple");
         ripples.forEach((ripple) => {
           ripple.classList.remove("active");
           setTimeout(() => ripple.classList.add("active"), 50);
         });
-      }, 1500);
+      }, 1500 / animationSpeed);
     } else if (data === "turn_ended") {
       spinner.style.display = "none";
       status.textContent = "Status: Processing response 🤖";
@@ -296,6 +387,11 @@ function connectWebSocket() {
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream = null;
+        audioAnalyser = null;
+      }
     } else if (data === "Stopped transcription") {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
@@ -308,6 +404,11 @@ function connectWebSocket() {
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream = null;
+        audioAnalyser = null;
+      }
     } else if (
       data.startsWith("Error:") ||
       data.startsWith("Transcription error:")
@@ -318,6 +419,11 @@ function connectWebSocket() {
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+        mediaStream = null;
+        audioAnalyser = null;
+      }
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
@@ -333,6 +439,11 @@ function connectWebSocket() {
     status.textContent = "Status: Disconnected 🔌";
     spinner.style.display = "none";
     clearInterval(rippleInterval);
+    if (mediaStream) {
+      mediaStream.getTracks().forEach((track) => track.stop());
+      mediaStream = null;
+      audioAnalyser = null;
+    }
   };
 
   ws.onerror = () => {
@@ -380,6 +491,28 @@ newChatBtn.addEventListener("click", async () => {
   await fetchChatHistory();
   if (ws) ws.close();
   connectWebSocket();
+});
+
+volumeSlider.addEventListener("input", () => {
+  if (audioContext) {
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = volumeSlider.value / 100;
+  }
+});
+
+animationSpeedSelect.addEventListener("change", () => {
+  animationSpeed = parseFloat(animationSpeedSelect.value);
+  if (rippleInterval) {
+    clearInterval(rippleInterval);
+    rippleInterval = setInterval(() => {
+      updateRippleSize();
+      const ripples = document.querySelectorAll(".ripple");
+      ripples.forEach((ripple) => {
+        ripple.classList.remove("active");
+        setTimeout(() => ripple.classList.add("active"), 50);
+      });
+    }, 1500 / animationSpeed);
+  }
 });
 
 // Initialize

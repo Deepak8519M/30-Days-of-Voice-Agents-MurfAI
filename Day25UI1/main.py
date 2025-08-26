@@ -10,7 +10,7 @@ from typing import Optional, List, Dict
 
 import pyaudio
 import assemblyai as aai
-from fastapi import FastAPI, WebSocket, Request, Query, WebSocketException
+from fastapi import FastAPI, WebSocket, Request, Query, WebSocketException, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -132,6 +132,21 @@ async def new_chat():
     except Exception as e:
         log.error(f"Failed to create new chat: {e}")
         return {"error": str(e)}
+
+# Delete chat
+@app.delete("/delete_chat")
+async def delete_chat(chat_id: str = Query(...)):
+    try:
+        file = get_chat_file(chat_id)
+        if os.path.exists(file):
+            os.remove(file)
+            log.info(f"Deleted chat {chat_id}")
+            return {"status": "success"}
+        else:
+            raise HTTPException(status_code=404, detail="Chat not found")
+    except Exception as e:
+        log.error(f"Failed to delete chat {chat_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Utility to get chat history
 @app.get("/chat_history")
