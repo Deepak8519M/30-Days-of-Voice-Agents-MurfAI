@@ -3,5 +3,15 @@
     "timestamp": "2025-08-26T17:09:16.952819",
     "user_query": "So what do you mean by AI agents?",
     "ai_response": "Think of AI agents as little helpers that live inside computers. They're designed to do specific jobs for you, kind of like how a personal assistant might handle your emails or schedule appointments.\n\nWhat makes them special is that they're not just following a fixed set of instructions. Instead, they can:\n\n*   **Sense their environment:** They can \"see\" what's happening around them by reading data or getting information from the internet.\n*   **Make decisions:** Based on what they sense, they can figure out the best course of action to take.\n*   **Take action:** Then, they can actually *do* things, like sending an email, updating a calendar, or even controlling other devices.\n*   **Learn:** They can get better over time by learning from their experiences, so they become more effective at their job.\n\nFor example, imagine an AI agent that helps you find the best deals online. It could \"see\" the prices on different websites, \"decide\" which ones are the lowest, and then \"take action\" by showing you a list of the best deals. And the more you use it, the better it gets at understanding what you're looking for.\n\nSo, in a nutshell, AI agents are smart, helpful programs that can sense, think, act, and learn to achieve specific goals.\n"
+  },
+  {
+    "timestamp": "2025-08-26T17:19:49.715347",
+    "user_query": "Simply Explain Mathmatics in 10 words?",
+    "ai_response": "Mathematics is the language of patterns, relationships, and logical thinking.\n"
+  },
+  {
+    "timestamp": "2025-08-26T17:20:13.763731",
+    "user_query": "What is AI in 10 words?",
+    "ai_response": "AI is computers mimicking human intelligence to perform tasks.\n"
   }
 ]
