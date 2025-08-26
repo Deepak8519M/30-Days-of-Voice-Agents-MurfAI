@@ -23,5 +23,15 @@
     "timestamp": "2025-08-26T18:23:46.279830",
     "user_query": "What are the topics in this Unit2.pdf",
     "ai_response": "I'm sorry, but I cannot access local files like \"Unit2.pdf\" on your computer.  Therefore, I'm unable to tell you what topics it covers.\n"
+  },
+  {
+    "timestamp": "2025-08-26T19:13:39.578974",
+    "user_query": "what is ai",
+    "ai_response": "That's a big question, and there's no single simple answer!  Think of AI, or Artificial Intelligence, as a way of making computers do things that usually require human intelligence.\n\nIt's like teaching a computer to think, or at least to act like it's thinking.  We do this by giving it lots and lots of information and rules, so it can learn to recognize patterns, make predictions, and even solve problems.\n\nSometimes it's used for simple things, like recommending a movie you might like.  Other times, it's used for much more complex tasks, such as diagnosing illnesses or driving a car.  It's a constantly evolving field, with lots of exciting possibilities and challenges.\n"
+  },
+  {
+    "timestamp": "2025-08-26T19:14:13.385196",
+    "user_query": "What is mathematics?",
+    "ai_response": "That's a big question!  Mathematics is a fascinating subject.  Think of it as a language we use to describe patterns and relationships. It's built on logic and uses symbols and numbers to explain how things work, from the simplest counting to incredibly complex ideas about the universe.  It's everywhere, in everything from the way we measure ingredients for baking a cake to understanding how planets move.\n"
   }
 ]
