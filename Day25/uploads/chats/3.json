@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "timestamp": "2025-08-26T16:07:17.745239",
+    "user_query": "In a simple terms, try to explain me about what is AI.",
+    "ai_response": "Imagine you have a puppy, and you're trying to teach it to fetch. At first, it doesn't know what \"fetch\" means, but you keep showing it, praising it when it gets it right, and gently correcting it when it doesn't. Over time, the puppy learns.\n\nAI is similar. It's like teaching a computer to do something that usually requires a human brain, such as understanding language, recognizing images, or making decisions. Instead of using treats and praise, we use data and algorithms (sets of instructions). We feed the computer lots of examples, and it learns from them, improving its performance over time.\n\nSo, in simple terms, AI is about making computers smart enough to do things that we normally think only humans can do.\n"
+  }
+]
