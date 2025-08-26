@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2025-08-26T16:03:46.969745",
+    "user_query": "So tell me more about AI voice agents.",
+    "ai_response": "AI voice agents are computer programs that can understand human speech and respond in a way that sounds natural. You can think of them as virtual assistants you can talk to, like having a helpful person ready to answer questions or carry out tasks for you.\n\nThese agents use a combination of technologies, primarily:\n\n*   **Speech Recognition:** This is what allows the agent to \"hear\" and understand what you're saying.\n*   **Natural Language Understanding (NLU):** NLU helps the agent figure out the *meaning* behind your words, even if you don't say things in a perfectly structured way.\n*   **Dialogue Management:** This is the agent's ability to hold a conversation, keep track of what's been said, and decide what to say next.\n*   **Text-to-Speech (TTS):** This lets the agent turn its responses into spoken words, so it can \"talk\" back to you.\n\nAI voice agents can do all sorts of things. Some are designed for specific tasks, like helping you order food or book a flight. Others are more general-purpose, like answering questions, providing information, or even just keeping you company. You might have interacted with them when calling a customer service line, or when using a smart speaker."
+  },
+  {
+    "timestamp": "2025-08-26T16:15:06.610673",
+    "user_query": "Hi. Myself deepak speaking.",
+    "ai_response": "Hello Deepak, it's nice to meet you. Is there anything I can help you with today? Just let me know what's on your mind.\n"
+  },
+  {
+    "timestamp": "2025-08-26T16:32:37.470958",
+    "user_query": "IN simple Terms what is combinatoriccs??",
+    "ai_response": "Combinatorics is really just a fancy word for the math of counting.\n\nImagine you have a few different things, like flavors of ice cream, and you want to figure out how many different combinations or arrangements you can make with them. Combinatorics gives you the tools and techniques to count those possibilities in a smart way, without having to list them all out.\n\nSo, instead of saying \"the math of counting,\" we use the word \"combinatorics,\" but that's all it really means!\n"
+  }
+]
