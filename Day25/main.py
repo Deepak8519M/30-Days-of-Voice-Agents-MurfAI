@@ -10,7 +10,7 @@ from typing import Optional, List, Dict
 
 import pyaudio
 import assemblyai as aai
-from fastapi import FastAPI, WebSocket, Request
+from fastapi import FastAPI, WebSocket, Request, Query, WebSocketException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -61,14 +61,18 @@ templates = Jinja2Templates(directory="templates")
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+# Chat directory
+CHAT_DIR = "chats"
+os.makedirs(os.path.join(UPLOAD_DIR, CHAT_DIR), exist_ok=True)
+
 # Audio config
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 1600
 
-# Chat history file
-CHAT_HISTORY_FILE = os.path.join(UPLOAD_DIR, "chat_history.json")
+def get_chat_file(chat_id: str) -> str:
+    return os.path.join(UPLOAD_DIR, CHAT_DIR, f"{chat_id}.json")
 
 # Utility to save audio
 def save_wav(frames: List[bytes]) -> Optional[str]:
@@ -84,11 +88,12 @@ def save_wav(frames: List[bytes]) -> Optional[str]:
     return path
 
 # Utility to save chat history
-def save_chat_history(user_query: str, ai_response: str) -> bool:
+def save_chat_history(chat_id: str, user_query: str, ai_response: str) -> bool:
     try:
+        file = get_chat_file(chat_id)
         history = []
-        if os.path.exists(CHAT_HISTORY_FILE):
-            with open(CHAT_HISTORY_FILE, "r") as f:
+        if os.path.exists(file):
+            with open(file, "r") as f:
                 history = json.load(f)
         entry = {
             "timestamp": datetime.now().isoformat(),
@@ -96,24 +101,49 @@ def save_chat_history(user_query: str, ai_response: str) -> bool:
             "ai_response": ai_response,
         }
         history.append(entry)
-        with open(CHAT_HISTORY_FILE, "w") as f:
+        with open(file, "w") as f:
             json.dump(history, f, indent=2)
-        log.info(f"Chat history saved: {entry}")
+        log.info(f"Chat history saved for {chat_id}: {entry}")
         return True
     except Exception as e:
-        log.error(f"Failed to save chat history: {e}")
+        log.error(f"Failed to save chat history for {chat_id}: {e}")
         return False
+
+# List chats
+@app.get("/chats")
+async def list_chats():
+    try:
+        chats = [f.split('.')[0] for f in os.listdir(os.path.join(UPLOAD_DIR, CHAT_DIR)) if f.endswith('.json')]
+        return sorted(chats, key=lambda x: int(x) if x.isdigit() else 0)
+    except Exception as e:
+        log.error(f"Failed to list chats: {e}")
+        return []
+
+# Create new chat
+@app.post("/new_chat")
+async def new_chat():
+    try:
+        chats = await list_chats()
+        new_id = str(max([int(c) for c in chats if c.isdigit()] or [0]) + 1)
+        file = get_chat_file(new_id)
+        with open(file, "w") as f:
+            json.dump([], f)
+        return {"chat_id": new_id}
+    except Exception as e:
+        log.error(f"Failed to create new chat: {e}")
+        return {"error": str(e)}
 
 # Utility to get chat history
 @app.get("/chat_history")
-async def get_chat_history():
+async def get_chat_history(chat_id: str = Query("1")):
     try:
-        if os.path.exists(CHAT_HISTORY_FILE):
-            with open(CHAT_HISTORY_FILE, "r") as f:
+        file = get_chat_file(chat_id)
+        if os.path.exists(file):
+            with open(file, "r") as f:
                 return json.load(f)
         return []
     except Exception as e:
-        log.error(f"Failed to read chat history: {e}")
+        log.error(f"Failed to read chat history for {chat_id}: {e}")
         return {"error": str(e)}
 
 # Static context_id
@@ -125,7 +155,7 @@ model = GenerativeModel(
     system_instruction="You are a wise and gentle guide. Your tone is calm, clear, and comforting, like a thoughtful elder or a trusted friend. You explain things in a simple way, sometimes using small analogies or everyday examples if they help. Keep responses natural and conversational — never too formal, never dramatic, and not motivational. The goal is to make the user feel relaxed, understood, and stress-free, while still giving useful and thoughtful answers. "
 )
 
-async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optional[str]:
+async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSocket) -> Optional[str]:
     try:
         response = await asyncio.to_thread(
             model.generate_content,
@@ -183,7 +213,7 @@ async def stream_gemini_response(transcript: str, websocket: WebSocket) -> Optio
                     log.warning("Timeout waiting for additional Murf audio, assuming complete")
                     break
         if accumulated_response:
-            save_chat_history(transcript, accumulated_response)
+            save_chat_history(chat_id, transcript, accumulated_response)
             await websocket.send_json({
                 "type": "response",
                 "data": accumulated_response
@@ -205,9 +235,14 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
-async def ws_handler(websocket: WebSocket):
+async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
+    if not chat_id:
+        raise WebSocketException(code=400, reason="Missing chat_id")
+    file = get_chat_file(chat_id)
+    if not os.path.exists(file):
+        raise WebSocketException(code=403, reason="Chat ID does not exist")
     await websocket.accept()
-    log.info("WebSocket connected")
+    log.info(f"WebSocket connected for chat_id: {chat_id}")
 
     py_audio: Optional[pyaudio.PyAudio] = None
     mic_stream: Optional[pyaudio.Stream] = None
@@ -239,7 +274,7 @@ async def ws_handler(websocket: WebSocket):
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                 await websocket.send_text("turn_ended")
                 if final_transcript:
-                    await stream_gemini_response(final_transcript, websocket)
+                    await stream_gemini_response(chat_id, final_transcript, websocket)
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -344,7 +379,7 @@ async def ws_handler(websocket: WebSocket):
                     await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
                     if final_transcript:
-                        await stream_gemini_response(final_transcript, websocket)
+                        await stream_gemini_response(chat_id, final_transcript, websocket)
 
                 with frames_lock:
                     saved = save_wav(recorded_frames.copy())
