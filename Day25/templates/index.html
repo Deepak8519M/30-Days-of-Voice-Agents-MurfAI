@@ -3,9 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Voice Agent - Day 25 🎙️</title>
+    <title>AI Voice Agent 🎙️</title>
     <link rel="stylesheet" href="/static/style.css" />
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script
+      src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js"
+      type="module"
+    ></script>
   </head>
   <body>
     <div class="app">
@@ -54,14 +57,20 @@
     </div>
     <div class="modal" id="listeningModal" style="display: none">
       <div class="modal-content">
-        <lottie-player
-          src="https://lottie.host/83a76f88-1e03-45fe-bbb0-46dc797f08aa/5l6lDzY6Xj.json"
-          background="transparent"
+        <dotlottie-wc
+          src="https://lottie.host/d36de418-44a1-42f3-866f-73eb3103b409/sX9DSN3uyd.lottie"
+          style="width: 400px; height: 330px"
           speed="1"
-          style="width: 150px; height: 150px"
-          loop
           autoplay
-        ></lottie-player>
+          loop
+        ></dotlottie-wc>
+        <!-- <dotlottie-wc
+          src="https://lottie.host/a2f6961a-ce1b-4c22-84b4-82ebf8a1700f/cFIrGFYIn8.lottie"
+          style="width: 300px; height: 300px"
+          speed="1"
+          autoplay
+          loop
+        ></dotlottie-wc> -->
         <p>Listening...</p>
         <button id="stopListening" class="stop-btn">Stop Listening</button>
       </div>

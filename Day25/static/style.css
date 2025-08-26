@@ -209,7 +209,7 @@ body {
   overflow: hidden;
   margin-bottom: 25px;
   width: 90%;
-  max-width: 800px;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
 }
