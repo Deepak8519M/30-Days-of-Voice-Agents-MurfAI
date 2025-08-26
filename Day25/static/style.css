@@ -8,6 +8,7 @@ body {
   width: 100%;
   color: #ffffff;
   font-family: "Poppins", sans-serif;
+  cursor: pointer;
 }
 
 .app {
@@ -212,6 +213,14 @@ body {
   max-width: 1030px;
   display: flex;
   flex-direction: column;
+  height: 800px;
+}
+.panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
 }
 
 .transcription-box::before {
@@ -243,13 +252,14 @@ body {
   background: rgba(13, 13, 13, 0.7);
   padding: 18px;
   border-radius: 12px;
-  min-height: 200px;
-  max-height: 400px;
+  min-height: 550px;
+  max-height: 600px;
   overflow-y: auto;
   line-height: 1.6;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-family: "Urbanist", sans-serif;
   flex-grow: 1;
+  margin-bottom: 10px;
 }
 
 .transcription-content .user-message {
@@ -293,6 +303,7 @@ body {
   background: rgba(30, 30, 30, 0.8);
   color: #ffffff;
   font-size: 16px;
+  outline: 1px solid #ff6b00;
 }
 
 .send-btn {
