@@ -19,13 +19,22 @@
         <button id="newChatBtn" class="new-chat-btn">
           New Conversation ✨
         </button>
+        <div class="upload-box">
+          <h2>Upload Knowledge Base 📂</h2>
+          <form id="uploadForm" enctype="multipart/form-data">
+            <input
+              type="file"
+              id="fileInput"
+              name="file"
+              accept=".pdf,.txt"
+              class="upload-input"
+            />
+            <button type="submit" class="upload-btn">Upload</button>
+          </form>
+        </div>
         <ul id="chatList" class="chat-list"></ul>
       </div>
       <div class="main-content">
-        <!-- <header>
-          <h1>AI Voice Agent 🎙️</h1>
-          <p>Streaming Audio Data to Client 🚀✨</p>
-        </header> -->
         <div class="transcription-box">
           <h2>Current Conversation 📝</h2>
           <div id="transcription" class="transcription-content">
@@ -35,7 +44,7 @@
             <input
               type="text"
               id="chatInput"
-              placeholder="Type your message..."
+              placeholder="Type your message or ask to search..."
             />
             <button id="sendBtn" class="send-btn">Send</button>
             <button id="micBtn" class="mic-btn">🎤</button>

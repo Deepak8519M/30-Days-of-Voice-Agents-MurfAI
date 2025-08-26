@@ -25,6 +25,8 @@ const notification = document.getElementById("notification");
 const listeningModal = document.getElementById("listeningModal");
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
+const uploadForm = document.getElementById("uploadForm");
+const fileInput = document.getElementById("fileInput");
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -157,14 +159,14 @@ async function fetchChatHistory() {
         ? history
             .map(
               (entry) => `
-                <div class="chat-entry">
-                  <div class="timestamp">${new Date(
-                    entry.timestamp
-                  ).toLocaleString()}</div>
-                  <div class="user-query">You: ${entry.user_query}</div>
-                  <div class="ai-response">AI: ${entry.ai_response}</div>
-                </div>
-              `
+            <div class="chat-entry">
+              <div class="timestamp">${new Date(
+                entry.timestamp
+              ).toLocaleString()}</div>
+              <div class="user-query">You: ${entry.user_query}</div>
+              <div class="ai-response">AI: ${entry.ai_response}</div>
+            </div>
+          `
             )
             .join("")
         : "<span class='text'>No chat history yet.</span>";
@@ -198,6 +200,28 @@ async function loadCurrentConversation() {
     console.error("Error loading current conversation:", error);
   }
 }
+
+// Handle file upload
+uploadForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(uploadForm);
+  try {
+    const response = await fetch("/upload", {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json();
+    notification.textContent = result.message;
+    notification.style.display = "block";
+    setTimeout(() => (notification.style.display = "none"), 2500);
+    transcription.innerHTML += `<div class="ai-message">${result.message}</div>`;
+    transcription.scrollTop = transcription.scrollHeight;
+  } catch (error) {
+    notification.textContent = "Error uploading file ❌";
+    notification.style.display = "block";
+    setTimeout(() => (notification.style.display = "none"), 2500);
+  }
+});
 
 // Initialize app
 async function initApp() {
@@ -248,18 +272,18 @@ function connectWebSocket() {
             jsonData.data.length
           );
           await queueAudio(jsonData.data, jsonData.is_final);
-          // Trigger ripple effect during audio playback
           const ripples = document.querySelectorAll(".ripple");
           ripples.forEach((ripple) => ripple.classList.add("active"));
         } else if (jsonData.type === "response" && jsonData.data) {
-          // Append AI response to transcription
           transcription.innerHTML += `<div class="ai-message">${jsonData.data}</div>`;
           transcription.scrollTop = transcription.scrollHeight;
-          // Refresh chat history
           await fetchChatHistory();
-          // Reset ripple effect
           const ripples = document.querySelectorAll(".ripple");
           ripples.forEach((ripple) => ripple.classList.remove("active"));
+        } else if (jsonData.type === "search" && jsonData.data) {
+          transcription.innerHTML += `<div class="search-result">${jsonData.data}</div>`;
+          transcription.scrollTop = transcription.scrollHeight;
+          await fetchChatHistory();
         } else {
           console.warn("Invalid JSON message format:", jsonData);
         }
@@ -276,7 +300,6 @@ function connectWebSocket() {
       spinner.style.display = "inline-block";
       currentTranscript = "";
       listeningModal.style.display = "flex";
-      // Start ripple animation loop
       rippleInterval = setInterval(() => {
         const ripples = document.querySelectorAll(".ripple");
         ripples.forEach((ripple) => {
@@ -300,11 +323,8 @@ function connectWebSocket() {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
       listeningModal.style.display = "none";
-      // Show notification
       notification.style.display = "block";
-      setTimeout(() => {
-        notification.style.display = "none";
-      }, 2500);
+      setTimeout(() => (notification.style.display = "none"), 2500);
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
@@ -321,7 +341,6 @@ function connectWebSocket() {
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
-      // Update current transcript (but don't display until final)
       currentTranscript = data;
     }
   };
