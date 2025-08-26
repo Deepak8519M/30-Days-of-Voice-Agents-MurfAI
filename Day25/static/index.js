@@ -5,6 +5,7 @@ let isPlaying = false;
 let nextStartTime = 0;
 let isFirstAudio = true;
 let currentChatId = "1";
+let currentTranscript = "";
 
 const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
@@ -12,7 +13,6 @@ const BITS_PER_SAMPLE = 16;
 
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
-const retryBtn = document.getElementById("retryBtn");
 const status = document.getElementById("status");
 const transcription = document.getElementById("transcription");
 const chatHistory = document.getElementById("chatHistory");
@@ -20,6 +20,7 @@ const spinner = document.querySelector(".spinner");
 const connectionStatus = document.getElementById("connectionStatus");
 const newChatBtn = document.getElementById("newChatBtn");
 const chatList = document.getElementById("chatList");
+const notification = document.getElementById("notification");
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -145,9 +146,6 @@ async function loadChats() {
 async function fetchChatHistory() {
   try {
     const response = await fetch(`/chat_history?chat_id=${currentChatId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
     const history = await response.json();
     if (Array.isArray(history)) {
       chatHistory.innerHTML = history.length
@@ -179,17 +177,11 @@ async function fetchChatHistory() {
 // Initialize app
 async function initApp() {
   try {
-    const res = await fetch("/chats");
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
+    let res = await fetch("/chats");
     let chats = await res.json();
     if (!chats.length) {
-      const newRes = await fetch("/new_chat", { method: "POST" });
-      if (!newRes.ok) {
-        throw new Error(`HTTP error! status: ${newRes.status}`);
-      }
-      const data = await newRes.json();
+      res = await fetch("/new_chat", { method: "POST" });
+      const data = await res.json();
       currentChatId = data.chat_id;
     } else {
       currentChatId = chats[chats.length - 1];
@@ -199,15 +191,11 @@ async function initApp() {
     connectWebSocket();
   } catch (error) {
     console.error("Error initializing app:", error);
-    status.textContent = "Error: Failed to initialize app ❌";
   }
 }
 
 // Initialize WebSocket connection
 function connectWebSocket() {
-  if (ws) {
-    ws.close();
-  }
   ws = new WebSocket(
     `ws://${window.location.host}/ws?chat_id=${currentChatId}`
   );
@@ -254,23 +242,27 @@ function connectWebSocket() {
     if (data === "Started transcription") {
       status.textContent = "Status: Transcribing 🎤";
       spinner.style.display = "inline-block";
+      currentTranscript = "";
       transcription.innerHTML = "";
       startBtn.style.display = "none";
       stopBtn.style.display = "inline-block";
-      retryBtn.style.display = "none";
     } else if (data === "turn_ended") {
       spinner.style.display = "none";
       status.textContent = "Status: Processing response 🤖";
-    } else if (data.startsWith("Stopped transcription")) {
+      if (currentTranscript) {
+        transcription.innerHTML += `<div class="user-message">${currentTranscript}</div>`;
+        currentTranscript = "";
+      }
+    } else if (data === "Stopped transcription") {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
       startBtn.style.display = "inline-block";
       stopBtn.style.display = "none";
-      retryBtn.style.display = "inline-block";
-      if (data.includes("saved")) {
-        const filename = data.match(/saved: (.+)$/)[1];
-        transcription.innerHTML += `<div class="text">Audio saved as ${filename}</div>`;
-      }
+      // Show notification
+      notification.style.display = "block";
+      setTimeout(() => {
+        notification.style.display = "none";
+      }, 3000);
     } else if (
       data.startsWith("Error:") ||
       data.startsWith("Transcription error:")
@@ -279,28 +271,26 @@ function connectWebSocket() {
       spinner.style.display = "none";
       startBtn.style.display = "inline-block";
       stopBtn.style.display = "none";
-      retryBtn.style.display = "inline-block";
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
-      // Append transcription text as user message
-      transcription.innerHTML += `<div class="user-message">${data}</div>`;
+      // Update current transcript (but don't display until final)
+      currentTranscript = data;
     }
   };
 
-  ws.onclose = (event) => {
-    console.log("WebSocket closed", event.code, event.reason);
+  ws.onclose = () => {
+    console.log("WebSocket closed");
     connectionStatus.textContent = "Disconnected from server 🔌";
     connectionStatus.classList.remove("connected");
     startBtn.disabled = true;
     stopBtn.style.display = "none";
-    retryBtn.style.display = "inline-block";
     status.textContent = "Status: Disconnected 🔌";
     spinner.style.display = "none";
   };
 
-  ws.onerror = (error) => {
-    console.error("WebSocket error:", error);
+  ws.onerror = () => {
+    console.error("WebSocket error");
     connectionStatus.textContent = "Error connecting to server ❌";
     connectionStatus.classList.remove("connected");
     startBtn.disabled = true;
@@ -318,29 +308,14 @@ stopBtn.addEventListener("click", () => {
   ws.send("stop");
 });
 
-retryBtn.addEventListener("click", () => {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send("start");
-  } else {
-    connectWebSocket();
-    status.textContent = "Status: Reconnecting... 🔄";
-  }
-});
-
 newChatBtn.addEventListener("click", async () => {
-  try {
-    const res = await fetch("/new_chat", { method: "POST" });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    const data = await res.json();
-    currentChatId = data.chat_id;
-    await loadChats();
-    await fetchChatHistory();
-    connectWebSocket();
-  } catch (error) {
-    console.error("Error creating new chat:", error);
-  }
+  const res = await fetch("/new_chat", { method: "POST" });
+  const data = await res.json();
+  currentChatId = data.chat_id;
+  await loadChats();
+  await fetchChatHistory();
+  if (ws) ws.close();
+  connectWebSocket();
 });
 
 // Initialize
