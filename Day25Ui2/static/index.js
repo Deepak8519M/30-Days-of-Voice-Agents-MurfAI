@@ -126,7 +126,7 @@ async function loadChats() {
       .map(
         (id) => `
       <li data-id="${id}" class="${
-          id === currentChatId ? "active glossy" : "glossy"
+          id === currentChatId ? "active " : ""
         }">Conversation ${id}</li>
     `
       )
@@ -214,7 +214,7 @@ uploadForm.addEventListener("submit", async (e) => {
     notification.textContent = result.message;
     notification.style.display = "block";
     setTimeout(() => (notification.style.display = "none"), 2500);
-    transcription.innerHTML += `<div class="ai-message message-glossy">${result.message}</div>`;
+    transcription.innerHTML += `<div class="ai-message ">${result.message}</div>`;
     transcription.scrollTop = transcription.scrollHeight;
   } catch (error) {
     notification.textContent = "Error uploading file ❌";
@@ -312,7 +312,7 @@ function connectWebSocket() {
       status.textContent = "Status: Processing response 🤖";
       listeningModal.style.display = "none";
       if (currentTranscript) {
-        transcription.innerHTML += `<div class="user-message message-glossy">${currentTranscript}</div>`;
+        transcription.innerHTML += `<div class="user-message ">${currentTranscript}</div>`;
         transcription.scrollTop = transcription.scrollHeight;
         currentTranscript = "";
       }
