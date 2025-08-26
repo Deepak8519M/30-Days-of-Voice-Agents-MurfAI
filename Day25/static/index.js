@@ -11,8 +11,8 @@ const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
 const BITS_PER_SAMPLE = 16;
 
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
+const startBtn = document.getElementById("micBtn");
+const stopBtn = document.getElementById("stopListening");
 const status = document.getElementById("status");
 const transcription = document.getElementById("transcription");
 const chatHistory = document.getElementById("chatHistory");
@@ -21,6 +21,9 @@ const connectionStatus = document.getElementById("connectionStatus");
 const newChatBtn = document.getElementById("newChatBtn");
 const chatList = document.getElementById("chatList");
 const notification = document.getElementById("notification");
+const listeningModal = document.getElementById("listeningModal");
+const chatInput = document.getElementById("chatInput");
+const sendBtn = document.getElementById("sendBtn");
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -132,6 +135,7 @@ async function loadChats() {
           .querySelectorAll("#chatList li")
           .forEach((l) => l.classList.remove("active"));
         li.classList.add("active");
+        loadCurrentConversation();
         fetchChatHistory();
         if (ws) ws.close();
         connectWebSocket();
@@ -174,6 +178,26 @@ async function fetchChatHistory() {
   }
 }
 
+// Load current conversation into transcription
+async function loadCurrentConversation() {
+  try {
+    const response = await fetch(`/chat_history?chat_id=${currentChatId}`);
+    const history = await response.json();
+    if (Array.isArray(history)) {
+      transcription.innerHTML = history
+        .map(
+          (entry) => `
+        <div class="user-message">${entry.user_query}</div>
+        <div class="ai-message">${entry.ai_response}</div>
+      `
+        )
+        .join("");
+    }
+  } catch (error) {
+    console.error("Error loading current conversation:", error);
+  }
+}
+
 // Initialize app
 async function initApp() {
   try {
@@ -187,6 +211,7 @@ async function initApp() {
       currentChatId = chats[chats.length - 1];
     }
     await loadChats();
+    await loadCurrentConversation();
     await fetchChatHistory();
     connectWebSocket();
   } catch (error) {
@@ -204,7 +229,6 @@ function connectWebSocket() {
     console.log("WebSocket opened");
     connectionStatus.textContent = "Connected to server ✅";
     connectionStatus.classList.add("connected");
-    startBtn.disabled = false;
   };
 
   ws.onmessage = async (event) => {
@@ -226,6 +250,7 @@ function connectWebSocket() {
         } else if (jsonData.type === "response" && jsonData.data) {
           // Append AI response to transcription
           transcription.innerHTML += `<div class="ai-message">${jsonData.data}</div>`;
+          transcription.scrollTop = transcription.scrollHeight;
           // Refresh chat history
           await fetchChatHistory();
         } else {
@@ -243,34 +268,31 @@ function connectWebSocket() {
       status.textContent = "Status: Transcribing 🎤";
       spinner.style.display = "inline-block";
       currentTranscript = "";
-      transcription.innerHTML = "";
-      startBtn.style.display = "none";
-      stopBtn.style.display = "inline-block";
     } else if (data === "turn_ended") {
       spinner.style.display = "none";
       status.textContent = "Status: Processing response 🤖";
+      listeningModal.style.display = "none";
       if (currentTranscript) {
         transcription.innerHTML += `<div class="user-message">${currentTranscript}</div>`;
+        transcription.scrollTop = transcription.scrollHeight;
         currentTranscript = "";
       }
     } else if (data === "Stopped transcription") {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
-      startBtn.style.display = "inline-block";
-      stopBtn.style.display = "none";
+      listeningModal.style.display = "none";
       // Show notification
       notification.style.display = "block";
       setTimeout(() => {
         notification.style.display = "none";
-      }, 3000);
+      }, 2500);
     } else if (
       data.startsWith("Error:") ||
       data.startsWith("Transcription error:")
     ) {
       status.textContent = `Error: ${data}`;
       spinner.style.display = "none";
-      startBtn.style.display = "inline-block";
-      stopBtn.style.display = "none";
+      listeningModal.style.display = "none";
     } else if (data === "Already transcribing") {
       status.textContent = "Status: Already transcribing 🎤";
     } else {
@@ -283,17 +305,13 @@ function connectWebSocket() {
     console.log("WebSocket closed");
     connectionStatus.textContent = "Disconnected from server 🔌";
     connectionStatus.classList.remove("connected");
-    startBtn.disabled = true;
-    stopBtn.style.display = "none";
     status.textContent = "Status: Disconnected 🔌";
     spinner.style.display = "none";
   };
 
   ws.onerror = () => {
-    console.error("WebSocket error");
     connectionStatus.textContent = "Error connecting to server ❌";
     connectionStatus.classList.remove("connected");
-    startBtn.disabled = true;
   };
 }
 
@@ -301,6 +319,7 @@ function connectWebSocket() {
 startBtn.addEventListener("click", () => {
   initAudioContext();
   isFirstAudio = true;
+  listeningModal.style.display = "flex";
   ws.send("start");
 });
 
@@ -308,11 +327,29 @@ stopBtn.addEventListener("click", () => {
   ws.send("stop");
 });
 
+sendBtn.addEventListener("click", () => {
+  const text = chatInput.value.trim();
+  if (text) {
+    transcription.innerHTML += `<div class="user-message">${text}</div>`;
+    transcription.scrollTop = transcription.scrollHeight;
+    ws.send(`text:${text}`);
+    chatInput.value = "";
+    status.textContent = "Status: Processing response 🤖";
+  }
+});
+
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendBtn.click();
+  }
+});
+
 newChatBtn.addEventListener("click", async () => {
   const res = await fetch("/new_chat", { method: "POST" });
   const data = await res.json();
   currentChatId = data.chat_id;
   await loadChats();
+  await loadCurrentConversation();
   await fetchChatHistory();
   if (ws) ws.close();
   connectWebSocket();

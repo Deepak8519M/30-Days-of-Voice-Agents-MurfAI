@@ -8,5 +8,10 @@
     "timestamp": "2025-08-26T16:15:06.610673",
     "user_query": "Hi. Myself deepak speaking.",
     "ai_response": "Hello Deepak, it's nice to meet you. Is there anything I can help you with today? Just let me know what's on your mind.\n"
+  },
+  {
+    "timestamp": "2025-08-26T16:32:37.470958",
+    "user_query": "IN simple Terms what is combinatoriccs??",
+    "ai_response": "Combinatorics is really just a fancy word for the math of counting.\n\nImagine you have a few different things, like flavors of ice cream, and you want to figure out how many different combinations or arrangements you can make with them. Combinatorics gives you the tools and techniques to count those possibilities in a smart way, without having to list them all out.\n\nSo, instead of saying \"the math of counting,\" we use the word \"combinatorics,\" but that's all it really means!\n"
   }
 ]

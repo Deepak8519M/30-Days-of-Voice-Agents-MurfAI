@@ -264,17 +264,16 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                 transcript_text = message.transcript.strip()
                 all_transcripts.append(transcript_text)
                 log.info(f"Live Transcription: {transcript_text}")
-                await websocket.send_text(transcript_text)
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text
                     log.info(f"Final Formatted Transcription: {final_transcript}")
+                    await websocket.send_text(final_transcript)
             elif message.type == "Termination":
                 log.info("Turn ended detected")
                 if final_transcript or all_transcripts:
-                    await websocket.send_text(final_transcript or all_transcripts[-1])
-                await websocket.send_text("turn_ended")
-                if final_transcript:
-                    await stream_gemini_response(chat_id, final_transcript, websocket)
+                    await websocket.send_text("turn_ended")
+                    if final_transcript:
+                        await stream_gemini_response(chat_id, final_transcript, websocket)
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
@@ -376,19 +375,20 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                     audio_thread.join(timeout=5.0)
 
                 if final_transcript or all_transcripts:
-                    await websocket.send_text(final_transcript or all_transcripts[-1])
                     await websocket.send_text("turn_ended")
                     if final_transcript:
                         await stream_gemini_response(chat_id, final_transcript, websocket)
 
                 with frames_lock:
-                    saved = save_wav(recorded_frames.copy())
+                    save_wav(recorded_frames.copy())
                     recorded_frames.clear()
 
-                await websocket.send_text(
-                    "Stopped transcription"
-                    + (f" (saved: {os.path.basename(saved)})" if saved else "")
-                )
+                await websocket.send_text("Stopped transcription")
+
+            elif msg.startswith("text:"):
+                transcript = msg[5:].strip()
+                if transcript:
+                    await stream_gemini_response(chat_id, transcript, websocket)
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")
