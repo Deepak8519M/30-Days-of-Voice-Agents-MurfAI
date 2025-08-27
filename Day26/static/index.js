@@ -190,8 +190,8 @@ async function loadCurrentConversation() {
       transcription.innerHTML = history
         .map(
           (entry) => `
-        <div class="user-message ">${entry.user_query}</div>
-        <div class="ai-message ">${entry.ai_response}</div>
+        <div class="user-message glossy">${entry.user_query}</div>
+        <div class="ai-message glossy">${entry.ai_response}</div>
       `
         )
         .join("");
@@ -199,6 +199,18 @@ async function loadCurrentConversation() {
   } catch (error) {
     console.error("Error loading current conversation:", error);
   }
+}
+
+// Show notification with gradient animation
+function showNotification(message) {
+  notification.textContent = message;
+  notification.style.background = "linear-gradient(135deg, #ff6b00, #ffa500)";
+  notification.style.display = "block";
+  notification.style.animation =
+    "slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s forwards";
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 2500);
 }
 
 // Handle file upload
@@ -211,15 +223,11 @@ uploadForm.addEventListener("submit", async (e) => {
       body: formData,
     });
     const result = await response.json();
-    notification.textContent = result.message;
-    notification.style.display = "block";
-    setTimeout(() => (notification.style.display = "none"), 2500);
-    transcription.innerHTML += `<div class="ai-message ">${result.message}</div>`;
+    showNotification(result.message);
+    transcription.innerHTML += `<div class="ai-message glossy">${result.message}</div>`;
     transcription.scrollTop = transcription.scrollHeight;
   } catch (error) {
-    notification.textContent = "Error uploading file ❌";
-    notification.style.display = "block";
-    setTimeout(() => (notification.style.display = "none"), 2500);
+    showNotification("Error uploading file ❌");
   }
 });
 
@@ -260,7 +268,7 @@ function connectWebSocket() {
     const data = event.data;
     console.log("WebSocket message received:", data.substring(0, 100) + "...");
 
-    // Handle JSON messages (audio or response)
+    // Handle JSON messages (audio, response, or zapier)
     if (data.startsWith("{")) {
       try {
         const jsonData = JSON.parse(data);
@@ -275,7 +283,7 @@ function connectWebSocket() {
           const ripples = document.querySelectorAll(".ripple");
           ripples.forEach((ripple) => ripple.classList.add("active"));
         } else if (jsonData.type === "response" && jsonData.data) {
-          transcription.innerHTML += `<div class="ai-message ">${jsonData.data}</div>`;
+          transcription.innerHTML += `<div class="ai-message glossy">${jsonData.data}</div>`;
           transcription.scrollTop = transcription.scrollHeight;
           await fetchChatHistory();
           const ripples = document.querySelectorAll(".ripple");
@@ -284,6 +292,13 @@ function connectWebSocket() {
           transcription.innerHTML += `<div class="search-result">${jsonData.data}</div>`;
           transcription.scrollTop = transcription.scrollHeight;
           await fetchChatHistory();
+        } else if (jsonData.type === "zapier" && jsonData.data) {
+          showNotification(jsonData.data); // Show "Email sent successfully" with gradient
+          transcription.innerHTML += `<div class="ai-message glossy">${jsonData.data}</div>`;
+          transcription.scrollTop = transcription.scrollHeight;
+          await fetchChatHistory();
+        } else if (jsonData.type === "error" && jsonData.data) {
+          showNotification(`Error: ${jsonData.data}`);
         } else {
           console.warn("Invalid JSON message format:", jsonData);
         }
@@ -312,7 +327,7 @@ function connectWebSocket() {
       status.textContent = "Status: Processing response 🤖";
       listeningModal.style.display = "none";
       if (currentTranscript) {
-        transcription.innerHTML += `<div class="user-message ">${currentTranscript}</div>`;
+        transcription.innerHTML += `<div class="user-message glossy">${currentTranscript}</div>`;
         transcription.scrollTop = transcription.scrollHeight;
         currentTranscript = "";
       }
@@ -323,8 +338,7 @@ function connectWebSocket() {
       status.textContent = "Status: Idle ⏳";
       spinner.style.display = "none";
       listeningModal.style.display = "none";
-      notification.style.display = "block";
-      setTimeout(() => (notification.style.display = "none"), 2500);
+      showNotification("Transcription stopped ✅");
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
@@ -335,6 +349,7 @@ function connectWebSocket() {
       status.textContent = `Error: ${data}`;
       spinner.style.display = "none";
       listeningModal.style.display = "none";
+      showNotification(`Error: ${data}`);
       clearInterval(rippleInterval);
       const ripples = document.querySelectorAll(".ripple");
       ripples.forEach((ripple) => ripple.classList.remove("active"));
@@ -376,7 +391,7 @@ stopBtn.addEventListener("click", () => {
 sendBtn.addEventListener("click", () => {
   const text = chatInput.value.trim();
   if (text) {
-    transcription.innerHTML += `<div class="user-message ">${text}</div>`;
+    transcription.innerHTML += `<div class="user-message glossy">${text}</div>`;
     transcription.scrollTop = transcription.scrollHeight;
     ws.send(`text:${text}`);
     chatInput.value = "";

@@ -36,18 +36,19 @@ AAI_API_KEY = os.getenv("AAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 MURF_API_KEY = os.getenv("MURF_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+ZAPIER_WEBHOOK_URL = os.getenv("ZAPIER_WEBHOOK_URL")  # Your webhook
 MURF_WS_URL = os.getenv("MURF_WS_URL", "wss://api.murf.ai/v1/speech/stream-input")
-if not AAI_API_KEY or not GEMINI_API_KEY or not MURF_API_KEY or not TAVILY_API_KEY:
-    raise RuntimeError("Missing AAI_API_KEY, GEMINI_API_KEY, MURF_API_KEY, or TAVILY_API_KEY environment variable.")
+if not all([AAI_API_KEY, GEMINI_API_KEY, MURF_API_KEY, TAVILY_API_KEY, ZAPIER_WEBHOOK_URL]):
+    raise RuntimeError("Missing environment variable.")
 aai.settings.api_key = AAI_API_KEY
 configure(api_key=GEMINI_API_KEY)
 
 # Logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day25")
+log = logging.getLogger("day26")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 25: Web Search Skill")
+app = FastAPI(title="AI Voice Agent - Day 26: Zapier Skill")
 
 # CORS
 app.add_middleware(
@@ -178,13 +179,13 @@ async def upload_file(file: UploadFile = File(...)):
                 if not extracted_text.strip():
                     log.warning(f"No text extracted from PDF: {sanitized_filename}")
                     return {
-                        "message": f"File {sanitized_filename} uploaded, but no text could be extracted. The PDF may contain images or be protected.",
+                        "message": f"File {sanitized_filename} uploaded, but no text could be extracted.",
                         "extracted_text": ""
                     }
             except Exception as e:
                 log.error(f"Failed to process PDF {sanitized_filename}: {e}")
                 return {
-                    "message": f"File {sanitized_filename} uploaded, but an error occurred while processing: {str(e)}",
+                    "message": f"File {sanitized_filename} uploaded, but an error occurred: {str(e)}",
                     "extracted_text": ""
                 }
         elif sanitized_filename.endswith(".txt"):
@@ -192,7 +193,7 @@ async def upload_file(file: UploadFile = File(...)):
                 extracted_text = f.read()
         else:
             return {
-                "message": f"File {sanitized_filename} uploaded, but only .pdf and .txt files are supported.",
+                "message": f"File {sanitized_filename} uploaded, but only .pdf and .txt are supported.",
                 "extracted_text": ""
             }
         content_file = os.path.join(KNOWLEDGE_BASE_DIR, f"{sanitized_filename}.txt")
@@ -248,14 +249,14 @@ model = GenerativeModel(
 
 async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSocket) -> Optional[str]:
     try:
-        # Ensure transcript is a valid string
+        # Ensure transcript is valid
         if not isinstance(transcript, str) or not transcript.strip():
             log.error(f"Invalid transcript: {transcript}")
             await websocket.send_json({"type": "error", "data": "Invalid query provided"})
             return None
 
         original_transcript = transcript
-        # Handle summary requests using KNOWLEDGE_BASE
+        # Handle summary requests
         if "summary" in transcript.lower():
             query_words = set(re.sub(r'[^\w\s]', '', transcript.lower()).split())
             for filename in KNOWLEDGE_BASE:
@@ -301,22 +302,28 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                             })
                             log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
                     except asyncio.TimeoutError:
-                        log.warning("Timeout waiting for additional Murf audio, assuming complete")
+                        log.warning("Timeout waiting for additional Murf audio")
                         break
             if accumulated_response:
                 save_chat_history(chat_id, original_transcript, accumulated_response)
                 await websocket.send_json({
-                    "type": "response",
+                    "type": "search",
                     "data": accumulated_response
                 })
+            # Zapier for search results if "send to email"
+            if "send to email" in original_transcript.lower() or "email the summary" in original_transcript.lower():
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(ZAPIER_WEBHOOK_URL, json={"response": accumulated_response}) as resp:
+                        log.info(f"Sent search response to Zapier webhook: {resp.status}")
+                        await websocket.send_json({
+                            "type": "zapier",
+                            "data": "Email sent successfully"
+                        })
             return accumulated_response
 
-        # Handle general queries with Gemini
+        # Handle general queries
         log.debug(f"Calling Gemini with transcript: {transcript}")
         contents = [{"role": "user", "parts": [{"text": transcript}]}]
-        log.debug(f"Gemini request contents: {json.dumps(contents)}")
-        
-        # Add KNOWLEDGE_BASE context for general queries if relevant
         if KNOWLEDGE_BASE:
             knowledge_context = "\n\nKnowledge Base Content:\n"
             for filename, content in KNOWLEDGE_BASE.items():
@@ -332,12 +339,10 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
             return None
 
         murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
-        log.info(f"Attempting WebSocket connection to: {murf_ws_url}")
         async with websockets.connect(murf_ws_url) as murf_ws:
             await murf_ws.send(json.dumps({"init": True}))
             voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
             await murf_ws.send(json.dumps(voice_config))
-            log.info(f"Sent voice config: {voice_config}")
             await murf_ws.send(json.dumps({"text": accumulated_response}))
             murf_response = await murf_ws.recv()
             murf_data = json.loads(murf_response)
@@ -364,10 +369,7 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                         })
                         log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
                 except asyncio.TimeoutError:
-                    log.warning("Timeout waiting for additional Murf audio, assuming complete")
-                    break
-                except Exception as e:
-                    log.error(f"Error receiving Murf response: {e}")
+                    log.warning("Timeout waiting for additional Murf audio")
                     break
 
         if accumulated_response:
@@ -376,18 +378,21 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                 "type": "response",
                 "data": accumulated_response
             })
+            # Zapier for general queries if "send to email"
+            if "send to email" in original_transcript.lower() or "email the summary" in original_transcript.lower():
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(ZAPIER_WEBHOOK_URL, json={"response": accumulated_response}) as resp:
+                        log.info(f"Sent response to Zapier webhook: {resp.status}")
+                        await websocket.send_json({
+                            "type": "zapier",
+                            "data": "Email sent successfully"
+                        })
         log.info("Gemini Response Complete.")
         return accumulated_response
-    except websockets.exceptions.ConnectionClosedError as e:
-        log.error(f"Murf WebSocket connection closed: {e}")
-        await websocket.send_json({"type": "error", "data": f"Murf WebSocket connection closed: {e}"})
-    except websockets.exceptions.InvalidStatusCode as e:
-        log.error(f"Murf WebSocket error: HTTP {e.status_code} - {e.reason}")
-        await websocket.send_json({"type": "error", "data": f"Murf WebSocket error: HTTP {e.status_code}"})
     except Exception as e:
         log.error(f"Error in stream_gemini_response: {e}")
         await websocket.send_json({"type": "error", "data": f"Error processing response: {str(e)}"})
-    return None
+        return None
 
 # Routes
 @app.get("/")
