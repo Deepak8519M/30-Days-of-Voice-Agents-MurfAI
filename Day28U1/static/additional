@@ -4,7 +4,7 @@ const apiForm = document.getElementById("apiForm");
 const settingsForm = document.querySelector(".settings-main");
 const notification = document.getElementById("notification");
 const cancelBtn = document.querySelector(".cancel-btn");
-const saveBtn = document.querySelector(".settings-footer .save-btn");
+const saveBtn = document.querySelector(".save-btn");
 const backBtn = document.querySelector(".back-btn");
 const resetBtn = document.querySelector(".reset-btn");
 const enableCustomKeys = document.getElementById("enableCustomKeys");
@@ -14,6 +14,7 @@ const apiInputs = document.querySelectorAll(
 const sliders = document.querySelectorAll(".slider");
 const previewVoiceBtn = document.getElementById("previewVoice");
 const accentColorSelect = document.querySelector("select[name='accentColor']");
+const voiceSelect = document.getElementById("voiceId");
 
 // Color definitions
 const colorSchemes = {
@@ -32,7 +33,77 @@ const colorSchemes = {
     gradientStart: "#a5d6a7",
     gradientEnd: "#43a047",
   },
+  purple: {
+    primary: "#8b5cf6",
+    gradientStart: "#c4b5fd",
+    gradientEnd: "#8b5cf6",
+  },
 };
+
+// Load settings from server
+async function loadSettings() {
+  try {
+    const response = await fetch("/set_settings", { method: "GET" });
+    if (response.ok) {
+      const settings = await response.json();
+      Object.keys(settings).forEach((key) => {
+        const input = document.querySelector(`[name='${key}']`);
+        if (input) {
+          if (input.type === "checkbox") {
+            input.checked = settings[key];
+          } else {
+            input.value = settings[key];
+          }
+          if (key === "accentColor") {
+            accentColorSelect.dispatchEvent(new Event("change"));
+          }
+          if (key === "micSensitivity" || key === "playbackSpeed") {
+            const slider = document.querySelector(`input[name='${key}']`);
+            if (slider) {
+              const valueSpan = slider.nextElementSibling;
+              valueSpan.textContent =
+                key === "micSensitivity"
+                  ? `${slider.value}%`
+                  : `${slider.value}x`;
+            }
+          }
+        }
+      });
+    }
+  } catch (error) {
+    showNotification("Error loading settings. 😞", true);
+  }
+}
+
+// Populate voice dropdown
+async function loadVoices() {
+  try {
+    const response = await fetch("/get_voices");
+    const data = await response.json();
+    if (data.error) {
+      showNotification(`Failed to load voices: ${data.error} 😕`, true);
+      return;
+    }
+    voiceSelect.innerHTML = "";
+    data.forEach((voice) => {
+      const option = document.createElement("option");
+      option.value = voice.id;
+      option.textContent = `${voice.name} (${voice.id})`;
+      voiceSelect.appendChild(option);
+    });
+    const savedVoice = USER_SETTINGS?.voiceId || "en-IN-alia";
+    voiceSelect.value = savedVoice;
+    if (!voiceSelect.value && data[0]?.id) {
+      voiceSelect.value = data[0].id;
+    }
+  } catch (error) {
+    showNotification("Error fetching voices. Using default voice. 😢", true);
+    const option = document.createElement("option");
+    option.value = "en-IN-alia";
+    option.textContent = "Alia (en-IN)";
+    voiceSelect.appendChild(option);
+  }
+}
 
 // Dynamic theme update
 accentColorSelect.addEventListener("change", () => {
@@ -47,6 +118,7 @@ accentColorSelect.addEventListener("change", () => {
     "--accent-gradient-end",
     scheme.gradientEnd
   );
+  showNotification(`Switched to ${selectedColor} theme! 🌈`);
 });
 
 // Sidebar navigation
@@ -57,6 +129,7 @@ sidebarItems.forEach((item) => {
     cards.forEach((card) => card.classList.remove("active"));
     const sectionId = item.getAttribute("data-section");
     document.getElementById(sectionId).classList.add("active");
+    showNotification(`Switched to ${sectionId} settings! ⚙️`);
   });
 });
 
@@ -67,6 +140,9 @@ enableCustomKeys.addEventListener("change", () => {
     input.disabled = !isEnabled;
     input.classList.remove("error");
   });
+  showNotification(
+    isEnabled ? "Custom API keys enabled! 🔐" : "Using default API keys. 🔧"
+  );
 });
 
 // Update slider values
@@ -77,6 +153,11 @@ sliders.forEach((slider) => {
       slider.name === "micSensitivity"
         ? `${slider.value}%`
         : `${slider.value}x`;
+    showNotification(
+      `${
+        slider.name === "micSensitivity" ? "Mic Sensitivity" : "Playback Speed"
+      } set to ${valueSpan.textContent}! 🎚️`
+    );
   });
 });
 
@@ -94,7 +175,7 @@ function showNotification(message, isError = false) {
   }, duration);
 }
 
-// API form submission with validation
+// API form submission
 apiForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const settings = {
@@ -138,7 +219,7 @@ apiForm.addEventListener("submit", async (e) => {
       }
     });
     if (hasError) {
-      showNotification("Please fill all required API keys.", true);
+      showNotification("Please fill all required API keys. ⚠️", true);
       return;
     }
   }
@@ -151,13 +232,16 @@ apiForm.addEventListener("submit", async (e) => {
     });
     const result = await response.json();
     if (result.error) {
-      showNotification(`${result.error} Falling back to .env keys.`, true);
+      showNotification(`${result.error} Falling back to .env keys. 😕`, true);
     } else {
-      showNotification("API keys saved successfully!");
+      showNotification("API keys saved successfully! 🎉");
+      setTimeout(() => (window.location.href = "/"), 2000);
     }
-    setTimeout(() => (window.location.href = "/"), 2000);
   } catch (error) {
-    showNotification("Error saving API keys. Falling back to .env keys.", true);
+    showNotification(
+      "Error saving API keys. Falling back to .env keys. 😞",
+      true
+    );
     setTimeout(() => (window.location.href = "/"), 2000);
   }
 });
@@ -165,7 +249,7 @@ apiForm.addEventListener("submit", async (e) => {
 // General settings submission
 saveBtn.addEventListener("click", async () => {
   const settings = {
-    voiceId: document.querySelector("select[name='voiceId']").value,
+    voiceId: voiceSelect.value,
     playbackSpeed: parseFloat(
       document.querySelector("input[name='playbackSpeed']").value
     ),
@@ -189,7 +273,7 @@ saveBtn.addEventListener("click", async () => {
       document.querySelector("input[name='notificationDuration']").value
     ),
     theme: document.querySelector("select[name='theme']").value,
-    accentColor: document.querySelector("select[name='accentColor']").value,
+    accentColor: accentColorSelect.value,
   };
 
   try {
@@ -200,25 +284,27 @@ saveBtn.addEventListener("click", async () => {
     });
     const result = await response.json();
     if (result.error) {
-      showNotification(`Error saving settings: ${result.error}`, true);
+      showNotification(`Error saving settings: ${result.error} 😕`, true);
     } else {
-      showNotification("Settings saved successfully!");
+      showNotification("Settings saved successfully! 🎉");
+      setTimeout(() => (window.location.href = "/"), 2000);
     }
-    setTimeout(() => (window.location.href = "/"), 2000);
   } catch (error) {
-    showNotification("Error saving settings.", true);
+    showNotification("Error saving settings. 😞", true);
     setTimeout(() => (window.location.href = "/"), 2000);
   }
 });
 
 // Back to Voice Agent
 backBtn.addEventListener("click", () => {
-  window.location.href = "/";
+  showNotification("Returning to Voice Agent! 🏠");
+  setTimeout(() => (window.location.href = "/"), 1000);
 });
 
 // Cancel button
 cancelBtn.addEventListener("click", () => {
-  window.location.href = "/";
+  showNotification("Changes cancelled. Back to Voice Agent! 🚫");
+  setTimeout(() => (window.location.href = "/"), 1000);
 });
 
 // Reset to defaults
@@ -231,9 +317,9 @@ resetBtn.addEventListener("click", async () => {
     });
     const result = await response.json();
     if (result.error) {
-      showNotification(`Error resetting settings: ${result.error}`, true);
+      showNotification(`Error resetting settings: ${result.error} 😕`, true);
     } else {
-      showNotification("Settings reset to defaults!");
+      showNotification("Settings reset to defaults! 🔄");
       settingsForm.querySelectorAll("input, select").forEach((input) => {
         if (input.type === "checkbox")
           input.checked =
@@ -259,10 +345,11 @@ resetBtn.addEventListener("click", async () => {
             : `${slider.value}x`;
       });
       enableCustomKeys.dispatchEvent(new Event("change"));
-      accentColorSelect.dispatchEvent(new Event("change")); // Trigger theme reset
+      accentColorSelect.dispatchEvent(new Event("change"));
+      await loadVoices();
     }
   } catch (error) {
-    showNotification("Error resetting settings.", true);
+    showNotification("Error resetting settings. 😞", true);
   }
 });
 
@@ -276,12 +363,12 @@ document.getElementById("clearHistory").addEventListener("click", async () => {
     });
     const result = await response.json();
     if (result.error) {
-      showNotification(`Error clearing chat history: ${result.error}`, true);
+      showNotification(`Error clearing chat history: ${result.error} 😕`, true);
     } else {
-      showNotification("Chat history cleared successfully!");
+      showNotification("Chat history cleared successfully! 🗑️");
     }
   } catch (error) {
-    showNotification("Error clearing chat history.", true);
+    showNotification("Error clearing chat history. 😞", true);
   }
 });
 
@@ -298,34 +385,59 @@ document
       const result = await response.json();
       if (result.error) {
         showNotification(
-          `Error clearing knowledge base: ${result.error}`,
+          `Error clearing knowledge base: ${result.error} 😕`,
           true
         );
       } else {
-        showNotification("Knowledge base cleared successfully!");
+        showNotification("Knowledge base cleared successfully! 🗑️");
       }
     } catch (error) {
-      showNotification("Error clearing knowledge base.", true);
+      showNotification("Error clearing knowledge base. 😞", true);
     }
   });
 
 // Preview voice
 previewVoiceBtn.addEventListener("click", async () => {
-  const voiceId = document.querySelector("select[name='voiceId']").value;
-  const sampleText = "Hello! This is a sample of my voice.";
+  const voiceId = voiceSelect.value;
+  const sampleText =
+    "Hello! This is a sample of my voice. Let's make your AI conversations fun and engaging! 🎙️";
   try {
-    const response = await fetch("/ws", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ command: `speak:${sampleText}`, voiceId }),
-    });
-    const result = await response.json();
-    if (result.error) {
-      showNotification(`Error previewing voice: ${result.error}`, true);
-    } else {
-      showNotification("Voice preview playing!");
-    }
+    showNotification("Playing voice preview... 🔊");
+    const ws = new WebSocket(`ws://${window.location.host}/ws?chat_id=1`);
+    ws.onopen = () => {
+      ws.send(`speak:${sampleText}`);
+    };
+    ws.onmessage = async (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "speak_audio" && message.data) {
+        const audio = new Audio(`data:audio/wav;base64,${message.data}`);
+        audio.play().catch((err) => {
+          showNotification(`Error playing audio: ${err.message} 😢`, true);
+        });
+        if (message.is_final) {
+          ws.close();
+          showNotification("Voice preview played successfully! 🎵");
+        }
+      } else if (message.type === "error") {
+        showNotification(`Voice preview failed: ${message.data} 😕`, true);
+        ws.close();
+      }
+    };
+    ws.onerror = () => {
+      showNotification("WebSocket error during voice preview. 😞", true);
+      ws.close();
+    };
+    ws.onclose = () => {
+      console.log("Voice preview WebSocket closed");
+    };
   } catch (error) {
-    showNotification("Error previewing voice.", true);
+    showNotification(`Error previewing voice: ${error.message} 😢`, true);
   }
+});
+
+// Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadSettings();
+  await loadVoices();
+  showNotification("Welcome to AI Voice Agent Settings! 🎉");
 });

@@ -1,0 +1,15 @@
+{
+  "voiceId": "en-IN-alia",
+  "playbackSpeed": 1,
+  "conversationType": "casual",
+  "micSensitivity": 50,
+  "audioQuality": "low",
+  "autoSaveHistory": true,
+  "includeKnowledgeBase": true,
+  "enableSearch": true,
+  "maxSearchResults": 3,
+  "enableSound": true,
+  "notificationDuration": 4,
+  "theme": "light",
+  "accentColor": "orange"
+}

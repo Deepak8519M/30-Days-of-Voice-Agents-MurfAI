@@ -1,3 +1,4 @@
+
 import os
 import wave
 import json
@@ -8,6 +9,7 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 import re
 import time
+import numpy as np
 
 import pyaudio
 import assemblyai as aai
@@ -274,6 +276,8 @@ async def set_settings(settings: Dict[str, Any]):
     global USER_SETTINGS
     try:
         USER_SETTINGS.update(settings)
+        with open("settings.json", "w") as f:
+            json.dump(USER_SETTINGS, f, indent=2)
         log.info("Settings updated successfully")
         return {"message": "Settings saved successfully."}
     except Exception as e:
@@ -302,6 +306,8 @@ async def reset_settings(data: Dict[str, bool]):
                 "theme": "dark",
                 "accentColor": "orange"
             }
+            with open("settings.json", "w") as f:
+                json.dump(USER_SETTINGS, f, indent=2)
             log.info("Settings reset to defaults")
             return {"message": "Settings reset successfully."}
         return {"error": "Invalid reset request"}
@@ -659,16 +665,19 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                 channels=CHANNELS,
                 rate=SAMPLE_RATE,
                 frames_per_buffer=FRAMES_PER_BUFFER,
-                input_device_index=None,
-                # Apply micSensitivity as a gain factor (simplified, actual implementation may vary)
-                input_volume=USER_SETTINGS.get("micSensitivity", 50) / 100.0
+                input_device_index=None
             )
             while not stop_event.is_set():
                 try:
                     data = mic_stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
+                    # Apply micSensitivity as a gain factor
+                    sensitivity = USER_SETTINGS.get("micSensitivity", 50) / 50.0
+                    audio_data = np.frombuffer(data, dtype=np.int16).astype(np.float32)
+                    audio_data *= sensitivity
+                    audio_data = np.clip(audio_data, -32768, 32767).astype(np.int16)
                     with frames_lock:
-                        recorded_frames.append(data)
-                    client.stream(data)
+                        recorded_frames.append(audio_data.tobytes())
+                    client.stream(audio_data.tobytes())
                 except IOError as e:
                     log.warning(f"Audio read error: {e}, retrying...")
                     time.sleep(0.01)
@@ -809,3 +818,7 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
         client.disconnect(terminate=True)
         queue_task.cancel()
         log.info("WebSocket closed")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
