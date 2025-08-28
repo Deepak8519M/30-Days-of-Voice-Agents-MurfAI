@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Urbanist:wght@300;400;500;600;700;900&display=swap");
 
-/* Premium enhancements: Softer gradients, enhanced shadows, smoother animations */
 .settings-app {
   display: flex;
   justify-content: center;
@@ -41,6 +40,26 @@
   gap: 20px;
 }
 
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffa500;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #ffa500;
+  cursor: pointer;
+}
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -69,6 +88,12 @@
   box-shadow: 0 0 10px rgba(255, 165, 0, 0.4);
 }
 
+.input-group input:disabled {
+  background: rgba(13, 13, 13, 0.5);
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .submit-btn {
   padding: 16px;
   background: linear-gradient(135deg, #ff6b00, #ffa500);
@@ -84,9 +109,15 @@
   text-transform: uppercase;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 12px 30px rgba(255, 107, 0, 0.6);
+}
+
+.submit-btn:disabled {
+  background: linear-gradient(135deg, #4b4b4b, #6b6b6b);
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .back-btn {
@@ -109,13 +140,40 @@
   transform: translateY(-2px);
 }
 
-/* Reuse notification from main styles, but premium override */
 .notification {
   background: linear-gradient(135deg, #14b8a6, #0d9488);
-  /* ... (rest from main style.css) */
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(20, 184, 166, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1000;
+  animation: slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s forwards;
 }
 
-/* Responsive */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 600px) {
   .settings-container {
     padding: 30px 20px;

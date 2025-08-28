@@ -733,32 +733,29 @@ body {
   margin-inline: auto;
   cursor: pointer;
   display: flex;
-  padding: 10px 1px;
-  width: 90%;
+  padding: 6px 6px;
+  width: 80%;
   background: #1b1b1b;
   justify-content: center;
   align-items: center;
-  gap: 60px;
+  gap: 10px;
   /* margin-bottom: 10px; */
   margin-top: -18px;
   border: 1px solid #ff8d04;
-  border-radius: 4px;
+  border-radius: 40px;
   margin-bottom: 22px;
 }
 .settings-btn {
-  padding: 15px 20px;
-  border-radius: 10px;
-  border: 3px solid #ff8d04;
-  color: #ff8d04;
-  background: #0d0d0d;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  cursor: pointer;
+  width: 20%;
 }
-.backToMain {
+.homeBtn {
+  width: 40%;
+}
+.docsBtn {
+  width: 40%;
+}
+
+.nav-btn {
   padding: 15px 20px;
   border-radius: 10px;
   border: 3px solid #ff8d04;
@@ -768,8 +765,9 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  font-size: 22px;
+  font-size: 15px;
   cursor: pointer;
+  border-radius: 40px;
 }
 
 @keyframes pulseGlow {
