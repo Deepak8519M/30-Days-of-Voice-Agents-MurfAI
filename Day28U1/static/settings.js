@@ -5,12 +5,49 @@ const settingsForm = document.querySelector(".settings-main");
 const notification = document.getElementById("notification");
 const cancelBtn = document.querySelector(".cancel-btn");
 const saveBtn = document.querySelector(".settings-footer .save-btn");
+const backBtn = document.querySelector(".back-btn");
 const resetBtn = document.querySelector(".reset-btn");
 const enableCustomKeys = document.getElementById("enableCustomKeys");
 const apiInputs = document.querySelectorAll(
   "#apiForm input[type='password'], #apiForm input[type='text']"
 );
 const sliders = document.querySelectorAll(".slider");
+const previewVoiceBtn = document.getElementById("previewVoice");
+const accentColorSelect = document.querySelector("select[name='accentColor']");
+
+// Color definitions
+const colorSchemes = {
+  orange: {
+    primary: "#ff8d04",
+    gradientStart: "#ffd700",
+    gradientEnd: "#ff8d04",
+  },
+  blue: {
+    primary: "#1e88e5",
+    gradientStart: "#4fc3f7",
+    gradientEnd: "#1e88e5",
+  },
+  green: {
+    primary: "#43a047",
+    gradientStart: "#a5d6a7",
+    gradientEnd: "#43a047",
+  },
+};
+
+// Dynamic theme update
+accentColorSelect.addEventListener("change", () => {
+  const selectedColor = accentColorSelect.value;
+  const scheme = colorSchemes[selectedColor];
+  document.documentElement.style.setProperty("--accent-color", scheme.primary);
+  document.documentElement.style.setProperty(
+    "--accent-gradient-start",
+    scheme.gradientStart
+  );
+  document.documentElement.style.setProperty(
+    "--accent-gradient-end",
+    scheme.gradientEnd
+  );
+});
 
 // Sidebar navigation
 sidebarItems.forEach((item) => {
@@ -26,7 +63,10 @@ sidebarItems.forEach((item) => {
 // Toggle API inputs
 enableCustomKeys.addEventListener("change", () => {
   const isEnabled = enableCustomKeys.checked;
-  apiInputs.forEach((input) => (input.disabled = !isEnabled));
+  apiInputs.forEach((input) => {
+    input.disabled = !isEnabled;
+    input.classList.remove("error");
+  });
 });
 
 // Update slider values
@@ -43,7 +83,7 @@ sliders.forEach((slider) => {
 // Show notification
 function showNotification(message, isError = false) {
   notification.textContent = message;
-  notification.className = `notification ${isError ? "bg-red-600" : ""}`;
+  notification.className = `notification ${isError ? "error" : ""}`;
   notification.style.display = "block";
   const duration =
     parseInt(
@@ -54,7 +94,7 @@ function showNotification(message, isError = false) {
   }, duration);
 }
 
-// API form submission
+// API form submission with validation
 apiForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const settings = {
@@ -77,15 +117,30 @@ apiForm.addEventListener("submit", async (e) => {
     override_env: enableCustomKeys.checked ? "true" : "false",
   };
 
-  if (
-    settings.enableCustomKeys &&
-    (!settings.aai_api_key ||
-      !settings.gemini_api_key ||
-      !settings.murf_api_key ||
-      !settings.tavily_api_key)
-  ) {
-    showNotification("Please fill all required API keys.", true);
-    return;
+  if (settings.enableCustomKeys) {
+    let hasError = false;
+    const requiredFields = [
+      "aai_api_key",
+      "gemini_api_key",
+      "murf_api_key",
+      "tavily_api_key",
+    ];
+    requiredFields.forEach((field) => {
+      if (!settings[field]) {
+        document
+          .querySelector(`#apiForm input[name='${field}']`)
+          .classList.add("error");
+        hasError = true;
+      } else {
+        document
+          .querySelector(`#apiForm input[name='${field}']`)
+          .classList.remove("error");
+      }
+    });
+    if (hasError) {
+      showNotification("Please fill all required API keys.", true);
+      return;
+    }
   }
 
   try {
@@ -156,6 +211,11 @@ saveBtn.addEventListener("click", async () => {
   }
 });
 
+// Back to Voice Agent
+backBtn.addEventListener("click", () => {
+  window.location.href = "/";
+});
+
 // Cancel button
 cancelBtn.addEventListener("click", () => {
   window.location.href = "/";
@@ -189,6 +249,7 @@ resetBtn.addEventListener("click", async () => {
           input.value = "";
         else if (input.tagName === "SELECT")
           input.value = input.options[0].value;
+        input.classList.remove("error");
       });
       sliders.forEach((slider) => {
         const valueSpan = slider.nextElementSibling;
@@ -198,6 +259,7 @@ resetBtn.addEventListener("click", async () => {
             : `${slider.value}x`;
       });
       enableCustomKeys.dispatchEvent(new Event("change"));
+      accentColorSelect.dispatchEvent(new Event("change")); // Trigger theme reset
     }
   } catch (error) {
     showNotification("Error resetting settings.", true);
@@ -246,3 +308,24 @@ document
       showNotification("Error clearing knowledge base.", true);
     }
   });
+
+// Preview voice
+previewVoiceBtn.addEventListener("click", async () => {
+  const voiceId = document.querySelector("select[name='voiceId']").value;
+  const sampleText = "Hello! This is a sample of my voice.";
+  try {
+    const response = await fetch("/ws", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ command: `speak:${sampleText}`, voiceId }),
+    });
+    const result = await response.json();
+    if (result.error) {
+      showNotification(`Error previewing voice: ${result.error}`, true);
+    } else {
+      showNotification("Voice preview playing!");
+    }
+  } catch (error) {
+    showNotification("Error previewing voice.", true);
+  }
+});
