@@ -68,5 +68,25 @@
     "timestamp": "2025-08-28T16:10:05.198463",
     "user_query": "So, hi. Explain about this table.",
     "ai_response": "Hello there.  It sounds like you've come across a table of some kind and would like to understand it better.  That's perfectly understandable!  To help me explain, could you tell me a little more about the table?  For example:\n\n* **What kind of table is it?** Is it a data table, a table of contents, a physical table made of wood, or something else?\n* **Where did you find it?**  Knowing the source might give us clues about its purpose.\n* **What does it look like?**  Does it have rows and columns?  What kind of information is in it?\n\nThe more information you can give me, the better I can help you understand what the table is all about.  Don't worry if you don't know everything \u2013 we can figure it out together.\n"
+  },
+  {
+    "timestamp": "2025-08-28T16:23:19.873885",
+    "user_query": "hi",
+    "ai_response": "Hello there. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T16:23:50.388554",
+    "user_query": "Hi. Tell me about AI.",
+    "ai_response": "Hello there.  It's nice to chat with you.\n\nAI, or Artificial Intelligence, is a big topic, but at its heart, it's simply about making computers do things that usually require human intelligence.  Think of it like this:  you might teach a dog a trick, like shaking hands.  AI is similar \u2013 we teach computers to perform tasks, but instead of treats, we use lots of data and clever programming.\n\nSometimes AI mimics how our brains work \u2013 learning from examples and making decisions based on what it has learned. This is like how you learn to ride a bike \u2013 you fall a few times, but eventually, you get the hang of it.  AI systems learn from their \"mistakes\" and improve over time.\n\nOther times, AI follows very specific rules, like a recipe.  You give it the ingredients (data), and it follows the steps to create the result (answer or solution).\n\nThere are many different kinds of AI, used for lots of things \u2013 from suggesting movies you might like on Netflix to helping doctors diagnose illnesses.  It's a powerful tool, and like any tool, it can be used for good or not-so-good things.\n\nIs there anything specific about AI you'd like to know more about? Perhaps a certain application or a concern you have?  Don't hesitate to ask.  We can explore it together at your own pace.\n"
+  },
+  {
+    "timestamp": "2025-08-28T16:24:10.248596",
+    "user_query": "hi",
+    "ai_response": "Hello there.  It's nice to hear from you. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T16:24:35.616216",
+    "user_query": "About probability in 10 simple words.",
+    "ai_response": "Probability is how likely something is to happen.\n"
   }
 ]

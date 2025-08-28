@@ -144,7 +144,7 @@ function playNextAudio() {
 }
 
 // Append user message to transcription
-function appendUserMessage(text) {
+function appendUserMessage(text, isFinal) {
   // Remove previous user message if it exists
   if (lastUserMessage) {
     lastUserMessage.remove();
@@ -152,7 +152,12 @@ function appendUserMessage(text) {
   }
   const message = document.createElement("div");
   message.classList.add("user-message");
-  message.textContent = text;
+  if (!isFinal) {
+    message.classList.add("temporary"); // Optional: style temporary messages differently
+    message.textContent = text + " (transcribing...)";
+  } else {
+    message.textContent = text;
+  }
   transcription.appendChild(message);
   lastUserMessage = message;
   transcription.scrollTop = transcription.scrollHeight;
@@ -252,7 +257,7 @@ async function loadCurrentConversation() {
         '<span class="spinner" style="display: none">⏳</span>';
       lastUserMessage = null;
       history.forEach((entry) => {
-        appendUserMessage(entry.user_query);
+        appendUserMessage(entry.user_query, true);
         appendAIMessage(entry.ai_response);
         lastUserMessage = null; // Reset after each pair
       });
@@ -295,12 +300,8 @@ function connectWebSocket() {
 
     try {
       const jsonData = JSON.parse(event.data);
-      if (
-        jsonData.type === "user_message" &&
-        jsonData.data &&
-        jsonData.is_final
-      ) {
-        appendUserMessage(jsonData.data);
+      if (jsonData.type === "user_message" && jsonData.data) {
+        appendUserMessage(jsonData.data, jsonData.is_final);
       } else if (jsonData.type === "audio" && jsonData.data) {
         console.log(
           "Audio chunk received, is_final:",
@@ -471,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
   sendBtn.addEventListener("click", () => {
     const text = chatInput.value.trim();
     if (text && ws && ws.readyState === WebSocket.OPEN) {
-      appendUserMessage(text);
+      appendUserMessage(text, true);
       ws.send(`text:${text}`);
       chatInput.value = "";
       status.textContent = "Status: Processing response 🤖";
