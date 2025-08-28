@@ -22,7 +22,6 @@ from assemblyai.streaming.v3 import (
     StreamingEvents,
 )
 from google.generativeai import GenerativeModel, configure
-import google.generativeai as genai
 import websockets
 from dotenv import load_dotenv
 import aiohttp
@@ -308,7 +307,6 @@ async def set_api_keys(keys: Dict[str, str]):
             log.error(error_msg)
             return {"error": error_msg, "invalid_keys": []}
 
-        # Check if user wants to override .env
         USER_OVERRIDE_ENV = keys.get("override_env", "false").lower() == "true"
         if USER_OVERRIDE_ENV:
             log.info("User requested to override .env with provided keys")
@@ -391,7 +389,7 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
             log.info(f"Performing search for: {transcript}")
             search_result = await tavily_search(transcript, websocket)
             accumulated_response = search_result
-            if is_voice_input:  # Only generate audio for voice input
+            if is_voice_input:
                 murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={get_api_key('murf_api_key', websocket)}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
                 try:
                     async with websockets.connect(murf_ws_url, ping_interval=None) as murf_ws:
@@ -471,7 +469,7 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
             await websocket.send_json({"type": "error", "data": f"Failed to generate response: {str(e)}"})
             return None
 
-        if is_voice_input:  # Only generate audio for voice input
+        if is_voice_input:
             murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={get_api_key('murf_api_key', websocket)}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
             try:
                 async with websockets.connect(murf_ws_url, ping_interval=None) as murf_ws:
@@ -747,6 +745,47 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                 transcript = msg[5:].strip()
                 if transcript:
                     await stream_gemini_response(chat_id, transcript, websocket, is_voice_input=False)
+
+            elif msg.startswith("speak:"):
+                transcript = msg[6:].strip()
+                if transcript:
+                    murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={get_api_key('murf_api_key', websocket)}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
+                    try:
+                        async with websockets.connect(murf_ws_url, ping_interval=None) as murf_ws:
+                            await murf_ws.send(json.dumps({"init": True}))
+                            voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
+                            await murf_ws.send(json.dumps(voice_config))
+                            await murf_ws.send(json.dumps({"text": transcript}))
+                            murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=10.0)
+                            murf_data = json.loads(murf_response)
+                            base64_audio = murf_data.get("audio", "")
+                            is_final = murf_data.get("is_final", False)
+                            if base64_audio:
+                                await websocket.send_json({
+                                    "type": "speak_audio",
+                                    "data": base64_audio,
+                                    "is_final": is_final
+                                })
+                                log.info(f"Sent speak audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                            while not is_final:
+                                try:
+                                    murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
+                                    murf_data = json.loads(murf_response)
+                                    base64_audio = murf_data.get("audio", "")
+                                    is_final = murf_data.get("is_final", False)
+                                    if base64_audio:
+                                        await websocket.send_json({
+                                            "type": "speak_audio",
+                                            "data": base64_audio,
+                                            "is_final": is_final
+                                        })
+                                        log.info(f"Sent additional speak audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                                except asyncio.TimeoutError:
+                                    log.warning("Timeout waiting for additional Murf audio")
+                                    break
+                    except Exception as e:
+                        log.error(f"Murf audio generation failed for speak: {e}")
+                        await websocket.send_json({"type": "error", "data": f"Failed to generate speak audio: {str(e)}"})
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")

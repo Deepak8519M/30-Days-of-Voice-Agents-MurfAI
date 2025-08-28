@@ -398,12 +398,42 @@ body {
   align-self: flex-start;
   background: linear-gradient(135deg, #0d0d0d, #1e1e1e);
   color: #ffffff;
-  padding: 16px 24px;
+  padding: 16px 24px 40px 24px; /* Increased bottom padding for button */
   border-radius: 20px 20px 20px 0;
   max-width: 80%;
   box-shadow: 0 6px 15px rgba(13, 13, 13, 0.4);
   font-size: 18px;
   margin-bottom: 10px;
+  position: relative;
+}
+
+.speak-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #4ade80, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.4);
+  margin-top: 7px;
+}
+
+.speak-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.6);
+}
+
+.speak-btn:active {
+  transform: scale(0.95);
 }
 
 .transcription-content .spinner {
@@ -739,7 +769,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  /* margin-bottom: 10px; */
   margin-top: -18px;
   border: 1px solid #ff8d04;
   border-radius: 40px;

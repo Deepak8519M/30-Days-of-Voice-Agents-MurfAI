@@ -153,7 +153,7 @@ function appendUserMessage(text, isFinal) {
   const message = document.createElement("div");
   message.classList.add("user-message");
   if (!isFinal) {
-    message.classList.add("temporary"); // Optional: style temporary messages differently
+    message.classList.add("temporary");
     message.textContent = text + " (transcribing...)";
   } else {
     message.textContent = text;
@@ -168,6 +168,30 @@ function appendAIMessage(text) {
   const message = document.createElement("div");
   message.classList.add("ai-message");
   message.textContent = text;
+
+  const speakBtn = document.createElement("button");
+  speakBtn.classList.add("speak-btn", "glossy");
+  speakBtn.innerHTML = "🔊";
+  speakBtn.title = "Speak this message";
+  speakBtn.addEventListener("click", async () => {
+    try {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        status.textContent = "Status: Generating audio 🎵";
+        ws.send(`speak:${text}`);
+        initAudioContext();
+        isFirstAudio = true;
+      } else {
+        showNotification("WebSocket not connected ❌");
+        status.textContent = "Status: Error ❌";
+      }
+    } catch (error) {
+      console.error("Error triggering speech:", error);
+      showNotification("Error generating audio ❌");
+      status.textContent = "Status: Error ❌";
+    }
+  });
+
+  message.appendChild(speakBtn);
   transcription.appendChild(message);
   transcription.scrollTop = transcription.scrollHeight;
 }
@@ -175,7 +199,7 @@ function appendAIMessage(text) {
 // Append search result to transcription
 function appendSearchResult(text) {
   const message = document.createElement("div");
-  message.classList.add("search-result");
+  message.classList.add("search-result", "message-glossy");
   message.textContent = text;
   transcription.appendChild(message);
   transcription.scrollTop = transcription.scrollHeight;
@@ -309,7 +333,7 @@ function connectWebSocket() {
           "length:",
           jsonData.data.length
         );
-        initAudioContext(); // Ensure AudioContext is initialized and resumed
+        initAudioContext();
         await queueAudio(jsonData.data, jsonData.is_final);
         const ripples = document.querySelectorAll(".ripple");
         ripples.forEach((ripple) => ripple.classList.add("active"));
@@ -341,6 +365,15 @@ function connectWebSocket() {
         clearInterval(rippleInterval);
         const ripples = document.querySelectorAll(".ripple");
         ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else if (jsonData.type === "speak_audio" && jsonData.data) {
+        console.log(
+          "Speak audio chunk received, is_final:",
+          jsonData.is_final,
+          "length:",
+          jsonData.data.length
+        );
+        initAudioContext();
+        await queueAudio(jsonData.data, jsonData.is_final);
       } else {
         console.warn("Invalid JSON message format:", jsonData);
       }

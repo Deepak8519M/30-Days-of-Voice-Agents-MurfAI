@@ -1,0 +1,1043 @@
+s h e r y i a n s c o d i n g  s c h o o l
+
+T o  t r u l y  u n d e r s t a n d  t h i s  b o o k  b y  h e a r t  a n d  m a k e  t h e  m o s t  o u t  o f  
+e v e r y  c o n c e p t  ,  w a t c h  t h e  f u l l  v i d e o  o n  o u r  o f fi c i a l  Y o u t u b e  
+c h a n n e l :  
+T h i s  b o o k  i s  d e s i g n e d  t o  w o r k  h a n d - i n - h a n d  w i t h  t h e  v i s u a l  
+e x p l a n a t i o n s  a n d  e x a m p l e s  s h o w n  i n  t h e  v i d e o . S h e r y i a n s  A I
+
+m a d e  w i t h     i n  t h e   C o d i n g  S c h o o lS h e r y i a n s
+
+F o r  d o w n l o a d i n g  p y t h o n  g o  o n  a n y  b r o w s e r  g o  t o  
+ a n d  d o w n l o a d  p y t h o n  f o r  y o u r  o p e r a t i n g  
+s y s t e m 
+N o w  i n s t a l l  i t  a n d  y o u  w i l l  g e t  t h e  p y t h o n  V i r t u a l  m a c h i n e  
+     w h i c h  w i l l  c o n v e r t  t h e  c o d e  t o  b y t e  c o d e .p y t h o n . o r gD o w n l o a d i n g  P y t h o n
+I D E  s t a n d s  f o r  I n t e g r a t e d  D e v e l o p m e n t  E n v i r o n m e n t 
+Y o u  c a n  w r i t e  a n d  r u n  y o u r  c o d e  u s i n g  p y t h o n  v i r t u a l  
+m a c h i n e 
+B u t  t h e  C o n v e n t i o n a l  w a y  i s  t o  u s e  a  I D E  t h e r e  a r e  m a n y  
+I D E ’ s  l i k e  V S  c o d e ,  P y c h a r m ,  J u p y t e r 
+B u t  w e  w i l l  u s e  V S  c o d e .D o w n l o a d i n g  I D E
+F o r  s e t t i n g  u p  w e  h a v e  t o  g o  t o  V S  c o d e  a n d  i n  e x t e n s i o n s  
+w e  h a v e  t o  i n s t a l l  p y t h o n  a n d  c o d e  r u n n e r 
+L e t s  m o v e  f o r w a r d  a n d  c r e a t e  o u r  fi r s t  p r o g r a m  a n d  t h a t  
+w i l l  n o t  b e  h e l l o  w o r l d .S e t t i n g  u p  a n d  c r e a t i n g  fi r s t  p r o g r a m
+Installation01
+s h e r y i a n s c o d i n g  s c h o o l
+C o m m e n t s  a r e  s o m e t h i n g  t h a t  a r e  i g n o r e d  b y  t h e  p y t h o n  
+i n t e r p r e t e r 
+W e  h a v e  t o  u s e  f o r  w r i t i n g  a  c o m m e n t  i n  p y t h o n 
+M u l t i l i n e  c o m m e n t s  a r e  n o t  a v a i l a b l e  i n  p y t h o n  b u t  w e  c a n  
+a c h i e v e  i t  b y  u s i n g  D o c  S t r i n g  #  
+“ ” ”  M u l t i l i n e  ” ” ”C o m m e n t s  i n  p y t h o n
+I n  p y t h o n  V a r i a b l e s  a r e  u s e d  a s  a  s t o r a g e  t o  s t o r e  t h i n g s  i n  
+p y t h o n  ( w e  w i l l  s e e  l a t e r  w h a t  w e  h a v e  t o  s t o r e ) 
+Y o u  c a n  w r i t e  a n y t h i n g  a s  a  v a r i a b l e  n a m e .  
+      E g .  N a m e  =  “ A k a r s h ”
+            A g e  =  1 2
+V a r i a b l e s  i n  p y t h o n
+Comments and Variables02
+s h e r y i a n s c o d i n g  s c h o o lY o u  c a n  n o t  u s e  n u m b e r s  a t  v a r i a b l e  s t a r t 
+Y o u  c a n  n o t  u s e  s p a c e s  i n  v a r i a b l e s . 
+Y o u  s h o u l d  n o t  u s e  s p e c i a l  c h a r a c t e r s  i n  v a r i a b l e s .
+D o n ’ t  u s e  t h e s e
+Y o u  c a n  w r i t e  v a r i a b l e s  i n  p y t h o n  u s i n g  3  w a y s 
+s h e r y i a n s S c h o o l
+S h e r y i a n s S c h o o 
+s h e r y i a n s _ s c h o o lC a m e l  c a s e   -   
+P a s c a l  c a s e   -  
+S n a k e  c a s e   -  N a m i n g  C o n v e n t i o n s
+s h e r y i a n s c o d i n g  s c h o o l
+D a t a  t y p e s  a r e  t h e  t h i n g s  w e  s t o r e  i n  V a r i a b l e s  a n d  i t  
+d e fi n e s  w h a t  d a t a  t y p e  v a r i a b l e s  a r e . 
+P y t h o n  h a s  b u i l t - i n  d a t a  t y p e s  f o r  d i ff e r e n t  k i n d s  o f  d a t a .W h a t  a r e  D a t a  T y p e s
+Data Types in python03
+s h e r y i a n s c o d i n g  s c h o o lN u m b e r sI n t e g e r  
+F l o a t  
+C o m p l e x-  A l l  t h e  n u m b e r s  e x c l u d i n g  d e c i m a l  p l a c e s  a n d  f r a c t i o n .
+
+   -  A l l  t h e  d e c i m a l  n u m b e r s  a n d  f r a c t i o n  v a l u e s  a r e  F l o a t .
+
+ -  N u m b e r s  w i t h  r e a l  a n d  i m a g i n a r y  p a r t s  a r e  c o m p l e x .
+B o o l e a nB o o l e a n  -  T h e r e s  n o t h i n g  m u c h  t o  s a y  t h i s  i s  t h e  d a t a  t y p e  w h i c h  
+                 w i l l  a n d  a l w a y s  g i v e  t h e  r e s u l t  o f  T r u e  a n d  F a l s e .S t r i n g sS t r i n g s  -  T h i s  i s  u s e d  t o  s t o r e  a n y t h i n g  i n  p y t h o n ,  l i t e r a l l y  a n y t h i n g  
+               t h a t  a r e  a v a i l a b l e  o n  y o u r  k e y b o a r d .
+               Y o u  h a v e  t o  u s e  q u o t e s  t o  s t o r e  a n y t h i n g  a n d  i t  w i l l  b e  
+               c o n s i d e r e d  a s  s t r i n g .  Y o u  c a n  u s e  d o u b l e  Q u o t e s  ( “ ” )  o r  
+               s i n g l e  q u o t e s  ( ‘ ’ )  t o  s t o r e  b o t h  w o r k s  s a m e .
+Y o u  k n o w  w h a t  s t r i n g s  a r e  b u t  y o u  m u s t  a l s o  k n o w  s t r i n g  
+t a k e  m o r e  s p a c e  t h a n  o t h e r  d a t a  t y p e s  l i k e  i n t ,  fl o a t  e t c 
+T h i s  h a p p e n s  b e c a u s e  S t r i n g  s t o r e s  e v e r y  c h a r a c t e r  w i t h  
+t h e i r  o w n  U n i c o d e 
+ i s  a  u n i v e r s a l  c h a r a c t e r  e n c o d i n g  s t a n d a r d  t h a t  
+a s s i g n s  a  u n i q u e  n u m b e r  ( c o d e  p o i n t )  t o  e v e r y  c h a r a c t e r ,  
+r e g a r d l e s s  o f  l a n g u a g e 
+L i k e  “ A ”  u n i c o d e  i s  6 5  a n d  “ ”  t h i s  e m o j i  u n i c o d e  i s  1 2 8 5 2 2 ,  
+y o u  c a n  c h e c k  t h e m  b y  u s i n g  o r d ( )  f u n c t i o n  i n  p y t h o n  a n d  
+c o n v e r t  t h e m  b a c k  u s i n g  c h r ( )  f u n c t i o n .U n i c o d eH o w  S t r i n g s  w o r k
+Y o u  m u s t  h a v e  t h o u g h t  t h e r e  a r e  s o  m a n y  c h a r a c t e r s  i n  a  
+s t r i n g  b u t  c a n  y o u  a c c e s s  e v e r y o n e . 
+Y e s  t h a t s  p o s s i b l e  u s i n g  i n d e x i n g .  I n d e x i n g  s t a r t s  f r o m  0  a n d  
+g o e s  t i l l  t h e  n u m b e r  o f  c h a r a c t e r s  y o u  h a v e . 
+T h e r e  i s  n e g a t i v e  i n d e x i n g  a s  w e l l  a n d  i t  s t a r t s  f r o m  - 1 ,  b u t  
+t h e  s t a r t i n g  p o s i t i o n  i s  f r o m  t h e  b a c k  o f  t h e  s t r i n g e g  -  a  =  “ H e l l o ”   p r i n t ( a [ 0 ] )  = = >  o u t p u t  -  “ H 
+e g  -  a  =  “ H e l l o ”   p r i n t ( a [ - 1 ] )  = = >  o u t p u t  -  “ o ”S t r i n g  I n d e x i n g  
+Strings and type conversion04
+s h e r y i a n s c o d i n g  s c h o o l
+Y o u  k n o w  h o w  t o  a c c e s s  c h a r a c t e r s  i n  s t r i n g .  B u t  t h e r e  a r e  
+s l i c i n g  o p t i o n  a s  w e l l . 
+S l i c i n g  m e a n s  c u t t i n g  o u t  a  s l i c e  f r o m  s t r i n g  a n d  t h i s  i s  a l s o  
+d o n e  u s i n g  i n d e x  v a l u e s 
+S o  h e r e  w e  h a v e  s t a r t  ,  s t o p  a n d  s t e p s  p o s i t i o n  a n d  k e e p  a  
+n o t e  i f  w e  u s e  s t o p  a t  4  i t  w i l l  s l i c e  t i l l  3  o n l y .  e g  -  a  =  “ h e l l o ”   a [ 1 : 4 : 1 ]   = = >  o u t p u t  “ e l l S t r i n g  S l i c i n g
+F o r  u n d e r s t a n d i n g  t y p e  c o n v e r s i o n  y o u  h a v e  t o  l o o k  a t  t h e s e  
+     4  t h i n g s 
+T h e r e  a r e  m o r e  f u n c t i o n s  l i k e  t h i s  b u t  t h e s e  a r e  4  m a i n  
+f u n c t i o n ,  l o o k i n g  a t  t h e s e  f u n c t i o n s  y o u  c a n  g u e s s  t h e s e  a r e  
+     u s e d  t o  c o n v e r t  o n e  d a t a  t y p e  t o  a n o t h e r 
+e g  a  =  1 2  
+               a  =  s t r ( a )
+               p r i n t ( a )   = = >  “ 1 2 ”  ( a  w i l l  b e  c o n v e r t e d  t o  s t r i n g )T y p e  c o n v e r s i o n  
+s h e r y i a n s c o d i n g  s c h o o li n t ( )fl o a t ( )s t r ( )b o o l ( )
+T h e r e  a r e  2  t y p e s  o f  c o n v e r s i o n   a n d  .I m p l i c i t E x p l i c i tT y p e  c o n v e r s i o n  t y p e s
+T h e r e  a r e  s o m e  e x p l i c i t  c o n v e r s i o n s  t h a t  y o u  m i g h t  n o t  
+     u n d e r s t a n d  b u t  f u r t h e r  w e  w i l l  u n d e r s t a n d .s h e r y i a n s c o d i n g  s c h o o lImplicitI n  t h i s  p y t h o n  a u t o m a t i c a l l y
+     c o n v e r t s  d a t a  f r o m  o n e  d a t a  
+     t y p e  t o  a n o t h e r . 
+Y o u  h a v e  a l r e a d y  s e e n  t h e  
+     e x a m p l e  b e f o r e 
+e g  -  a  =  1 2  
+                 p r i n t ( a / 2 )  
+                 
+C l e a r l y  w e  h a d  t h e  d a t a  t y p e   
+a s  i n t  b u t  a f t e r  d i v i d i n g  p y t h o n  
+     a u t o m a t i c a l l y  c o n v e r t e d  t h e  
+     d a t a  t y p e  t o  fl o a t .  
+ 
+
+o u t p u t  -  6 . I n  t h i s  w e  a s  a  u s e r  u s e  i n  b u i l d
+     f u n c t i o n s  t o  c o n v e r t  o n e  d a t a  
+     t y p e  t o  a n o t h e r 
+Y o u  h a v e  s e e n  t h e  e x a m p l e  a t
+     p r e v i o u s  p a g e .
+     i n t ( )                       I n t e g e r
+     fl o a t ( )                    F l o a t
+     c o m p l e x ( )             C o m p l e x
+     s t r ( )                       S t r i n g  
+     l i s t ( )                       L i s t
+     t u p l e ( )                   T u p l e
+     s e t ( )                       S e t
+     d i c t ( )                      D i c t i o n a r y
+     b o o l ( )                     B o o l e a nExplicit-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+S o m e  i m p o r t a n t  c o n c e p t s  o f  t y p e  c o n v e r s i o n s  a r e  y o u  
+c a n n o t  c o n v e r t  a  c h a r a c t e r  t o  a  i n t ( )  t h a t  b a s i c  w a t c h  t h e  
+v i d e o  f o r  m o r e  s e t  o f  i n f o r m a t i o n 
+b o o l ( )  c o n v e r t e r  t u r n s  e v e r y t h i n g  t o  T r u e  a n d  F a l s e  b u t
+     w h i c h  t h i n g  w i l l  b e  c o n v e r t e d  t o  t r u e  a n d  w h i c h  f a l s e .  L e t s  
+     s e e . 
+T h e r e  a r e  t r u t h y  v a l u e s  a n d  F a l s y  v a l u e s ,  a n d  t h e r e  a r e  o n l y  
+     7  f a l s y  v a l u e s  t h a t  m e a n s  o n l y  7  t h i n g s  w i l l  b e  c o n v e r t e d  t o  
+     f a l s e  r e s t  T r u e .  
+
+ 
+A l l  t h e s e  v a l u e s  a r e  f a l s y  r e m a i n i n g  w i l l  b e  c o n v e r t e d  t o  T r u e .    0
+     0 . 0  
+     F a l s e  
+     “ ”
+     [ ]
+     { }
+     ( T y p e  c o n v e r s i o n  c o n c e p t s
+s h e r y i a n s c o d i n g  s c h o o l
+Y o u  p r o b a b l y  k n o w  t i l l  n o w ,  h o w  t o  p r o v i d e  t h e  o u t p u t  o f  t h e  
+c o d e  y o u  h a v e  w r i t t e n  a n d  t h a t  i s  w i t h  p r i n t ( )  f u n c t i o n 
+T h e r e  i s  n o  o t h e r  f u n c t i o n s  t o  p r o v i d e  t h e  r e s u l t  o n  t h e  
+t e r m i n a l  w e  j u s t  h a v e  t o  u s e  p r i n t ( )  f u n c t i o n 
+N o w  w h e n  p r o v i d i n g  t h e  o u t p u t  w e  c a n  u s e  v a r i a b l e s  i n  p r i n t  
+s t a t e m e n t  u s i n g  a  f o r m a t t e d  s t r i n g  a s  s h o w n  i n  t h e  b e l o w  
+e x a m p l e .O u t p u t  
+B u t  t h e  m a i n  q u e s t i o n  i s  h o w  t o  a s k  u s e r  f o r  s o m e  
+i n f o r m a t i o n . 
+F o r  e x a m p l e  t h e r e  i s  a  u s e r  a n d  y o u  w a n t  t o  a s k  t h e  a g e  o f  
+t h a t  u s e r ,  h o w  c a n  y o u  d o  s o ,  i t ’ s  e a s y  u s i n g  
+N o w  t h e  d e f a u l t  d a t a  t y p e  o f  i n p u t  i s  a l w a y s  s t r i n g  r e a s o n  i s  
+s i m p l e  y o u  c a n  s t o r e  a n y t h i n g  i n  s t r i n g . 
+Y o u  h a v e  t o  m a n u a l l y  c o n v e r t  t h e  d a t a  t y p e  o f  i n p u t  
+s t a t e m e n t s .i n p u t ( ) 
+* * I m p o r t a n t * *  w a t c h  f u l l  v i d e o  f o r  c l e a r  u n d e r s t a n d i n g 
+A c c e p t  n u m b e r s  f r o m  a  u s e r 
+A c c e p t  a g e  f r o m  t h e  u s e r  a n d  p r i n t  i t .I n p u t
+Q u e s t i o n s  
+Input and output05
+s h e r y i a n s c o d i n g  s c h o o l
+
+O p e r a t o r s  a r e  s y m b o l s  t h a t  p e r f o r m  o p e r a t i o n s  o n  v a r i a b l e s  
+a n d  v a l u e s .  P y t h o n  h a s  s e v e r a l  t y p e s  o f  o p e r a t o r s  f o r  
+d i ff e r e n t  t a s k s  l i k e  a r i t h m e t i c ,  c o m p a r i s o n ,  l o g i c a l  o p e r a t i o n s ,  
+a n d  m o r e 
+L e t s  s e e  e v e r y  o p e r a t o r s  o n e  b y  o n e .W h a t  a r e  o p e r a t o r s
+A r i t h m e t i c  o p e r a t o r s  p e r f o r m  m a t h e m a t i c a l  o p e r a t i o n s  l i k e  
+a d d i t i o n ,  s u b t r a c t i o n ,  m u l t i p l i c a t i o n ,  d i v i s i o n ,  e t c 
+T h e r e  a r e  7  t y p e s  o f  a r i t h m e t i c  o p e r a t o r . 
+a d d i t i o n                                
+s u b t r a c t i o n                           - 
+m u l t i p l i c a t i o n                        
+d i v i s i o n                                 
+F l o o r  d i v i s i o n                        / 
+m o d u l u s                               
+E x p o n e n t i a t i o n                      * 
+S e e  t h e  v i d e o  f o r  p r o p e r  e x p l a n a t i o n .E g  -  a  =  1 2  
+             b  =  8
+             p r i n t ( a + b )
+             O u t p u t  -  2 A r i t h m e t i c  o p e r a t o r s  
+Operators05
+s h e r y i a n s c o d i n g  s c h o o l-
+-
+-
+-
+-
+-
+-
+-
+-
+A s s i g n m e n t  o p e r a t o r s  a r e  u s e d  t o  a s s i g n  v a l u e s  t o  v a r i a b l e s .  
+P y t h o n  a l s o  p r o v i d e s  c o m p o u n d  a s s i g n m e n t  o p e r a t o r s  t h a t  
+p e r f o r m  o p e r a t i o n s  l i k e  a d d i t i o n ,  s u b t r a c t i o n ,  m u l t i p l i c a t i o n ,  
+e t c 
+A  b a s i c  a s s i g n m e n t  o p e r a t o r  i s  s i m p l e  = .A s s i g n m e n t  o p e r a t o r  
+C o m p o u n d  a s s i g n m e n t  o p e r a t o r  c o m b i n e s  a r i t h m e t i c  
+o p e r a t i o n s  w i t h  a s s i g n m e n t 
+B u t  fi r s t  y o u  h a v e  t o  u n d e r s t a n d  h o w  t h i n g s  w o r k  w h e n  w e  
+r e a s s i g n  v a r i a b l e s  i n  p y t h o n  a n d  a l s o  r e a s s i g n i n g  v a r i a b l e s  
+w i t h  a d d i t i o n ,  s u b t r a c t i o n  e t c 
+T o  u n d e r s t a n d  w a t c h  t h e  v i d e o  c a r e f u l l y 
+U s i n g  c o m p o u n d  a s s i g n m e n t  o p e r a t o r s  t h e  r e a s s i g n i n g  
+w o r k s  b e t t e r 
++ =                                              A d d  a n d  a s s i g 
+- =                                               S u b t r a c t  a n d  a s s i g 
+* =                                               M u l t i p l y  a n d  a s s i g n 
+/ =                                               D i v i d e  a n d  a s s i g 
+/ / =                                              F l o o r  d i v i d e  a n d  a s s i g 
+% =                                             m o d u l u s  a n d  a s s i g 
+* * =                                              E x p o n e n t i a t i o n  a n d  a s s i g nC o m p o u n d  a s s i g n m e n t  o p e r a t o r
+s h e r y i a n s c o d i n g  s c h o o l-
+-
+-
+-
+-
+-
+-
+-
+-
+C o m p a r i s o n  o p e r a t o r s ,  a l s o  c a l l e d  r e l a t i o n a l  o p e r a t o r s ,  a r e  
+u s e d  t o  c o m p a r e  t w o  v a l u e s 
+C o m p a r i s o n  o p e r a t o r s  w i l l  a l w a y s  p r o v i d e  B o o l e a n  r e s u l t  t h a t  
+i s  T r u e  a n d  F a l s e 
+c o m p a r i s o n  o p e r a t o r s  a r e  a s  f o l l o w 
+= =                                          E q u a l  t 
+! =                                           N o t  E q u a l  t o 
+>                                            G r e a t e r  t h a n 
+<                                            L e s s  t h a n  
+> =                                          G r e a t e r  t h a n  o r  e q u a l  t 
+< =                                          L e s s  t h a n  o r  e q u a l  t 
+C o m p a r i s o n  o p e r a t o r s  w i l l  w o r k  w i t h  n u m b e r s  b u t  y o u  c a n  
+u s e  t h e m  w i t h  s t r i n g s  a s  w e l l . 
+S t r i n g s  w i l l  b e  c o m p a r i n g  t h e  A s c i i  v a l u e s  o f  s t r i n g .L o g i c a l  o p e r a t o r s  i n  P y t h o n  a r e  u s e d  t o  c o m b i n e  m u l t i p l e  
+c o n d i t i o n s  a n d  r e t u r n  a  B o o l e a n  r e s u l t  ( T r u e  o r  F a l s e ) 
+T h e r e  a r e  3  t y p e s  o f  l o g i c a l  o p e r a t o r 
+a n d    -  R e t u r n  T r u e  i f  b o t h  c o n d i t i o n  a r e  T r u 
+o r       -  R e t u r n  T r u e  i f  a t  l e a s t  o n e  c o n d i t i o n  i s  T r u e 
+n o t     -  R e v e r s e  t h e  b o o l e a n  v a l u e 
+* * i m p o r t a n t * *  w a t c h  t h e  f u l l  v i d e o  f o r  b e t t e r  u n d e r s t a n d i n g .
+C o m p a r i s o n  o p e r a t o r
+L o g i c a l  o p e r a t o r s  
+s h e r y i a n s c o d i n g  s c h o o l-
+-
+-
+-
+-
+-
+-
+-
+
+A n s w e r  T r u e  a n d  F a l s 
+P r i n t ( 1 2 6  >  1 3 0 
+p r i n t ( ( 4 5 6  = =  4 5 6 )  ! =  ( 2 3 5  = =  2 3 6 ) 
+p r i n t ( 1 2  <  1 0  o r  4 5  = =  5 6  o r  6 9  >  7 0  o r  1 5  ! =  1 3 
+p r i n t ( T r u e  a n d  b o o l ( 0 ) )T r i v i a l  Q u e s t i o n s  
+s h e r y i a n s c o d i n g  s c h o o l
+C o n d i t i o n a l  s t a t e m e n t s  i n  P y t h o n  a l l o w  d e c i s i o n - m a k i n g  b y  
+e x e c u t i n g  d i ff e r e n t  b l o c k s  o f  c o d e  b a s e d  o n  c o n d i t i o n s 
+D e c i s i o n  m a k i n g  c a n  b e  u n d e r s t o o d  w i t h  a n  e x a m p l e  
+     e g  -  y o u  w i l l  r e c e i v e  a  n u m b e r  f r o m  t h e  u s e r  i f  t h e  n u m b e r  i s  
+             g r e a t e r  t h a n  1 0  y o u  w i l l  d o  t a s k  A  a n d  l o w e r  t h a n  1 0  y o u  
+             w i l l  d o  t a s k  B .
+H e r e  t h e  s i t u a t i o n  i s  s i m p l e  N u m b e r  w i l l  d e c i d e  w h i c h  t a s k  
+w i l l  b e  e x e c u t e d 
+T h a t  m e a n s  n o w  w e  w i l l  c o n t r o l  t h e  fl o w  o f  o u r  p r o g r a m  
+b a s e d  o n  s o m e  c o n d i t i o n s  t h a t s  w h y  t h e s e  s t a t e m e n t s  a r e  
+a l s o  k n o w n  a s  c o n t r o l  fl o w  s t a t e m e n t .C o n d i t i o n a l  s t a t e m e n t s  
+Conditional statements 06
+s h e r y i a n s c o d i n g  s c h o o lN u m b e r  T a s k  AT a s k  B
+s h e r y i a n s c o d i n g  s c h o o lG e n e r a l l y  t h e r e  a r e  3  t y p e s  o f  v a r i a t i o n  i n  c o n d i t i o n a l   
+s t a t e m e n t s 
+F o r  s y n t a x  y o u  h a v e  t o  w a t c h  t h e  v i d e o  f o r  b e t t e r  
+u n d e r s t a n d i n g 
+i f                        -   E x e c u t e s  i f  t h e  c o n d i t i o n  i s  T r u e 
+i f - e l s e                -   E x e c u t e s  i f  T r u e ,  a n o t h e r  i f  F a l s 
+i f - e l i f - e l s e          -   C h e c k s  m u l t i p l e  c o n d i t i o n  i n  s e q u e n c e .
+T y p e s  o f  c o n d i t i o n a l  s t a t e m e n t s  
+
+s h e r y i a n s c o d i n g  s c h o o lT h e  G r e a t  t h i n g  i s  y o u  c a n  u s e  l o g i c a l  o p e r a t o r s  a s  w e l l .   
+Q 1 .  A c c e p t  t w o  n u m b e r s  a n d  p r i n t  t h e  g r e a t e s t  b e t w e e n  t h e m .
+Q 2 .  A c c e p t  t h e  g e n d e r  f r o m  t h e  u s e r  a s  c h a r  a n d  p r i n t  t h e  
+      r e s p e c t i v e  g r e e t i n g  m e s s a g e 
+     E x  -  G o o d  M o r n i n g  S i r  ( o n  t h e  b a s i s  o f  g e n d e r )
+Q 3 .  A c c e p t  a n  i n t e g e r  a n d  c h e c k  w h e t h e r  i t  i s  a n  e v e n  n u m b e r  
+       o r  o d d .
+Q 4 .  A c c e p t  n a m e  a n d  a g e  f r o m  t h e  u s e r .  C h e c k  i f  t h e  u s e r  i s  a  
+      v a l i d  v o t e r  o r  n o t .
+      E x -  “ h e l l o  s h e r y  y o u  a r e  a  v a l i d  v o t e r ”
+Q 5 .  A c c e p t  a  y e a r  a n d  c h e c k  i f  i t  a  l e a p  y e a r  o r  n o t  ( g o o g l e  t o  
+       fi n d  o u t  w h a t  i s  a  l e a p  y e a r )
+Y o u  c n a  a l s o  c r e a t e  i f  e l i f  l a d d e r  u s i n g  m u l t i p l e  c o n d i t i o n s  o f  
+e l i f . 
+F o r  u n d e r s t a n d i n g  s o l v e  t h i s  q u e s t i o n 
+t a k e  t h e  i n p u t  o f  t e m p e r a t u r e  i n  c e l s i u s 
+B e l o w  0 ° C  →  " F r e e z i n g  C o l d  
+0 ° C  t o  1 0 ° C  →  " V e r y  C o l d  
+1 0 ° C  t o  2 0 ° C  →  " C o l d  
+2 0 ° C  t o  3 0 ° C  →  " P l e a s a n t  
+3 0 ° C  t o  4 0 ° C  →  " H o t  
+A b o v e  4 0 ° C  →  " V e r y  H o t  "  S o m e  Q u e s t i o n s  o n  C o n d i t i o n a l  
+I f -  e l i f  l a d d e r
+L o o p s  i n  P y t h o n  a l l o w  u s  t o  e x e c u t e  a  b l o c k  o f  c o d e  m u l t i p l e  
+t i m e s  w i t h o u t  r e w r i t i n g  i t 
+O k  l e t s  d o  o n e  t h i n g  g o  t o  y o u r  V S  c o d e  a n d  p r i n t  “ h e l l o  
+w o r l d ”  1 0 0  t i m e s 
+M a n u a l l y  p r i n t i n g  w i l l  t a k e  1 0 0  c o d e  l i n e s  t o  p r i n t  i t .  b u t  u s i n g  
+l o o p s  w e  n e e d  o n l y  2  l i n e s  t o  p r i n t  1 0 0  t i m e s ,  t h a t s  t h e  
+p o w e r  o f  l o o p s .T h e r e  a r e  2  t y p e s  o f  l o o p s  i n  p y t h o n .  F o r  a n d  W h i l e  l o o p .  
+F o r  u n d e r s t a n d i n g  b o t h  t y p e s  o f  l o o p  w e  w e l l  s e e  a  g r e a t  
+e x a m p l e -  y o u  h a v e  a  b u c k e t  fi l l e d  w i t h  w a t e r  a n d  a n  e m p t y  
+b u c k e t  w i t h  a  m u g .   L o o p s  i n  p y t h o n
+T y p e s  o f  l o o p s  
+Loops07
+s h e r y i a n s c o d i n g  s c h o o l
+
+s h e r y i a n s c o d i n g  s c h o o l
+I n  s c e n a r i o  1  y o u  h a v e  t o  t r a n s f e r  4  m u g s  o f  w a t e r  f r o m  1  
+b u c k e t  t o  a n o t h e r 
+I n  s c e n a r i o  2  y o u  h a v e  t o  t r a n s f e r  a l l  t h e  w a t e r  f r o m  1 s t  
+b u c k e t  t o  a n o t h e r  v i a  m u g .I n  fi r s t  s c e n a r i o  y o u  k n o w  t h e  n u m b e r  o f  m u g s  t o  t r a n s f e r  
+f r o m  o n e  b u c k e t  t o  a n o t h e r . 
+H e r e  y o u  k n o w  h o w  m a n y  n u m b e r s  o f  i t e r a t i o n  y o u  h a v e  
+t o  g o  t h r o u g h ,  l i k e  y o u  h a v e  t o  t r a n s f e r  o n l y  4  m u g s . 
+S o  w h e n  y o u  k n o w  t h e  n u m b e r  o f  i t e r a t i o n s  y o u  w i l l  u s e  a  
+ l o o p .F O RI n  t h e  s e c o n d  s c e n a r i o ,  y o u  d o n ' t  k n o w  h o w  m a n y  m u g s  y o u  
+n e e d  t o  t r a n s f e r ,  b u t  y o u  d o  k n o w  t h e  c o n d i t i o n  t h a t  
+d e t e r m i n e s  w h e n  t o  s t o p 
+S o  w h e n  y o u  d o n ’ t  k n o w  h o w  m a n y  i t e r a t i o n  y o u  h a v e  t o  
+u s e  b u t  y o u  k n o w  a  c o n d i t i o n  t h a t  d e t e r m i n e s  w h e n  t o  
+s t o p  y o u  w i l l  u s e   l o o p .W H I L EI n t u i t i o n  o f  l o o p s  
+B e f o r e  u n d e r s t a n d i n g  f o r  l o o p s  y o u  s h o u l d  k n o w  h o w  r a n g e  
+f u n c t i o n  w o r k s 
+T h e  r a n g e ( )  f u n c t i o n  i s  u s e d  t o  g e n e r a t e  a  s e q u e n c e  o f  
+n u m b e r s ,  w h i c h  i s  c o m m o n l y  u s e d  i n  l o o p s 
+S y n t a x  o f  r a n g e  f u n c t i o n  i s  s i m p l e  r a n g e ( s t a r t ,  s t o p ,  s t e p s ) 
+y o u  h a v e  3  p o i n t s  f r o m  w h e r e  y o u  w a n t  t o  s t a r t ,  t i l l  w h e r e  
+y o u  w a n t  t o  s t o p  a n d  h o w  m a n y  s t e p s  y o u  w a n t 
+I f  y o u  d o n ’ t  m e n t i o n  s t a r t  p o i n t  t h e  d e f a u l t  v a l u e  w i l l  b e  0  .
+     i f  y o u  d o n ’ t  m e n t i o n  t h e  s t e p s  t h e  d e f a u l t  s t e p s  w i l l  b e  1 .
+     y o u  h a v e  t o  m e n t i o n  t h e  s t o p  p o i n t  o t h e r w i s e  t h e  r a n g e  
+     f u n c t i o n  w i l l  n o t  w o r k .
+F o r  u s i n g  l o o p s  w i t h  n u m b e r s  y o u  n e e d  t h e  r a n g e  f u n c t i o n . 
+B e s t  w a y  t o  u n d e r s t a n d  i s  g o i n g  w i t h  a n  e x a m p l e 
+Y o u  h a v e  t o  p r i n t  n u m b e r s  f r o m  1  -  5 .  
+          w e  w i l l  s o l v e  t h i s  q u e s t i o n  u s i n g  f o r  l o o p  a n d  r a n g e  
+          f u n c t i o n 
+S o  t h i s  i s  h o w  y o u  u s e  a  f o r  l o o p .  w a t c h  t h e  f u l l  v i d e o  f o r  
+c l e a r  u n d e r s t a n d i n g  o f  s y n t a x .R a n g e  f u n c t i o n
+L o o p s  f o r  n u m b e r s
+For loop08
+s h e r y i a n s c o d i n g  s c h o o l
+
+L o o p s  f o r  s t r i n g s  w o r k  s l i g h t l y  d i ff e r e n t l y .  Y o u  c a n  i t e r a t e  
+t h r o u g h  a  s t r i n g  i n  t w o  w a y s 
+U s i n g  i n d e x  v a l u e s 
+I t e r a t i n g  d i r e c t l y  o v e r  t h e  s t r i n g 
+I t e r a t i n g  u s i n g  t h e  i n d e x  v a l u e s ,  N o w  w e  k n o w  t h a t  i n d e x  
+v a l u e s  a r e  n u m b e r s  a n d  f o r  n u m b e r s  w e  a g a i n  h a v e  t o  u s e  
+r a n g e  f u n c t i o n . 
+H e r e  y o u  i t e r a t e d  o v e r  t h e  s t r i n g  u s i n g  t h e  i n d e x  v a l u e s  f o r  
+b e t t e r  u n d e r s t a n d i n g  w a t c h  t h e  v i d e o 
+S e c o n d  w a y  i s  s i m p l e r  w e  c a n  d i r e c t l y  i t e r a t e  b u t  u s i n g  t h i s  
+m e t h o d  w i l l  g i v e  y o u  t h e  d i r e c t  a c c e s s  t o  t h e  c h a r a c t e r s  
+i n s t e a d  o f  i n d e x  v a l u e s .L o o p s  f o r  s t r i n g s
+s h e r y i a n s c o d i n g  s c h o o l
+
+T h i n g s  w r i t t e n  a b o v e  a r e  v e r y  i m p o r t a n t  f o r  l o o p s 
+L e t s  s a y  y o u  h a v e  t h i s  r a c e  t r a c k  
+     a n d  y o u  h a v e  t o  c o m p l e t e  2 0  l a p s  
+     b u t  w h e n  y o u  w e r e  c o m p l e t i n g  t h e  
+     1 6 t h  l a p s  a n d  i t  s t a r t e d  r a i n i n g  n o w
+     y o u  c a n n o t  c o m p l e t e  t h e  r o u n d s 
+T h e  a b o v e  e x a m p l e  s i m u l a t e  t h e  e x a m p l e  o f  y o u r  b r e a k  
+s t a t e m e n t . 
+T h e  b r e a k  s t a t e m e n t  i n  P y t h o n  i s  u s e d  t o  e x i t  a  l o o p  
+p r e m a t u r e l y  w h e n  a  c e r t a i n  c o n d i t i o n  i s  m e t .  O n c e  b r e a k  i s  
+e n c o u n t e r e d ,  t h e  l o o p  s t o p s  i m m e d i a t e l y ,  a n d  c o n t r o l  m o v e s  
+t o  t h e  n e x t  s t a t e m e n t  a f t e r  t h e  l o o p 
+T h e  C o n t i n u e  s t a t e m e n t  s k i p s  o n e  o f  t h e  i t e r a t i o n  a n d  r e s t  o f  
+t h e  i t e r a t i o n s  w i l l  r u n  f o r  u n d e r s t a n d i n g  l e t s  s a y  y o u  w i l l  n o t  
+r u n  t h e  1 6 t h  l a p  b u t  a l l  o t h e r  l a p  w i l l  b e  t h e r e . 
+Y o u  h a v e  s e e n  t h e  e l s e  s t a t e m e n t  u s e d  w i t h  i f ,  b u t  i t  c a n  a l s o  
+b e  u s e d  w i t h  l o o p s .  W h e n  e l s e  i s  u s e d  w i t h  a  l o o p ,  i t  o n l y  
+e x e c u t e s  i f  t h e  l o o p  c o m p l e t e s  w i t h o u t  e n c o u n t e r i n g  a  b r e a k  
+s t a t e m e n t .  I f  b r e a k  i s  e x e c u t e d ,  t h e  e l s e  b l o c k  w i l l  n o t  r u n .
+
+B r e a k  c o n t i n u e  e l s e
+s h e r y i a n s c o d i n g  s c h o o l
+
+A c c e p t  a n  i n t e g e r  a n d  P r i n t  h e l l o  w o r l d  n  t i m e s 
+P r i n t  n a t u r a l  n u m b e r  u p  t o  n 
+R e v e r s e  f o r  l o o p .  P r i n t  n  t o  1 
+T a k e  a  n u m b e r  a s  i n p u t  a n d  p r i n t  i t s  t a b l e 
+S u m  u p  t o  n  t e r m s 
+F a c t o r i a l  o f  a  n u m b e r 
+P r i n t  t h e  s u m  o f  a l l  e v e n  &  o d d  n u m b e r s  i n  a  r a n g e  
+s e p a r a t e l y 
+P r i n t  a l l  t h e  f a c t o r s  o f  a  n u m b e r 
+A c c e p t  a  n u m b e r  a n d  c h e c k  i f  i t  a  p e r f e c t  n u m b e r  o r  n o t . 
+     A  n u m b e r  w h o s e  s u m  o f  f a c t o r s  i s  e q u a l  t o  t h e  n u m b e r  i t s e l f  
+
+      E x  -   6  =  1 ,  2 ,  3  =  
+C h e c k  w e t h e r  t h e  n u m b e r  i s  p r i m e  o r  n o t 
+R e v e r s e  a  s t r i n g  w i t h o u t  u s i n g  i n  b u i l d  f u n c t i o n s . 
+C h e c k  s t r i n g  i s  P a l l i n d r o m e  o r  n o t 
+C o u n t  a l l  l e t t e r s ,  d i g i t s ,  a n d  s p e c i a l  s y m b o l s  f r o m  a  g i v e n  
+s t r i n g 
+         G i v e n :  s t r 1  =  " P @ # y n 2 6 a t ^ & i 5 v e " 
+         E x p e c t e d  O u t c o m e : 
+         T o t a l  c o u n t s  o f  c h a r s ,  d i g i t s ,  a n d  s y m b o l s 
+         C h a r s  =  8 
+         D i g i t s  =  3 
+         S y m b o l  =  4F o r  L o o p  q u e s t i o n s
+s h e r y i a n s c o d i n g  s c h o o l
+Y o u  h a v e  p r e v i o u s l y  t a k e n  t h e  i n f o r m a t i o n  o f  l o o p s  a n d  y o u  
+a l s o  k n o w  c o n d i t i o n a l  s t a t e m e n t s  i t  i s  g o i n g  t o  b e  e a s y  f o r  
+y o u  t o  u n d e r s t a n d  t h i s  n o w 
+T h e  w h i l e  l o o p  r e p e a t s  a  b l o c k  o f  c o d e  a s  l o n g  a s  a  c o n d i t i o n  
+i s  T r u e .  I t  i s  u s e f u l  w h e n  t h e  n u m b e r  o f  i t e r a t i o n s  i s  u n k n o w n  
+b e f o r e  e x e c u t i o n 
+S o  t h e r e  i s  n o t  m u c h  t h a t  y o u  h a v e  t o  u n d e r s t a n d  a b o u t  
+w h i l e  l o o p  i t  a l s o  h a v e  b r e a k ,  c o n t i n u e  a n d  e l s e . 
+N o w  y o u  j u s t  h a v e  t o  fi n d  o u t  w h i c h  l o o p  w i l l  b e  u s e d  o n  
+w h a t  q u e s t i o n s .  S e p a r a t e  e a c h  d i g i t  o f  a  n u m b e r  a n d  p r i n t  i t  o n  t h e  n e w  l i n e 
+A c c e p t  a  n u m b e r  a n d  p r i n t  i t s  r e v e r s e 
+A c c e p t  a  n u m b e r  a n d  c h e c k  i f  i t  i s  a  p a l l i n d r o m i c  n u m b e r  ( I f  
+n u m b e r  a n d  i t s  r e v e r s e  a r e  e q u a l 
+C r e a t e  a  r a n d o m  n u m b e r  g u e s s i n g  g a m e  w i t h  p y t h o n .W h i l e  l o o p  
+W h i l e  l o o p  q u e s t i o n s
+While loop09
+s h e r y i a n s c o d i n g  s c h o o l
+
+Functions10
+s h e r y i a n s c o d i n g  s c h o o lW h a t  a r e  f u n c t i o n s
+F u n c t i o n s  p a r a m e t e r s  a n d  a r g u m e n t sF u n c t i o n s  i n  P y t h o n  g r o u p  r e u s a b l e  c o d e  i n t o  a  b l o c k  t h a t  
+c a n  b e  e x e c u t e d  b y  c a l l i n g  t h e  f u n c t i o n  n a m e .  T h i s  h e l p s  
+a v o i d  r e p e t i t i o n  a n d  m a k e s  p r o g r a m s  m o d u l a r  a n d  r e a d a b l e 
+T h e r e  a r e  m a n y  i n - b u i l d  f u n c t i o n s  i n  p y t h o n  l i k e  p r i n t ( ) ,  i n p u t ( )
+     l e n ( )  e t c 
+B u t  y o u  c a n  c r e a t e  y o u r  o w n  f u n c t i o n  a n d  t h e y  a r e  c a l l e d  a s  
+u s e r  d e fi n e d  f u n c t i o n s .  T o  m a k e  y o u r  o w n  f u n c t i o n  y o u  h a v e  
+t o  u s e  d e f  k e y w o r d  a n d  t h e n  n a m e  t h e  f u n c t i o n .  A f t e r  t h i s  
+y o u  h a v e  t o  c a l l  t h e  f u n c t i o n  u s i n g  n a m e ( )  a n d  p a r a n t h e s i s .
+F i r s t  t h i n g  I  w a n t  t o  t a l k  a b o u t  i s  p a r a m e t e r s ,  p a r a m e t e r s  a r e  
+v a r i a b l e s  l i s t e d  i n s i d e  t h e  f u n c t i o n  d e fi n i t i o n .  
+     F o r  m a k i n g  t h e  f u n c t i o n  w e  h a v e  t o  a c c e p t  i n s i d e  t h e  
+     p a r e n t h e s i s  o f  t h e  f u n c t i o n .
+
+
+s h e r y i a n s c o d i n g  s c h o o lA r g u m e n t s  a r e  t h e  V a l u e s  p a s s e d  t o  a  f u n c t i o n  w h e n  i t  i s  c a l l e d 
+F o r  e x a m p l e  y o u  c a n  s a y  y o u  h a v e  c r e a t e d  t h e  p a r a m e t e r s  
+     t h a t  a r e  w o r k i n g  l i k e  v a r i a b l e s  t h e n  w e  c a n  p a s s  t h e  v a l u e s  t o
+     o u r  v a r i a b l e s  u s i n g  a r g u m e n t s 
+A s  y o u  c a n  s e e  n a m e  i s  t h e  p a r a m e t e r  a n d  A l i c e  i s  t h e  a r g u m e n t  
+t h a t  w e  p a s s e d  t o  n a m e .  A n d  y o u  c a n  p a s s  N  n u m b e r  o f   
+p a r a m e t e r s  a n d  a r g u m e n t s  b u t  t h e y  m u s t  b e  s a m e  l i k e  i f  y o u  
+h a v e  t a k e n  3  p a r a m e t e r s  y o u  h a v e  t o  p r o v i d e  3  a r g u m e n t s  
+o t h e r w i s e  t h e r e  w i l l  b e  e r r o r . 
+A n d  a n o t h e r  t h i n g  i s  fi r s t  p a r a m e t e r ,  w i l l  a l w a y s  c a p t u r e  fi r s t  
+a r g u m e n t  a n d  s o  o n .  T h e s e  a r g u m e n t s  a r e  c a l l e d  p o s i t i o n a l  
+a r g u m e n t .
+
+
+s h e r y i a n s c o d i n g  s c h o o lT y p e s  o f  A r g u m e n t sN o w  t h e r e  a r e  3  t y p e s  o f  a r g u m e n t  t h a t  w e  c a n  p a s s  t o  
+p a r a m e t e r s .  p o s i t i o n a l  a r g u m e n t ,  d e f a u l t  a r g u m e n t ,  k e y w o r d  
+a r g u m e n t ,  F o r  u n d e r s t a n d i n g  t h e s e  w e  w i l l  fi r s t  s e e  e x a m p l e s 
+F i r s t  e x a m p l e  s h o w s  h o w  p o s i t i o n a l  a r g u m e n t s  w o r k 
+S e c o n d  e x a m p l e  s h o w s  h o e  d e f a u l t  a r g u m e n t  w o r k s  h e r e  i f  y o u  
+d o n ’ t  p a s s  a n y  v a l u e  s t i l l  t h e  f u n c t i o n  w i l l  r u n 
+L a s t  e x a m p l e  s h o w s  h o w  k e y w o r d  a r g u m e n t  w o r k s  u s i n g  t h i s  
+y o u  c a n  p a s s  v a l u e s  i n  a n y  o r d e r .
+ 
+
+Data Structures11
+s h e r y i a n s c o d i n g  s c h o o lI n - b u i l d  d a t a  s t r u c t u r e s
+C u s t o m  d a t a  s t r u c t u r e s D a t a  s t r u c t u r e s  a r e  u s e d  t o  s t o r e ,  o r g a n i z e ,  a n d  m a n i p u l a t e  
+d a t a  e ffi c i e n t l y .  P y t h o n  p r o v i d e s  s e v e r a l  b u i l t - i n  d a t a  
+s t r u c t u r e s 
+A n d  f o r  s t o r i n g  m u l t i p l e  v a l u e s  w e  w i l l  a g a i n  u s e  v a r i a b l e s 
+N o w  i n  p y t h o n  w e  h a v e  4  t y p e s  o f  i n - b u i l d  d a t a  s t r u c t u r e  
+L i s t ,  T u p l e ,  D i c t i o n a r y ,  S e t .
+ N o w  t h e r e  a r e  s o m e  c u s t o m  d a t a  s t r u c t u r e s  a s  w e l l  l i k e  
+S t a c k ,  Q u e u e ,  L i n k e d  L i s t ,  G r a p h  e t c . 
+A n d  a r o u n d  t h e s e  d a t a  s t r u c t u r e s  t h e r e  a r e  s o m e  a l g o r i t h m s  
+l i k e  s e a r c h i n g  a l g o r i t h m s ,  s o r t i n g  a l g o r i t h m s . 
+A n d  t h i s  i s  w h y  t h e  s t u d y  i s  c a l l e d  d a t a  s t r u c t u r e s  a n d  
+a l g o r i t h m 
+ L e t s  b e  c l e a r  t h i s  p y t h o n  n o t e s  a r e  n o t  f o r  t h e  D S A  t h i s  w i l l  
+c o v e r  a l l  t h e  i n - b u i l d  d a t a  s t r u c t u r e s .  
+List12
+s h e r y i a n s c o d i n g  s c h o o lL i s t  P o w e r s
+L i s t  B a s i c s   B e f o r e  s t a r t i n g  w e  n e e d  t o  u n d e r s t a n d  s o m e  o f  t h e  
+t e r m i n o l o g y . 
+  -  M u t a b i l i t y  r e f e r s  t o  w h e t h e r  a n  o b j e c t ' s  v a l u e  
+c a n  b e  c h a n g e d  a f t e r  c r e a t i o n .  A n d  L i s t  a l l o w s  t h i s 
+ -  w e  k n o w  d a t a  s t r u c t u r e s  a r e  u s e d  t o  s t o r e  
+m u l t i p l e  v a l u e s  s o  d u p l i c a t e s  m e a n s  s a m e  v a l u e  o c c u r i n g  
+m u l t i p l e  t i m e .  L i s t  a l l o w s  t h i s 
+ -  L i s t  m a i n t a i n s  o r d e r e d  d a t a  s t r u c t u r e  m a i n t a i n s  
+t h e  s e q u e n c e  o f  e l e m e n t s  a s  t h e y  w e r e  i n s e r t e d .  T h i s  
+m e a n s  y o u  c a n  a c c e s s  e l e m e n t s  u s i n g  t h e i r  p o s i t i o n  
+( i n d e x ) 
+ -  L i s t  h a v e  h e t e r o g e n o u s  n a t u r e  t h a t  m e a n s  
+w e  c a n  h a v e  m u l t i p l e  d a t a  t y p e s  i n s i d e  t h e  l i s t .M u t a b l e
+D u p l i c a t e s
+O r d e r e d
+H e t e r o g e n o u s F i r s t  w e  h a v e  t o  k n o w  w h a t  i s  t h e  s y n t a x  o f  l i s t  a n d  h o w ,  t o  
+      c r e a t e  a  l i s t  w e  h a v e  t o  u s e  s q u a r e  b r a c k e t s  ( [ ] ) .
+
+s h e r y i a n s c o d i n g  s c h o o l N o w  l i s t  h a s  I n d e x i n g  a n d  s l i c i n g  a n d  i t  i s  s a m e  a s  s t r i n g  i f  
+y o u  f o r g o t  h o w  s t r i n g  i n d e x i n g  a n d  s l i c i n g  w o r k s  w a t c h  t h e  
+v i d e o  o r  r e v i s e  t h e  n o t e s . 
+T h e  c h a n g e s  w e  s a w  i n  s t r i n g  a n d  l i s t  i s  a b o u t  m u t a b i l i t y ,  w e  
+c a n ’ t  c h a n g e  t h e  v a l u e s  o f  s t r i n g .  b u t  w e  c a n  o f  l i s t .  
+ N o w  l i s t  t r a v e r s i n g  i s  a l s o  s i m i l a r  t o  s t r i n g  t r a v e r s i n g  i t  c a n  
+b e  l o o p e d  u s i n g  t h e  i n d e x  v a l u e s  a n d  d i r e c t l y 
+N o w  l i s t  h a s  s o m e  m e t h o d s  t h a t  a r e  u s e d  t o  d o  m a n y ,  a n d  
+d o n ’ t  w o r r y  i f  y o u  a r e  n o t  s u r e  w h a t  a r e  m e t h o d s ,  f o r  n o w  
+j u s t  t h i n k  t h e y  a r e  l i k e  f u n c t i o n ,  f u r t h e r  w e  w i l l  s e e  i t  c l e a r l y .
+L i s t  T r a v e r s i n g  a n d  m e t h o d s  
+s h e r y i a n s c o d i n g  s c h o o l N o w  s e e  s o m e  o f  t h e  e x a m p l e s  o f  t h e  m e t h o d s  y o u  w i l l  g e t  
+i t  w h a t  t h e y  a r e  u s e d  f o r . 
+ S o  t h e s e  a r e  s o m e  m e t h o d s  t h a t  a r e  u s e d  i n  l i s t  .  
+
+ P r i n t  p o s i t i v e  a n d  n e g a t i v e  e l e m e n t s  o f  a n  L i s t 
+M e a n  o f  L i s t  e l e m e n t s 
+F i n d  t h e  g r e a t e s t  e l e m e n t  a n d  p r i n t  i t s  i n d e x  t o o 
+F i n d  t h e  s e c o n d  g r e a t e s t  e l e m e n t 
+C h e c k  i f  L i s t  i s  s o r t e d  o r  n o t .
+
+
+
+S o m e  Q u e s t i o n s  o n  L i s t
+Tuple13
+s h e r y i a n s c o d i n g  s c h o o lT u p l e  P o w e r s
+T u p l e  T r a v e r s i n g  a n d  m e t h o d s B e f o r e  s t a r t i n g  w e  n e e d  t o  u n d e r s t a n d  s o m e  o f  t h e  
+t e r m i n o l o g y . 
+  -  T u p l e s  a r e  n o t  m u t a b l e  y o u  c a n n o t  c h a n g e  
+t h e  v a l u e s  o f  t u p l e 
+ -  Y o u  c a n  h a v e  d u p l i c a t e  v a l u e s  i n  t u p l e  t h e r e  
+a r e  n o  r e s t r i c t i o n 
+ -  S e t  a r e  o r d e r e d  a n d  y o u  c a n  a c c e s s  t h e m  
+t h r o u g h  i n d e x  v a l u e s 
+ -  S e t  a l s o  h a v e  h e t e r o g e n o u s  n a t u r e  a n d  
+c a n  h a v e  d i ff e r e n t  t y p e s  o f  d a t a  s t r u c t u r e  i n  t u p l e .I m m u t a b l e
+D u p l i c a t e s
+O r d e r e d
+H e t e r o g e n o u sT u p l e s  a r e  t r a v e r s e d  i n  t h e  s a m e  m a n n e r  a s  L i s t  a r e  
+t r a v e r s e d 
+B u t  r e m e m b e r  t u p l e s  a r e  l i k e  s t r i n g s  y o u  c a n ’ t  c h a n g e  
+a n y t h i n g  o n c e  i t ’ s  m a d e  w e  c a n ’ t  c h a n g e  t h e m . 
+W e l l  t h e  u s e  c a s e  i s  n o t  m u c h  i n  q u e s t i o n  s o l v i n g  b u t  s t i l l  y o u  
+h a v e  t o  u n d e r s t a n d  i t 
+M e t h o d s  o f  t u p l e  a r e : 
+Y e s  t h e r e  a r e  o n l y  2  m e t h o d s  o f  t u p l e  o n e  f o r  fi n d i n g  t h e  
+i n d e x  a n d  o t h e r  o f  c o u n t i n g  t h e  o c c u r r e n c e s  o f  a n  e l e m e n t .
+
+Set14
+s h e r y i a n s c o d i n g  s c h o o lS e t  P o w e r s
+H o w  S e t  s t o r e s  v a l u e  i n  p y t h o n B e f o r e  s t a r t i n g  w e  n e e d  t o  u n d e r s t a n d  s o m e  o f  t h e  
+t e r m i n o l o g y . 
+  -  S e t s  a r e  m u t a b l e  y o u  c a n  c h a n g e  t h e  v a l u e s  o f  
+s e t . 
+ -  Y o u  c a n n o t  h a v e  a n y  d u p l i c a t e  v a l u e s  i n  s e 
+t h a t  m e a n s  e v e r y  e l e m e n t  w i l l  b e  u n i q u e 
+ -  S e t s  a r e  u n o r d e r e d  a n d  y o u  c a n n o t  a c c e s s  
+t h e m  t h r o u g h  i n d e x  v a l u e s 
+ -  S e t  i s  s e m i - h e t e r o g e n o u s  i t  c a n  s t o r e  
+s o m e  d a t a  t y p e s  l i k e  s t r i n g ,  n u m b e r s ,  t u p l e s  b u t  n o t  
+e v e r y t h i n gm u t a b l e
+D u p l i c a t e s
+U n o r d e r e d
+H e t e r o g e n o u sE a c h  v a l u e  i n  a  s e t  i s  h a s h e d  u s i n g  a  h a s h  f u n c t i o n  ( h a s h ( )  i n  
+P y t h o n ) 
+T h e  h a s h  i s  u s e d  a s  a n  i n d e x  t o  s t o r e  t h e  e l e m e n t  i n  m e m o r y 
+S i n c e  h a s h i n g  d o e s  n o t  m a i n t a i n  o r d e r ,  s e t s  a r e  u n o r d e r e d 
+O n l y  i m m u t a b l e  ( h a s h a b l e )  o b j e c t s  c a n  b e  s t o r e d  i n  a  s e t  
+( e . g . ,  n u m b e r s ,  s t r i n g s ,  t u p l e s ) .  M u t a b l e  o b j e c t s  l i k e  l i s t s  a n d  
+d i c t i o n a r i e s  a r e  n o t  a l l o w e d 
+S e e  t h e  v i d e o  f o r  m o r e  c l e a r  u n d e r s t a n d i n g .
+s h e r y i a n s c o d i n g  s c h o o lS e t  T r a v e r s i n gS e t  m e t h o d s A  s e t  c a n n o t  b e  t r a v e r s e d  u s i n g  t h e  i n d e x  v a l u e s  c a u s e  i t  i s  
+u n o r d e r e d  a n d  h a s  n o  i n d e x 
+S o  m a n y  t i m e s  i t  w i l l  g i v e  r a n d o m  v a l u e s .  y o u  c a n  w a t c h  t h e  
+v i d e o  f o r  c o m p l e t e  u n d e r s t a n d i n g .N o w  s e t  m e t h o d s  a r e  v e r y  p o w e r f u l  c a u s e  y o u  d o n ’ t  h a v e  
+a n y  i n d e x i n g  y o u  c a n n o t  c h a n g e  t h e  v a l u e s  b u t  s e t  i s  
+m u t a b l e  s o  w e  u s e  m e t h o d s  f o r  t h i s 
+F o r  a d d i n g  a n d  r e m o v i n g  t h e  e l e m e n t s  y o u  c a n  u s e  m e t h o d s  
+a s  f o l l o w s 
+N o w  t h e s e  a r e  s o m e  o f  t h e  b a s i c  m e t h o d s  b u t  s e t s  a l s o  h a v e  
+s o m e  s p e c i a l  m e t h o d s  f o r  p e r f o r m i n g  s o m e  s p e c i a l  
+o p e r a t i o n s  b e t w e e n  2  s e t s .
+
+s h e r y i a n s c o d i n g  s c h o o l
+ S o  t h e s e  a r e  s o m e  o t h e r  o p e r a t i o n s
+      o f  s e t s  t h a t  c a n  b e  p e r f o r m e d
+      b e t w e e n  2  s e t s .  A n d  w e  a l s o  h a v e  
+      s h o r t c u t s  f o r  t h e m 
+ O k  s o  w e  h a v e  s e e n  t h e s e  o p e r a t i o n s  a n d  w h i l e  w a t c h i n g  
+t h e  v i d e o  y o u  h a v e  s e e n  a  v e n  d i a g r a m  a p p r o a c h  a s  w e l l  
+t h e r e  a r e  m o r e  m e t h o d s  y o u  a r e  o p e n  t o  t r y  t h e m  a n d  s e e  t h e  
+w o r k i n g 
+B u t  a t  t h e  e n d  s e t  i s  n o t  u s e d  t h a t  m u c h  i n  p y t h o n  l e t s  
+c o n t i n u e .
+
+Dictionary15
+s h e r y i a n s c o d i n g  s c h o o lD i c t i o n a r y  P o w e r s
+D i c t i o n a r y  s y n t a x  a n d  w o r k i n g B e f o r e  s t a r t i n g  w e  n e e d  t o  u n d e r s t a n d  s o m e  o f  t h e  
+t e r m i n o l o g y . 
+ -  D i c t i o n a r i e s  a r e  m u t a b l e ,  m e a n i n g  y o u  c a n  
+c h a n g e ,  a d d ,  o r  r e m o v e  k e y - v a l u e  p a i r s  a f t e r  c r e a t i o n 
+ -  K e y s  m u s t  b e  u n i q u e ,  b u t  y o u  c a n  h a v e  
+d u p l i c a t e s  i n  v a l u e s 
+ -  D i c t i o n a r y  f o l l o w s  i n s e r t i o n  o r d e r 
+ –  A  d i c t i o n a r y  c a n  s t o r e  d i ff e r e n t  t y p e s  o f  
+k e y s  a n d  v a l u e s ,  l i k e  i n t e g e r s ,  s t r i n g s ,  l i s t s ,  o r  e v e n  
+a n o t h e r  d i c t i o n a r y .m u t a b l e
+D u p l i c a t e s
+O r d e r
+H e t e r o g e n e o u sN o w  w e  k n o w  w e  h a v e  t o  u s e  k e y  a n d  v a l u e  p a i r s  t o  s t o r e  
+v a l u e s  i n  d i c t i o n a r y 
+A n d  t h e  k e y s  i n  d i c t i o n a r y  a c t s  l i k e  i n d e x  v a l u e s  t h a t  w e  u s e  
+i n  L i s t 
+A g a i n  t e l l i n g  w e  c a n  p e r f o r m  C R U D ( c r e a t e ,  r e a d ,  u p d a t e ,  
+d e l e t e )  o p e r a t i o n s  o n  v a l u e s  b u t  n o t  a l l  o n  k e y s  c a u s e  t h e  
+k e y s  c a n n o t  b e  c h a n g e d  a f t e r  c r e a t i o n .
+
+s h e r y i a n s c o d i n g  s c h o o lD i c t i o n a r y  t r a v e r s i n g
+D i c t i o n a r y  m e t h o d sD i c t i o n a r y  Q u e s t i o n sW e  c a n  t r a v e r s e  b o t h  k e y s  a n d  v a l u e s  i n  d i c t i o n a r y ,  b u t  
+d e f a u l t  l o o p  i s  s e t  o n  k e y s  a n d  y o u  c a n  a c c e s s  t h e  v a l u e s  
+b e c a u s e  o f  k e y s . 
+S o  t e c h n i c a l l y  y o u  c a n  t r a v e r s e  o n  b o t h  k e y s  a n d  v a l u e s  a t  
+t h e  s a m e  t i m e 
+D o  s e e  t h e  v i d e o  e x p l a n a t i o n  f o r  b e t t e r  u n d e r s t a n d i n g .T h e r e  a r e  n o t  m a n y  d i c t i o n a r y  m e t h o d s  l e t s  s e e  t h e  w o r k i n g  
+o f  s o m e 
+a s  y o u  a l l  k n o w  w e  c a n  u s e  h e l p ( d i c t )  f o r  g e t t i n g  t h e  
+i n f o r m a t i o n  o f  a l l  t h e  m e t h o d s  a v a i l a b l e .
+W r i t e  a  P y t h o n  s c r i p t  t o  m e r g e  t w o  P y t h o n  d i c t i o n a r i e s 
+W r i t e  a  P y t h o n  p r o g r a m  t o  s u m  a l l  t h e  v a l u e s  i n  a  d i c t i o n a r y 
+C o u n t  t h e  f r e q u e n c y  o f  e a c h  e l e m e n t 
+W r i t e  a  P y t h o n  p r o g r a m  t o  c o m b i n e  t w o  d i c t i o n a r y  b y  a d d i n g  
+v a l u e s  f o r  c o m m o n  k e y s .
+
+Exception Handling16
+s h e r y i a n s c o d i n g  s c h o o lE r r o r s
+E x c e p t i o n s E r r o r s  o c c u r  d u e  t o  m i s t a k e s  i n  t h e  c o d e  t h a t  p r e v e n t  i t  f r o m  
+r u n n i n g .  T h e s e  c a n  b e  s y n t a x  e r r o r s  o r  l o g i c a l  e r r o r s 
+N o w  t h i s  a b o v e  c o d e  w i l l  g i v e  t h e  e r r o r  o f  s y n t a x 
+Y o u  a l r e a d y  k n o w  w h a t  i s  i n d e n t a t i o n  a n d  i f  y o u  d o n ’ t  
+f o l l o w  i t  y o u  w i l l  g e t  t h e  e r r o r 
+T h e r e  i s  o n e  m o r e  t a b  e r r o r  w h e n  y o u  m i x  t a b s  a n d  
+s p a c e s . 
+T h e s e  e r r o r s  c a n n o t  b e  h a n d l e d .  b u t  w h a t  c a n  b e  h a n d l e d  
+a r e  e x c e p t i o n s .  S y n t a x  e r r o r 
+I n d e n t a t i o n  E r r o r 
+ E x c e p t i o n s  a r e  u n e x p e c t e d  e v e n t s  o r  e r r o r s  t h a t  o c c u r s  
+d u r i n g  t h e  e x e c u t i o n  o f  a  p r o g r a m ,  w h i c h  d i s r u p t s  t h e  n o r m a l  
+fl o w  o f  t h e  p r o g r a m .
+
+s h e r y i a n s c o d i n g  s c h o o lE x c e p t i o n s E x c e p t i o n s  a r e  u n e x p e c t e d  e v e n t s  o r  e r r o r s  t h a t  o c c u r s  
+d u r i n g  t h e  e x e c u t i o n  o f  a  p r o g r a m ,  w h i c h  d i s r u p t s  t h e  n o r m a l  
+fl o w  o f  t h e  p r o g r a m 
+ N o w  t h i s  i s  a  Z e r o D I v i s i o n E r r o r  a n d  c a n  b e  c o u n t e d  a s  
+E x c e p t i o n  a n d  b e c a u s e  o f  t h i s  e x c e p t i o n  t h e  n e x t  l i n e  c a n n o t  
+b e  e x e c u t e d 
+L i k e  t h i s  t h e r e  a r e  m a n y  o t h e r  e x c e p t i o n s  j u s t  l e a v e  t h e  t h r e e  
+e r r o r s  w e  s a w  a t  s t a r t  o t h e r w i s e  o t h e r s  a r e  e x c e p t i o n s . 
+A n d  t h e  g o o d  p a r t  i s  w e  c a n  h a n d e l  t h e m  l e t s  s e e  h o w .
+
+s h e r y i a n s c o d i n g  s c h o o lE x c e p t i o n  H a n d l i n gK e y w o r dP u r p o s et r ye x c e p te l s efi n a l l yr a i s eW r a p  t h e  b l o c k  o f  c o d e  t h a t  m i g h t  
+c a u s e  a n  e x c e p t i o n .H a n d l e  t h e  e x c e p t i o n  i f  i t  o c c u r sR u n  c o d e  o n l y  i f  n o  e x c e p t i o n  o c c u r sR u n  c o d e  n o  m a t t e r  w h a t ,  w h e t h e r  
+t h e r e ’ s  a n  e x c e p t i o n  o r  n o tM a n u a l l y  t h r o w  a n  e x c e p t i o n S o  t h e s e  a r e  t h e  k e y w o r d s  t h a t  w e  u s e  a n d  a l l  t h e s e  
+k e y w o r d s  h a s  t h e i r  s e p a r a t e  p u r p o s e  a s  m e n t i o n e d . 
+T o  s e e  t h e  c o d e  p a r t  s e e  t h e  v i d e o .  
+File Handling17
+s h e r y i a n s c o d i n g  s c h o o lW h a t  a r e  fi l e sF i l e  h a n d l i n g Y o u  a l l  k n o w  w h a t  a r e  fi l e s  a n y  n a m e  w i t h  a n  e x t e n s i o n  i s  
+fi l e 
+N o w  t h a t  e x t e n s i o n  c a n  b e  . p y  ,  . t x t  ,  . m p 3  e t c .  a n d  w h e n  w e  
+w a n t  t o  h a n d l e  t h e s e  fi l e s  w e  w i l l  u s e  fi l e  h a n d l i n g .   F i l e  h a n d l i n g  m e a n s  C r e a t i n g ,  R e a d i n g ,  U p d a t i n g ,  
+D e l e t i n g ( C R U D )  o p e r a t i o n s  t h a t  w e  c a n  p e r f o r m  i n  fi l e s 
+N o w  l e t s  s e e  h o w  t o  p e r f o r m  t h e s e  o p e r a t i o n s  i n  p y t h o n . 
+W e  h a v e  t o  u s e  o p e n ( )  f u n c t i o n  t o  o p e n  a  fi l e  i n  p y t h o n .
+N o w  t h e r e  a r e  m u l t i p l e  m o d e s  t o  o p e n  t h e  fi l e .
+R e a d  ( d e f a u l t )  –  fi l e  m u s t  e x i s t .W r i t e  –  c r e a t e s  fi l e  o r  o v e r w r i t e s .A p p e n d  –  a d d s  t o  e n d  o f  fi l e .C r e a t e  –  c r e a t e s  a  n e w  fi l e ,  
+f a i l s  i f  i t  e x i s t s‘ r ’‘ w ’‘ a ’‘ x ’M o d eD e s c r i p t i o n
+s h e r y i a n s c o d i n g  s c h o o lW h a t  a r e  fi l e sF i l e  h a n d l i n g Y o u  a l l  k n o w  w h a t  a r e  fi l e s  a n y  n a m e  w i t h  a n  e x t e n s i o n  i s  
+fi l e 
+N o w  t h a t  e x t e n s i o n  c a n  b e  . p y  ,  . t x t  ,  . m p 3  e t c .  a n d  w h e n  w e  
+w a n t  t o  h a n d l e  t h e s e  fi l e s  w e  w i l l  u s e  fi l e  h a n d l i n g .   F i l e  h a n d l i n g  m e a n s  C r e a t i n g ,  R e a d i n g ,  U p d a t i n g ,  
+D e l e t i n g ( C R U D )  o p e r a t i o n s  t h a t  w e  c a n  p e r f o r m  i n  fi l e s 
+N o w  l e t s  s e e  h o w  t o  p e r f o r m  t h e s e  o p e r a t i o n s  i n  p y t h o n . 
+W e  h a v e  t o  u s e  o p e n ( )  f u n c t i o n  t o  o p e n  a  fi l e  i n  p y t h o n .
+N o w  t h e r e  a r e  m u l t i p l e  m o d e s  t o  o p e n  t h e  fi l e .
+R e a d  ( d e f a u l t )  –  fi l e  m u s t  e x i s t .W r i t e  –  c r e a t e s  fi l e  o r  o v e r w r i t e s .A p p e n d  –  a d d s  t o  e n d  o f  fi l e .C r e a t e  –  c r e a t e s  a  n e w  fi l e ,  
+f a i l s  i f  i t  e x i s t s‘ r ’‘ w ’‘ a ’‘ x ’M o d eD e s c r i p t i o n
+s h e r y i a n s c o d i n g  s c h o o lS y n t a x
+ T h i s  i s  t h e  b a s i c  s y n t a x  t h r o u g h  w h i c h  w e  c a n  o p e n  a  t e x t  
+fi l e  a n d  t h e  ‘ r ’  t h e r e  r e p r e s e n t s  r e a d  m o d e  a n d  t h e r e  a r e  
+m u l t i p l e  m o d e s  l i k e  t h i s  a s  m e n t i o n e d  b e f o r e .  s e e  t h e  v i d e o  
+f o r  o t h e r  m o d e s  a s  w e l l . 
+N o w  a f t e r  w o r k i n g  y o u  h a v e  t o  c l o s e  t h e  fi l e  m a n u a l l y  b u t  f o r  
+t h i s  w e  h a v e  w i t h  k e y w o r d 
+N o w  L e t s  c r e a t e  a  b a s i c  fi l e  h a n d l i n g  p r o j e c t .
+
+OOPS in python18
+s h e r y i a n s c o d i n g  s c h o o lW h a t  i s  O O P SF o r  u n d e r s t a n d i n g  o o p s  fi r s t  l e t s  s e e  w h a t  w e  w e r e  d o i n g  i n  
+p y t h o n  f o r  c r e a t i n g  a  p r o g r a m  o f  a d d i t i o n  w e  fi r s t  u s e  
+i m p e r a t i v e  a p p r o a c h . 
+T h i s  a p p r o a c h  i s  s i m p l e  j u s t  u s e  2  v a r i a b l e s  a n d  a d d  t h e m  
+o n e  p r o b l e m  w i t h  t h i s  i s  y o u  h a v e  t o  m a k e  2  o t h e r  v a r i a b l e s  
+f o r  a d d i n g  2  o t h e r  n u m b e r s 
+N e x t  a p p r o a c h  i s  u s i n g  f u n c t i o n s  t o  a d d  2  n u m b e r s  t h i s  i s  
+f u n c t i o n a l  a p p r o a c h 
+H e r e  t h e  g o o d  t h i n g  i s  w e  c a n  a d d  m u l t i p l e  n u m b e r s  w i t h o u t  
+u s i n g  m u l t i p l e  v a r i a b l e s .
+
+s h e r y i a n s c o d i n g  s c h o o lW h a t  i s  O O P SA n d  o u r  n e x t  a p p r o a c h  i s  o b j e c t  o r i e n t e d  p r o g r a m m i n g  
+a p p r o a c h . 
+O O P S  ( O b j e c t - O r i e n t e d  P r o g r a m m i n g  S y s t e m )  i s  a  
+p r o g r a m m i n g  p a r a d i g m  b a s e d  o n  t h e  c o n c e p t  o f  " o b j e c t s " ,  
+w h i c h  c a n  c o n t a i n  d a t a  ( a t t r i b u t e s )  a n d  c o d e  ( m e t h o d s ) 
+I  k n o w  i t  i s  t o u g h  t o  u n d e r s t a n d  r i g h t  n o w  b u t  i t  w i l l  b e  e a s y  
+a f t e r  l e a r n i n g  t h e r e  a r e  m a n y  c o n c e p t s  t h a t  w e  h a v e  t o  l e a r n  
+l i k e  c l a s s e s ,  o b j e c t s  ,  E n c a p s u l a t i o n ,  i n h e r i t a n c e ,  
+P o l y m o r p h i s m ,   e t c .  S o  l e t s  s t a r t .
+
+Classes in OOPS19
+s h e r y i a n s c o d i n g  s c h o o lC l a s s e s
+S y n t a x  o f  c l a s s  A  c l a s s  i s  l i k e  a  b l u e p r i n t  o r  t e m p l a t e  f o r  c r e a t i n g  o b j e c t s 
+T h i n k  o f  a  c l a s s  l i k e  t h e  b l u e p r i n t  o f  a  h o u s e .  I t  d e fi n e s  w h a t  
+t h e  h o u s e  s h o u l d  h a v e  ( r o o m s ,  w i n d o w s ,  e t c . )  b u t  d o e s n ’ t  
+b u i l d  t h e  h o u s e .  A n  o b j e c t  i s  t h e  a c t u a l  h o u s e  b u i l t  u s i n g  t h a t  
+b l u e p r i n t .A  c l a s s  i s  a l s o  c r e a t e d  w i t h  a  b a s i c  k e y w o r d  c l a s s  a n d  a  n a m e  
+i n  f r o n t  o f  i t 
+C r e a t i n g  a  c l a s s  i s  s u p e r  s i m p l e  n o w  l e t s  s e e  w h a t  i s  i n s i d e  
+c l a s s .  T h e r e  a r e  2  t y p e s  o f  t h i n g s  i n s i d e  c l a s s  A t t r i b u t e s  a n d  
+M e t h o d s 
+A t t r i b u t e s  -  V a r i a b l e s  d e fi n e d  i n s i d e  t h e  c l a s s  a r e  A t t r i b u t e 
+M e t h o d s  -  F u n c t i o n s  d e fi n e d  i n s i d e  a  c l a s s  a r e  M e t h o d s .
+
+s h e r y i a n s c o d i n g  s c h o o lA c c e s s i n g  a t t r i b u t e s  a n d  m e t h o d sA  c l a s s  i s  i n i t i a l i s e d  o n l y  o n e  t i m e  w h e n  w e  fi r s t  r u n  t h e  
+p r o g r a m .  a n d  f o r  a c c e s s i n g  t h e  a t t r i b u t e s  a n d  m e t h o d s  w e  
+h a v e  t o  fi r s t  a c c e s s  t h e  c l a s s  a n d  t h e n  a t t r i b u t e s  a n d  
+m e t h o d s .
+
+Objects in OOPS20
+s h e r y i a n s c o d i n g  s c h o o lO b j e c t sBAG
+F ACTOR YREQUIREMENTMaterialZipsPocketsF o r  u n d e r s t a n d i n g  o b j e c t s  fi r s t  l o o k  a t  t h i s  e x a m p l e  y o u  h a v e  
+a  b a g  f a c t o r y  a n d  t h a t  f a c t o r y  r e q u i r e s  m a t e r i a l  o f  t h e  b a g ,  
+n u m b e r  o f  z i p s  y o u  n e e d  i n  t h a t  b a g  a n d  n u m b e r  o f  p o c k e t s  
+y o u  n e e d  i n  y o u r  b a g . 
+S o  t h i s  i s  a  k i n d  o f  a  b l u e p r i n t  a n d  u s i n g  t h i s  b l u e p r i n t  
+R e e b o k ,  c a m p u s  a n d  s o m e  o t h e r  c o m p a n i e s  p r o v i d e d  
+t h e i r  r e q u i r e m e n t s  a n d  c r e a t e d  t h e i r  b a g s 
+T h u s  t h e s e  c o m p a n i e s  b e c a m e  o b j e c t s  w h o  c r e a t e d  t h e i r  
+b a g s  u s i n g  t h e  b l u e p r i n t .  
+s h e r y i a n s c o d i n g  s c h o o lO b j e c t  s y n t a xI t  i s  v e r y  e a s y  t o  c r e a t e  a n  o b j e c t  y o u  j u s t  h a v e  t o  c a l l  t h e  
+c l a s s  i n s i d e  a  v a r i a b l e  a n d  t h a t  v a r i a b l e  b e c o m e s  a n  o b j e c t . 
+T h e  o b j e c t  h a s  a l l  t h e  p o w e r s  o f  a  c l a s s  t h e r e f o r e  a  c l a s s  
+o b j e c t  c a n  a c c e s s  a t t r i b u t e s  a n d  m e t h o d s  o f  a  c l a s s .
+
+Constructor21
+s h e r y i a n s c o d i n g  s c h o o lW h a t  i s  c o n s t r u c t o rY o u  s a w  l a s t  e x a m p l e  w h e r e  w e  w a n t e d  m a t e r i a l ,  z i p s  a n d  
+p o c k e t s  f r o m  t h e  u s e r  t o  c r e a t e  a n  o b j e c t . 
+I f  w e  t a l k  a b o u t  a  f u n c t i o n  w e  c a n  a s k  t h e  u s e r  u s i n g  
+p a r a m e t e r s ,  b u t  i n  c l a s s  w e  c a n ’ t  h a v e  p a r a m e t e r s  f o r  t h a t  
+w e  u s e  c o n s t r u c t o r . 
+A  c o n s t r u c t o r  i s  a  m e t h o d  t h a t  r u n s  a u t o m a t i c a l l y  w h e n  w e  
+c a l l  a  c l a s s  a n d  t h i s  c o n s t r u c t o r  f u n c t i o n  w i l l  t a r g e t  t h e  
+o b j e c t s  l o c a t i o n 
+T o  t a r g e t  t h e  o b j e c t s  l o c a t i o n  w e  u s e  s e l f  k e y w o r d . 
+F o r  c l e a r  u n d e r s t a n d i n g  w a t c h  t h e  v i d e o  c a r e f u l l y .  w e  w i l l  
+c r e a t e  t h e  b a g  f a c t o r y  a n d  w i l l  c r e a t e  m u l t i p l e  o b j e c t s  w h e r e  
+s e l f  w i l l  t a r g e t  t h e  s p e c i fi c  l o c a t i o n s  o f  t h e  o b j e c t s .
+
+Attributes and Methods22
+s h e r y i a n s c o d i n g  s c h o o lT y p e s  o f  A t t r i b u t e
+T y p e s  o f  M e t h o d sC l a s s  a t t r i b u t e  -  
+I n s t a n c e  a t t r i b u t e  -  A  n o r m a l  v a r i a b l e  c r e a t e d  i n s i d e  a  c l a s s  i s  
+                               i s  a  c l a s s  a t t r i b u t e  a n d  t h a t s  i t . 
+A  a t t r i b u t e  c r e a t e d  u s i n g  a n  i n s t a n c e  l i k e  
+                                   s e l f . n a m e ,  s e l f . a g e  e t c .  I t  i s  k n o w n  a s  
+                                   i n s t a n c e  a t t r i b u t e .
+I n s t a n c e  M e t h o d  -A n  i n s t a n c e  m e t h o d  W o r k s  w i t h  i n s t a n c e  
+                                  ( o b j e c t )  o f  t h e  c l a s s .  T h i s  m e t h o d  c a n  
+                                  a c c e s s  a n d  m o d i f y  i n s t a n c e  a t t r i b u t e s .
+
+s h e r y i a n s c o d i n g  s c h o o lC l a s s  M e t h o d  -  
+S t a t i c  M e t h o d  -  T h i s  m e t h o d  w o r k s  w i t h  t h e  c l a s s  i t s e l f  i t  w i l l  
+                              n o t  t a r g e t  t h e  i n s t a n c e  ( o b j e c t ) .  w e  h a v e  t o  
+                              u s e  @ c l a s s m e t h o d  d e c o r a t o r  f o r  c r e a t i n g  t h e  
+                              c l a s s  m e t h o d  a n d  i t  t a k e s  c l s  a s  t h e i r  fi r s t  
+                              p a r a m e t e r . 
+T h i s  m e t h o d  d o e s n ’ t  a c c e s s  c l a s s  o r  i n s t a n c e  
+                               d i r e c t l y  i t  a l s o  u s e s  a  d e c o r a t o r  @ s t a t i c m e t h o d
+                               i t  j u s t  a c t s  l i k e  a  r e g u l a r  f u n c t i o n  p l a c e d  i n s i d e  a  
+                              c l a s s .  
+
+Inheritance 23
+s h e r y i a n s c o d i n g  s c h o o lI n h e r i t a n c eI n  g e n e r a l  t e r m s  I n h e r i t a n c e  m e a n s  p r o p e r t y  o r  a n y  p o s s e s s i o n  
+t h a t  c o m e s  t o  a n  h e i r 
+B u t  o u r  p y t h o n  n e i t h e r  h a v e  a n  o l d  m a n  o r  a  c h i l d  t h e n  
+i n h e r i t a n c e  w o r k s  w h e r e  ? 
+I t  w o r k s  b e t w e e n  c l a s s e s 
+I n h e r i t a n c e  a l l o w s  a  c l a s s  ( c h i l d  c l a s s )  t o  i n h e r i t  p r o p e r t i e s  a n d  
+b e h a v i o r s  ( a t t r i b u t e s  a n d  m e t h o d s )  f r o m  a n o t h e r  c l a s s  ( p a r e n t  
+c l a s s ) 
+B e n e fi t s  o f  u s i n g  i n h e r i t a n c e  i s  
+C o d e  r e u s a b i l i t 
+O r g a n i z e d  s t r u c t u r 
+E a s y  t o  m a i n t a i n  a n d  e x t e n dP r o p e r t y
+
+s h e r y i a n s c o d i n g  s c h o o lS y n t a x  o f  I n h e r i t a n c e
+C o n s t r u c t o r  i n  I n h e r i t a n c e  S y n t a x  i s  v e r y  s i m p l e  j u s t  l i k e  y o u  t a k e  p a r a m e t e r s  i n  f u n c t i o n s  
+h e r e  y o u  w i l l  t a k e  p a r a m e t e r s  b u t  t h o s e  p a r a m e t e r s  w i l l  b e  
+c l a s s e s 
+N o w  t h e  i n h e r i t e d  c l a s s  h a s  a l l  t h e  p o w e r s  o f  p a r e n t  c l a s s  t h a t  
+m e a n s  a l l  t h e  m e t h o d s ,  a t t r i b u t e s  c a n  b e  a c c e s s e d  b y  t h e  
+i n s t a n c e  o f  c h i l d  c l a s s  a s  w e l l . 
+L e t s  s a y  y o u  h a v e  c r e a t e d  a  p a r e n t  c l a s s  w i t h  a  c o n s t r u c t o r  
+f u n c t i o n  i n s i d e  i t  a n d  t h e n  t h i s  c l a s s  i s  i n h e r i t e d  b y  a n o t h e r  c l a s s  
+t h e n  t h e  c o n s t r u c t o r  f u n c t i o n  o f  p a r e n t  c l a s s  w i l l  w o r k  f o r  t h e  
+c h i l d  c l a s s  a s  w e l l .  
+
+s h e r y i a n s c o d i n g  s c h o o lN o w  l e t s  s a y  y o u  n e e d  a  n e w  p a r a m e t e r  i n  y o u r  c h i l d  c l a s s  y o u  
+h a v e  t o  c r e a t e  a  c o n s t r u c t o r  f u n c t i o n  f o r  y o u r  c h i l d  c l a s s  b u t  t h e  
+p a r a m e t e r s  t h a t  c a n  b e  i n i t i a l i z e d  i n  t h e  p a r e n t  c l a s s  w i l l  b e  
+i n i t i a l i z e d  u s i n g  t h e  s u p e r ( )  f u n c t i o n .  S u p e r  f u n c t i o n  w i l l  t a r g e t  t h e  
+p a r e n t  c l a s s . 
+S i n g l e  I n h e r i t a n c e 
+A l l  t h e  i n h e r i t a n c e  w e  s a w  a b o v e  w a s  s i n g l e  l e v e l . 
+M u l t i p l e  I n h e r i t a n c e 
+M u l t i p l e  I n h e r i t a n c e  m e a n s  t h e r e  w i l l  b e  2  p a r e n t  c l a s s e s  a n d  
+o n l y  1  c h i l d  c l a s s  a n d  t h e  c h i l d  c l a s s  w i l l  i n h e r i t  a l l  t h e  
+a t t r i b u t e s  a n d  m e t h o d s  o f  b o t h  p a r e n t s . 
+N o t e  -  T h e  c o n s t r u c t o r  f u n c t i o n  w i l l  b e  i n h e r i t e d  o f  t h e  fi r s t  
+c l a s s  t h a t  h a s  b e e n  I n h e r i t e d .  T h i s  i s  M R O ( M e t h o d  R e s o l u t i o n  
+O r d e r )  f o l l o w e d  b y  p y t h o n .
+T y p e s  o f  I n h e r i t a n c e
+s h e r y i a n s c o d i n g  s c h o o l
+M u l t i l e v e l  I n h e r i t a n c e 
+T h i s  i s  a  b a s i c  c a s e  w h e r e  w e  w i l l  h a v e 
+g r a n d p a r e n t  c l a s s  →  p a r e n t  c l a s s  →  c h i l d  c l a s s 
+T h e  a t t r i b u t e s  a n d  m e t h o d s  a r e  p a s s e d  o n  t h r o u g h  a l l  t h e  
+c l a s s e s .
+
+Polymorphism24
+s h e r y i a n s c o d i n g  s c h o o lP o l y m o r p h i s mT y p e s  o f  P o l y m o r p h i s mP o l y m o r p h i s m  i s  a  c o r e  c o n c e p t  i n  O b j e c t - O r i e n t e d  P r o g r a m m i n g  
+( O O P ) .  T h e  w o r d  m e a n s  " m a n y  f o r m s "  —  a n d  i n  p r o g r a m m i n g ,  i t  
+a l l o w s  t h e  s a m e  i n t e r f a c e  o r  m e t h o d  n a m e  t o  b e h a v e  d i ff e r e n t l y  
+d e p e n d i n g  o n  t h e  o b j e c t  o r  c o n t e x t .
+P o l y m o r p h i s m  c a n  b e  a c h i e v e d  i n  p y t h o n  i n  t w o  w a y s  w e l l  i f  w e  
+t a l k  a b o u t  c o m p i l e  t i m e  l a n g u a g e s  t h e r e  a r e  3  w a y s  b u t  p y t h o n  
+d o e s  n o t  s u p p o r t  M e t h o d  o v e r l o a d i n g 
+M e t h o d  o v e r l o a d i n g  m e a n s  h a v i n g  s a m e  n a m e  m e t h o d s  i n s i d e  a  
+c l a s s  b u t  p a r a m e t e r s  w i l l  b e  d i ff e r e n t  b u t  i n  p y t h o n  t h e  l a t e s t  
+d e fi n i t i o n  w i l l  o v e r w r i t e  t h e  p r e v i o u s  o n e 
+M e t h o d  O v e r r i d i n g 
+T h i s  i s  w h e r e  a  c h i l d  c l a s s  o v e r r i d e s  a  m e t h o d  o f  t h e  p a r e n t  
+c l a s s ,  a n d  P y t h o n  d e c i d e s  a t  r u n t i m e  w h i c h  m e t h o d  t o  c a l l ,  
+b a s e d  o n  t h e  o b j e c t  t y p e .
+
+s h e r y i a n s c o d i n g  s c h o o lD u c k  T y p i n 
+P y t h o n  f o l l o w s  t h e  p h i l o s o p h y : 
+“ I f  i t  w a l k s  l i k e  a  d u c k  a n d  q u a c k s  l i k e  a  d u c k ,  i t  m u s t  b e  a  
+d u c k . 
+I n  t h e  s p e a k ( )  f u n c t i o n ,  w e  d o n ’ t  c a r e  i f  i t ' s  a  D u c k  o r  a  H u m a n  
+—  w e  o n l y  c a r e  t h a t  t h e  o b j e c t  h a s  a  t a l k ( )  m e t h o d .
+
+
+encapsulation25
+s h e r y i a n s c o d i n g  s c h o o lE n c a p s u l a t i o n
+A c c e s s  m o d i fi e r s  i n  p y t h o n
+E n c a p s u l a t i o n  m e a n s  p u t t i n g  d a t a  ( v a r i a b l e s )  a n d  c o d e  ( f u n c t i o n s )  
+t o g e t h e r  i n  o n e  p l a c e  —  i n s i d e  a  c l a s s 
+I t  a l s o  m e a n s  h i d i n g  t h e  i n t e r n a l  d e t a i l s  o f  h o w  t h i n g s  w o r k ,  a n d  
+o n l y  s h o w i n g  w h a t  i s  n e e d e d 
+ I t  k e e p s  d a t a  s a f e  f r o m  b e i n g  c h a n g e d  b y  m i s t a k e 
+ I t  m a k e s  y o u r  c o d e  c l e a n  a n d  e a s y  t o  u s e 
+ I t  g i v e s  c o n t r o l  o v e r  w h a t  o t h e r s  c a n  a c c e s s  o r  c h a n g e .
+
+A c c e s s  m o d i fi e r s  m e a n s  h o w  w e  g i v e  a c c e s s  o f  o u r  a t t r i b u t e s  
+a n d  m e t h o d s  t o  t h e  o b j e c t  o r  i n h e r i t e d  c l a s s e s .  T h e r e  a r e  3  t y p e s  
+l e t s  s e e  t h e m  o n e  b y  o n e . 
+P u b l i c  A t t r i b u t e s  a n d  M e t h o d s . 
+T i l l  n o w  e v e r y  a t t r i b u t e  a n d  m e t h o d s  w e  h a v e  c r e a t e d  a r e  
+p u b l i c  m e a n s  t h e  i n h e r i t e d  c l a s s e s  a n d  o b j e c t s  c a n  a c c e s s  
+t h e m  n o  m a t t e r  w h a t 
+p r o t e c t e d  A t t r i b u t e s  a n d  M e t h o d s . 
+p y t h o n  p r o t e c t e d  m e m b e r s  a r e  c r e a t e d  u s i n g  a  s i n g l e  
+u n d e r s c o r e  b u t  i t  s t i l l  c a n  b e  a c c e s s e d  f r o m  o u t s i d e  t h e  
+c l a s s  s o  y o u  m i g h t  w o n d e r  w h a t s  t h e  p o i n t  o f  u s i n g  t h e m 
+P y t h o n  d o e s n ’ t  e n f o r c e  p r o t e c t e d  a c c e s s  l i k e  o t h e r  
+l a n g u a g e s  ( e . g . ,  J a v a  o r  C + + ) .  B u t  i t  u s e s  a  n a m i n g  
+c o n v e n t i o n  t o  t e l l  d e v e l o p e r s
+
+s h e r y i a n s c o d i n g  s c h o o l
+P r i v a t e  A t t r i b u t e s  a n d  M e t h o d 
+A  p r i v a t e  v a r i a b l e  o r  m e t h o d  m e a n s 
+ I t  c a n n o t  b e  a c c e s s e d  f r o m  o u t s i d e  t h e  c l a s s  —  o n l y  f r o m  
+i n s i d e  t h e  c l a s s  w h e r e  i t  i s  d e fi n e d 
+I n  P y t h o n ,  w e  u s e  t w o  u n d e r s c o r e s  ( _ _ )  b e f o r e  t h e  n a m e  t o  
+m a k e  i t  p r i v a t e .
+
+Abstraction26
+s h e r y i a n s c o d i n g  s c h o o lA b s t r a c t i o n
+A b s t r a c t  c l a s s e s  a n d  m e t h o d s  A b s t r a c t i o n  d o e s  n o t  e x i s t  i n  p y t h o n  b u t  w e  c a n  a c h i e v e  i t  u s i n g  a  
+l i b r a r y  w e  w i l l  s e e  w h a t  i s  a  l i b r a r y  l a t e r . 
+A b s t r a c t i o n  i s  u s e d  t o  s i m p l i f y i n g  c o m p l e x  s y s t e m s  b y  f o c u s i n g  
+o n  e s s e n t i a l  f e a t u r e s  a n d  h i d i n g  u n n e c e s s a r y  d e t a i l s 
+I t  i s  u s e d  t o  d e fi n e  a  c o m m o n  i n t e r f a c e  f o r  d i ff e r e n t  s u b c l a s s e s .
+
+
+A b s t r a c t  c l a s s e s  a r e  c l a s s e s  t h a t  c o n t a i n s  o n e  o r  m o r e  a b s t r a c t  
+m e t h o d s 
+A  m e t h o d  t h a t  i s  d e fi n e d  b u t  n o t  i m p l e m e n t e d  i n  t h e  a b s t r a c t  
+c l a s s .  s u b c l a s s e s  m u s t  p r o v i d e  t h e  i m p l e m e n t a t i o n .
+
+Dunder methods27
+s h e r y i a n s c o d i n g  s c h o o lW h a t  a r e  D u n d e r  m e t h o d sD u n d e r  m e t h o d s  a r e  s p e c i a l  m e t h o d s  i n  P y t h o n  t h a t  s t a r t  a n d  
+e n d  w i t h  d o u b l e  u n d e r s c o r e s ,  l i k e  _ _ i n i t _ _ ,  _ _ s t r _ _ ,  _ _ a d d _ _ ,  e t c 
+T h e y  a u t o m a t i c a l l y  g e t  c a l l e d  w h e n  y o u  p e r f o r m  c e r t a i n  a c t i o n s  
+o n  a n  o b j e c t 
+T h e y  h e l p  y o u 
+C u s t o m i z e  b e h a v i o r  o f  y o u r  c l a s 
+M a k e  y o u r  c l a s s  o b j e c t s  b e h a v e  l i k e  b u i l t - i n  d a t a  t y p e s  ( l i k e  
+s t r i n g s ,  l i s t s ,  e t c . 
+N o w  t h e r e  a r e  v a r i o u s  d u n d e r  m e t h o d  s e e  t h e  v i d e o  f o r  s o m e  
+e x a m p l e s . 
+N o w  l e t s  c r e a t e  a  B a n k  m a n a g e m e n t  p r o j e c t  u s i n g  O o p s  i n  
+p y t h o n .
+
+Advance Questions 28
+s h e r y i a n s c o d i n g  s c h o o lA d v a n c e  q u e s t i o n s  T h i s  p o r t i o n  i s  o n l y  c o m p l e t e d  i n  v i d e o  a n d  h e r e  y o u  w i l l  o n l y  s e e  
+t h e  Q u e s t i o n  s o  p l e a s e  w a t c h  t h e  v i d e o  t o  c o m p l e t e  i t . 
+A n d  y o u  a r e  g o o d  t o  g o  I f  y o u  h a v e  c o m p l e t e d  t i l l  n o w  b u t  t h i s  
+s e c t i o n  i s  f o r  t h o s e  w h o  w a n t s  a d v a n c e  q u e s t i o n  s o l v i n g  s k i l l s 
+S o m e  p a t t e r n s  fi r s t . 
+R i g h t  a n g l e  t r i a n g l e  w i t h  s t a r s . 
+m i r r o r e d  r i g h t  a n g l e  t r i a n g l e  w i t h  s t a r s . 
+A  t r i a n g l e  w i t h  s t a r s . 
+A  d i a m o n d  w i t h  s t a r s 
+Q u e s t i o n  1  -  S t r o n g  n u m b e r . 
+Q u e s t i o n  2  -  P r i m e  n u m b e r s  i n  a  R a n g e . 
+Q u e s t i o n  3  -  F i n d  w h i c h  e l e m e n t  o c c u r r e d  m o s t  i n  a  L i s t 
+O k  a f t e r  c o m p l e t i n g  t h i s  y o u  m u s t  a l s o  k n o w  w h a t  L e e t c o d e  i s  
+a n d  h o w  t o  s o l v e  q u e s t i o n  o n  t h i s  p l a t f o r m .
+Advance stuff 28
+s h e r y i a n s c o d i n g  s c h o o lD e c o r a t o rA  d e c o r a t o r  i s  j u s t  a  f u n c t i o n  t h a t  m o d i fi e s  a n o t h e r  f u n c t i o n  
+w i t h o u t  c h a n g i n g  i t s  a c t u a l  c o d e . 
+I m a g i n e  y o u  h a v e  a  c a k e  ( y o u r  f u n c t i o n ) .  A  d e c o r a t o r  i s  l i k e  
+p u t t i n g  i c i n g  o n  t h e  c a k e .  I t  d o e s n ’ t  c h a n g e  t h e  c a k e  i t s e l f ,  b u t  
+m a k e s  i t  b e t t e r ,  p r e t t i e r ,  o r  a d d s  s o m e  n e w  fl a v o r 
+F o r  c r e a t i n g  a  d e c o r a t o r  y o u  fi r s t  h a v e  t o  c r e a t e  a  d e c o r a t o r  
+f u n c t i o n s  a n d  t h e n  i n s i d e  t h a t  w e  w i l l  c r e a t e  a  w r a p p e r . 
+I t s  t o u g h  t o  u n d e r s t a n d  w i t h  t e x t  s e e  t h e  v i d e o 
+F o r  m a k i n g  t h e  d e c o r a t o r  w i t h  A r g u m e n t s  i t  i s  t o u g h  f o r  t h i s  w e  
+w i l l  m o v e  t o w a r d s  o u r  n e x t  a d v a n c e  s t u ff  * a r g s  ,  * * k w a r g s .
+
+s h e r y i a n s c o d i n g  s c h o o lA r g s  a n d  K w a r g s  T h e y ’ r e  s p e c i a l  k e y w o r d s  i n  P y t h o n  u s e d  i n  f u n c t i o n  d e fi n i t i o n s  t o  
+a c c e p t  a  fl e x i b l e  n u m b e r  o f  a r g u m e n t s 
+N o w  y o u  a l w a y s  d o n ’ t  h a v e  t o  u s e  A r g s  a n d  K w a r g s  t h e  m a i n  
+t h i n g  i s  *  ,  * *  y o u  c a n  u s e  a n y  n a m e s  i n  f r o n t  o f  t h e m . 
+s o  * a r g s  a r e  u s e d  f o r  m u l t i p l e  p o s i t i o n a l  a r g u m e n t s ,  a n d  * * k w a r g s  
+a r e  u s e d  f o r  m u l t i p l e  k e y  w o r d  a r g u m e n t s . 
+A n d  t h e  * a r g s  b e c o m e s  a  t u p l e  a n d  * * k w a r g s  b e c o m e s  a  
+d i c t i o n a r y 
+T h e  u s e  c a s e  i s  g r e a 
+Y o u  d o n ’ t  n e e d  t o  k n o w  h o w  m a n y  i n p u t s  y o u ' l l  g e t 
+H e l p s  i n  b u i l d i n g  fl e x i b l e  f u n c t i o n s ,  d e c o r a t o r s ,  A P I s ,  a n d  
+m o r e .
+
+s h e r y i a n s c o d i n g  s c h o o lL i s t ,  D i c t i o n a r y  a n d  s e t  c o m p h r e h e n s i o n
+L a m b d a  f u n c t i o n sA l l  o f  t h e s e  C o m p r e h e n s i o n s  a r e  u s e d  t o  c r e a t e  L i s t ,  D i c t i o n a r y  
+a n d  s e t .  B u t  y o u  d o n ’ t  h a v e  t o  u s e  m u l t i p l e  l i n e s  o f  c o d e  f o r  l o o p s  
+a n d  I f - E l s e  s t a t e m e n t s .  
+ A  l a m b d a  f u n c t i o n  i s  a n  a n o n y m o u s ,  i n l i n e  f u n c t i o n  d e fi n e d  u s i n g  
+t h e  l a m b d a  k e y w o r d 
+I t ' s  o f t e n  u s e d  f o r  s h o r t ,  s i m p l e  f u n c t i o n s  t h a t  a r e  u s e d  o n l y  o n c e  
+o r  t e m p o r a r i l y 
+Y o u  c a n  h a v e  m u l t i p l e  a r g u m e n t s  b u t  t h e r e  w i l l  b e  o n l y  o n e  
+e x p r e s s i o n .
+
+s h e r y i a n s c o d i n g  s c h o o lL e t s  s e e  a  b a s i c  e x a m p l e : 
+T h e  a r g u m e n t  4  i s  p a s s e d  i n  x .  y o u  c a n  a l s o  h a v e  m u l t i p l e  
+a r g u m e n t s  a n d  y o u  c a n  a l s o  i n c l u d e  I f  -  E l s e  e x p r e s s i o n s  
+M a p  fi l t e r  a n d  z i p   M a p  i s  u s e d  f o r  a p p l y i n g  a  f u n c t i o n  t o  m u l t i p l e  i t e m s . 
+T a k e s  a  l i s t  ( o r  a n y  s e q u e n c e 
+A p p l i e s  t h e  s a m e  f u n c t i o n  t o  e v e r y  i t e m  i n  t h a t  l i s 
+G i v e s  y o u  b a c k  a  n e w  l i s t  ( i n  P y t h o n  3 ,  i t  g i v e s  a  m a p  o b j e c t  
+w h i c h  y o u  c a n  c o n v e r t  t o  a  l i s t 
+U s e  m a p ( )  w h e n  y o u  w a n t  t o  t r a n s f o r m  e v e r y  i t e m  i n  a  l i s t 
+I t  d o e s n ’ t  r e m o v e  o r  s k i p  i t e m s  ( t h a t ’ s  w h a t  fi l t e r ( )  d o e s ) 
+Y o u  c a n  u s e  i t  w i t h  l a m b d a  o r  n o r m a l  f u n c t i o n s .
+
+s h e r y i a n s c o d i n g  s c h o o lF i l t e r  a s  t h e  n a m e  s u g g e s t  i s  u s e d  t o  fi l t e r  o u t  t h e  s t u ff . 
+T a k e s  a  l i s t  ( o r  o t h e r  s e q u e n c e 
+C h e c k s  e a c h  i t e m  u s i n g  a  f u n c t i o n  ( a  t e s t 
+K e e p s  o n l y  t h e  i t e m s  t h a t  p a s s  t h e  t e s t  ( i . e . ,  r e t u r n  T r u e )
+ 
+M o d u l e  i s  j u s t  a  s i n g l e  fi l e  c o n t a i n i n g  c o d e  a n d  w e  c a n  u s e  t h i s  
+fi l e  c o d e  i n  o t h e r  fi l e 
+A  s i n g l e  P y t h o n  fi l e  ( . p y 
+C o n t a i n s  f u n c t i o n s ,  v a r i a b l e s ,  o r  c l a s s e 
+U s e d  t o  o r g a n i z e  a n d  r e u s e  c o d e 
+P y t h o n  c o m e s  w i t h  l o t s  o f  r e a d y - t o - u s e  m o d u l e s  l i k e 
+m a t h  ( f o r  m a t h  o p e r a t i o n s 
+r a n d o m  ( f o r  g e n e r a t i n g  r a n d o m  n u m b e r s 
+d a t e t i m e  ( f o r  d a t e  a n d  t i m e )
+M o d u l e s  a n d  p a c k a g e s  
+
+s h e r y i a n s c o d i n g  s c h o o lA  p a c k a g e  i s  a  f o l d e r  t h a t  c o n t a i n s  o n e  o r  m o r e  m o d u l e s  ( P y t h o n  
+fi l e s ) .  I t  m a y  a l s o  c o n t a i n  s u b - p a c k a g e s 
+a n d  y o u  j u s t  h a v e  t o  u s e  f r o m  a n d  i m p o r t  k e y w o r d s  t o  u s e  t h e s e  
+t h i n g s .  Y o u  u n d e r s t o o d  h o w  t h e s e  t h i n g s  w o r k . 
+T h e r e  a r e  t h i r d  p a r t y  p a c k a g e s  a s  w e l l  l i k e  n u m p y ,  p a n d a s ,  
+m a t p l o t l i b  e t c .  a n d  w e  h a v e  t o  i n s t a l l  a l l  o f  t h e s e 
+" A n d  y e s ,  w e ’ l l  b e  l e a r n i n g  a l l  o f  t h e s e  a n d  m u c h  m o r e  o n  t h i s  
+c h a n n e l .  I ,  A k a r s h  V y a s ,  a s  a  c r e a t o r  a n d  r e p r e s e n t a t i v e  o f  
+S h e r y i a n s  A I ,  w o u l d  l i k e  t o  s i n c e r e l y  t h a n k  e a c h  a n d  e v e r y  o n e  o f  
+y o u  w h o  s t a y e d  w i t h  u s  t i l l  t h e  e n d .  Y o u  a r e  t r u l y  p r e c i o u s  t o  u s .  
+M u c h  l o v e  t o  a l l  o f  y o u ! "
+
