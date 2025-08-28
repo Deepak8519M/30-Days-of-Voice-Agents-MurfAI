@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - AI Voice Agent ⚙️</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Urbanist:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/settings.css" />
+  </head>
+  <body>
+    <div class="settings-container">
+      <!-- Sidebar -->
+      <aside class="settings-sidebar">
+        <ul>
+          <li class="active" data-section="configure-api">⚙️ Configure API</li>
+          <li data-section="voice">🎙️ Voice Settings</li>
+          <li data-section="conversation">💬 Conversation</li>
+          <li data-section="audio">🎤 Audio Settings</li>
+          <li data-section="chat-history">📜 Chat History</li>
+          <li data-section="knowledge-base">📚 Knowledge Base</li>
+          <li data-section="search">🔍 Search Settings</li>
+          <li data-section="notifications">🔔 Notifications</li>
+          <li data-section="appearance">🎨 Appearance</li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="settings-main">
+        <header>
+          <h1>⚙️ Settings</h1>
+          <button class="reset-btn">Reset to Defaults</button>
+        </header>
+
+        <!-- Dynamic Sections -->
+        <section id="configure-api" class="settings-card active">
+          <h2>⚙️ Configure API</h2>
+          <form id="apiForm">
+            <div class="option">
+              <input
+                type="checkbox"
+                id="enableCustomKeys"
+                name="enableCustomKeys"
+              />
+              Enable Custom API Keys
+            </div>
+            <div class="option">
+              <label>AssemblyAI API Key:</label>
+              <input
+                type="password"
+                name="aai_api_key"
+                placeholder="Enter AssemblyAI API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label>Gemini API Key:</label>
+              <input
+                type="password"
+                name="gemini_api_key"
+                placeholder="Enter Gemini API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label>Murf API Key:</label>
+              <input
+                type="password"
+                name="murf_api_key"
+                placeholder="Enter Murf API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label>Tavily API Key:</label>
+              <input
+                type="password"
+                name="tavily_api_key"
+                placeholder="Enter Tavily API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label>Zapier Webhook URL:</label>
+              <input
+                type="text"
+                name="zapier_webhook_url"
+                placeholder="Enter Zapier Webhook URL"
+                disabled
+              />
+            </div>
+            <button type="submit" class="save-btn">💾 Save API Keys</button>
+          </form>
+        </section>
+
+        <section id="voice" class="settings-card">
+          <h2>🎙️ Voice Settings</h2>
+          <div class="option">
+            Voice Selection:
+            <select name="voiceId">
+              <option value="en-IN-alia" selected>
+                Alia (Female, Narration)
+              </option>
+              <option value="en-US-matt">Matt (Male, Conversational)</option>
+              <option value="en-GB-emma">Emma (Female, British)</option>
+            </select>
+          </div>
+          <div class="option">
+            Playback Speed:
+            <input
+              type="range"
+              name="playbackSpeed"
+              min="0.5"
+              max="2.0"
+              step="0.1"
+              value="1.0"
+              class="slider"
+            />
+            <span class="slider-value">1.0x</span>
+          </div>
+        </section>
+
+        <section id="conversation" class="settings-card">
+          <h2>💬 Conversation</h2>
+          <div class="option">
+            Conversation Type:
+            <select name="conversationType">
+              <option value="casual" selected>Casual</option>
+              <option value="formal">Formal</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+        </section>
+
+        <section id="audio" class="settings-card">
+          <h2>🎤 Audio Settings</h2>
+          <div class="option">
+            Microphone Sensitivity:
+            <input
+              type="range"
+              name="micSensitivity"
+              min="0"
+              max="100"
+              value="50"
+              class="slider"
+            />
+            <span class="slider-value">50%</span>
+          </div>
+          <div class="option">
+            Audio Output Quality:
+            <select name="audioQuality">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </section>
+
+        <section id="chat-history" class="settings-card">
+          <h2>📜 Chat History</h2>
+          <div class="option">
+            <input type="checkbox" name="autoSaveHistory" checked /> Auto-save
+            Chat History
+          </div>
+          <div class="option">
+            <button type="button" class="reset-btn" id="clearHistory">
+              Clear Chat History
+            </button>
+          </div>
+        </section>
+
+        <section id="knowledge-base" class="settings-card">
+          <h2>📚 Knowledge Base</h2>
+          <div class="option">
+            <input type="checkbox" name="includeKnowledgeBase" checked />
+            Include Knowledge Base in Queries
+          </div>
+          <div class="option">
+            <button type="button" class="reset-btn" id="clearKnowledgeBase">
+              Clear Knowledge Base
+            </button>
+          </div>
+        </section>
+
+        <section id="search" class="settings-card">
+          <h2>🔍 Search Settings</h2>
+          <div class="option">
+            <input type="checkbox" name="enableSearch" checked /> Enable Tavily
+            Search
+          </div>
+          <div class="option">
+            Max Search Results:
+            <input
+              type="number"
+              name="maxSearchResults"
+              min="1"
+              max="5"
+              value="3"
+            />
+          </div>
+        </section>
+
+        <section id="notifications" class="settings-card">
+          <h2>🔔 Notifications</h2>
+          <div class="option">
+            <input type="checkbox" name="enableSound" checked /> Enable Sound
+            Alerts
+          </div>
+          <div class="option">
+            Notification Duration:
+            <input
+              type="number"
+              name="notificationDuration"
+              min="1"
+              max="10"
+              value="4"
+            />
+          </div>
+        </section>
+
+        <section id="appearance" class="settings-card">
+          <h2>🎨 Appearance</h2>
+          <div class="option">
+            Theme:
+            <select name="theme">
+              <option value="light">Light</option>
+              <option value="dark" selected>Dark</option>
+              <option value="system">System</option>
+            </select>
+          </div>
+          <div class="option">
+            Accent Color:
+            <select name="accentColor">
+              <option value="orange" selected>Orange</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </select>
+          </div>
+        </section>
+
+        <footer class="settings-footer">
+          <button class="cancel-btn">❌ Cancel</button>
+          <button class="save-btn">💾 Save Changes</button>
+        </footer>
+      </main>
+    </div>
+    <div class="notification hidden" id="notification"></div>
+    <script src="/static/settings.js"></script>
+  </body>
+</html>
