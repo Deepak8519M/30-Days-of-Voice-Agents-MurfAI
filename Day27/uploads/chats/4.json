@@ -38,5 +38,20 @@
     "timestamp": "2025-08-28T15:48:38.561598",
     "user_query": "hi",
     "ai_response": "Hello there. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T19:21:29.624599",
+    "user_query": "Hi",
+    "ai_response": "Hello there. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T19:21:39.744304",
+    "user_query": "How are you Doing??",
+    "ai_response": "I'm doing well, thank you for asking.  It's a quiet day here, and I'm ready to help if you need anything.  How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T19:22:15.985661",
+    "user_query": "So, hi. In a simple way, explain about application program interface.",
+    "ai_response": "Hello there.  It's nice to chat.\n\nImagine you're at a restaurant. You don't go into the kitchen to make your own food, right? You use a menu (the interface) to tell the waiter (the application) what you want. The waiter then goes into the kitchen (the system) and brings you your meal.\n\nAn API is kind of like that menu. It's a way for different computer programs to talk to each other and exchange information without needing to know all the details of how each other works.  One program (like the waiter) uses the API to ask another program (the kitchen) for something, and the second program sends back the requested information (your meal).  It makes things much simpler and more efficient.\n"
   }
 ]
