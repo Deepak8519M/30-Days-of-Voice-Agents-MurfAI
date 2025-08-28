@@ -118,5 +118,20 @@
     "timestamp": "2025-08-27T15:05:45.245093",
     "user_query": "So summarize cloud computing unit 3 and send to email.",
     "ai_response": "Of course.  Let's take a look at Unit 3 on cloud computing.\n\nUnit 3 focuses on cloud platform architecture.  It explains how cloud computing, particularly its service models, has become a significant part of how we do business today, shifting from a focus on manufacturing to services.  The unit then dives into two main types of cloud platforms:\n\n*   **Public Clouds:** Think of these as shared resources available to anyone who subscribes, like renting an apartment.  Examples include Amazon Web Services (AWS), Microsoft Azure, and Google App Engine.  The benefit is that you don't need to buy and maintain your own expensive equipment.\n*   **Private Clouds:** These are like having your own private server room, only accessible to your organization.  It offers more control and security than a public cloud, but requires more management.\n\n\nThe unit also touches upon Service-Oriented Architecture (SOA) and how to program using AWS and Azure.  In short, it describes how different cloud platforms work and what they offer.  It's all about understanding the different ways you can access and use computing resources, much like choosing the best tool for a particular job.\n\nI can't send an email directly, but this summary should be easy to copy and paste into an email. Is there anything else I can help you with today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T13:59:41.688179",
+    "user_query": "hi",
+    "ai_response": "Hello there.  It's nice to hear from you. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T13:59:53.991798",
+    "user_query": "hi",
+    "ai_response": "Hello there.  It's nice to hear from you. How are you doing today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T14:00:39.766994",
+    "user_query": "So tell me about AI in 10 words.",
+    "ai_response": "It's like a really smart computer program that learns and helps.\n"
   }
 ]
