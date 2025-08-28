@@ -729,6 +729,47 @@ body {
     padding: 14px 20px;
   }
 }
+.navigation {
+  cursor: pointer;
+  display: flex;
+  padding: 10px 1px;
+  width: 100%;
+  background: #1b1b1b;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  /* margin-bottom: 10px; */
+  margin-top: -18px;
+  border: 1px solid #ff8d04;
+  border-radius: 4px;
+  margin-bottom: 22px;
+}
+.settings-btn {
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 3px solid #ff8d04;
+  color: #ff8d04;
+  background: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.backToMain {
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 3px solid #ff8d04;
+  color: #ff8d04;
+  background: #0d0d0d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  cursor: pointer;
+}
 
 @keyframes pulseGlow {
   0% {

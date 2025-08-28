@@ -133,5 +133,20 @@
     "timestamp": "2025-08-28T14:00:39.766994",
     "user_query": "So tell me about AI in 10 words.",
     "ai_response": "It's like a really smart computer program that learns and helps.\n"
+  },
+  {
+    "timestamp": "2025-08-28T14:08:36.628574",
+    "user_query": "Tell me abou Fronet End Dev in 20 words",
+    "ai_response": "Front-end development is about building the part of websites you see and interact with directly \u2014  making them look good and work smoothly.\n"
+  },
+  {
+    "timestamp": "2025-08-28T14:41:30.266694",
+    "user_query": "Hello",
+    "ai_response": "Hello there.  It's nice to hear from you. How can I help you today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T14:41:47.163488",
+    "user_query": "Tell me about backend development in 10 words.",
+    "ai_response": "Building the unseen parts of websites and apps that make them work.\n"
   }
 ]
