@@ -4,7 +4,6 @@ import json
 import logging
 import asyncio
 import threading
-import time
 from datetime import datetime
 from typing import Optional, List, Dict
 import re
@@ -66,7 +65,7 @@ FRAMES_PER_BUFFER = 1600
 
 # In-memory storage for user-provided API keys and override flag
 USER_API_KEYS: Dict[str, str] = {}
-USER_OVERRIDE_ENV: bool = False  # Flag to indicate if user wants to override .env
+USER_OVERRIDE_ENV: bool = False
 
 # Knowledge base storage
 KNOWLEDGE_BASE: Dict[str, str] = {}
@@ -116,77 +115,17 @@ def save_chat_history(chat_id: str, user_query: str, ai_response: str) -> bool:
         log.error(f"Failed to save chat history for {chat_id}: {e}")
         return False
 
-# API Key Management
-async def validate_api_key(key_name: str, key_value: str, websocket: Optional[WebSocket] = None) -> bool:
-    """Validate API key for the given service."""
-    try:
-        if key_name == "aai_api_key":
-            aai.settings.api_key = key_value
-            client = StreamingClient(
-                StreamingClientOptions(api_key=key_value, api_host="streaming.assemblyai.com")
-            )
-            client.connect(StreamingParameters(sample_rate=SAMPLE_RATE, format_turns=True))
-            client.disconnect(terminate=True)
-        elif key_name == "gemini_api_key":
-            configure(api_key=key_value)
-            model = GenerativeModel(model_name="gemini-1.5-flash")
-            model.generate_content("Test", stream=False)
-        elif key_name == "murf_api_key":
-            murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={key_value}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
-            async with websockets.connect(murf_ws_url) as murf_ws:
-                await murf_ws.send(json.dumps({"init": True}))
-                await murf_ws.recv()
-        elif key_name == "tavily_api_key":
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    "https://api.tavily.com/search",
-                    json={"api_key": key_value, "query": "test", "max_results": 1}
-                ) as response:
-                    if response.status != 200:
-                        raise ValueError(f"Tavily API key invalid: status {response.status}")
-        elif key_name == "zapier_webhook_url":
-            async with aiohttp.ClientSession() as session:
-                async with session.post(key_value, json={"test": "ping"}) as resp:
-                    if resp.status >= 400:
-                        raise ValueError(f"Zapier webhook invalid: status {resp.status}")
-        return True
-    except Exception as e:
-        log.error(f"Validation failed for {key_name}: {e}")
-        if websocket:
-            await websocket.send_json({
-                "type": "error",
-                "data": f"Validation failed for {key_name}: {str(e)}"
-            })
-        return False
-
 def get_api_key(key_name: str, websocket: Optional[WebSocket] = None) -> str:
-    """Retrieve API key, prioritizing .env unless user overrides, with notification."""
     env_key = os.getenv(key_name, "")
     user_key = USER_API_KEYS.get(key_name, "")
-
     if USER_OVERRIDE_ENV and user_key:
         log.info(f"Using user-provided {key_name} from USER_API_KEYS")
-        if websocket:
-            asyncio.create_task(websocket.send_json({
-                "type": "info",
-                "data": f"Using user-provided API key for {key_name}."
-            }))
         return user_key
     elif env_key:
         log.info(f"Using {key_name} from .env file")
-        if websocket and user_key:
-            asyncio.create_task(websocket.send_json({
-                "type": "info",
-                "data": f"Ignoring user-provided {key_name}; using .env file as per default."
-            }))
         return env_key
     elif user_key:
         log.warning(f"No {key_name} in .env; falling back to user-provided key")
-        if websocket:
-            asyncio.create_task(websocket.send_json({
-                "type": "warning",
-                "data": f"No {key_name} found in .env; using user-provided key."
-            }))
         return user_key
     else:
         error_msg = f"No {key_name} found in .env or user-provided keys"
@@ -298,39 +237,22 @@ async def upload_file(file: UploadFile = File(...)):
 
 @app.post("/set_keys")
 async def set_api_keys(keys: Dict[str, str]):
-    """Store and validate user-provided API keys, with option to override .env."""
-    global USER_OVERRIDE_ENV
+    global USER_API_KEYS, USER_OVERRIDE_ENV
     try:
-        required_keys = ["aai_api_key", "gemini_api_key", "murf_api_key", "tavily_api_key", "zapier_webhook_url"]
+        required_keys = ["aai_api_key", "gemini_api_key", "murf_api_key"]
         if not all(key in keys for key in required_keys):
             error_msg = "Missing required API keys"
             log.error(error_msg)
-            return {"error": error_msg, "invalid_keys": []}
-
+            return {"error": error_msg}
         USER_OVERRIDE_ENV = keys.get("override_env", "false").lower() == "true"
-        if USER_OVERRIDE_ENV:
-            log.info("User requested to override .env with provided keys")
-        else:
-            log.info("User did not request to override .env; prioritizing .env keys")
-
-        invalid_keys = []
-        for key_name in required_keys:
-            if not await validate_api_key(key_name, keys[key_name]):
-                invalid_keys.append(key_name)
-
-        if invalid_keys:
-            error_msg = f"Invalid API keys: {', '.join(invalid_keys)}. Falling back to .env keys."
-            log.warning(error_msg)
-            USER_API_KEYS.update({k: v for k, v in keys.items() if k in required_keys})
-            return {"error": error_msg, "invalid_keys": invalid_keys}
-        else:
-            USER_API_KEYS.update({k: v for k, v in keys.items() if k in required_keys})
-            log.info("API keys updated successfully")
-            return {"message": "All API keys validated successfully.", "invalid_keys": []}
+        USER_API_KEYS.update({k: v for k, v in keys.items() if k in required_keys})
+        log.info("API keys updated successfully")
+        return {"message": "API keys saved successfully."}
     except Exception as e:
-        error_msg = f"Failed to set API keys: {str(e)}"
+        error_msg = f"Failed to set API keys: {str(e)}. Falling back to .env keys."
         log.error(error_msg)
-        return {"error": error_msg, "invalid_keys": []}
+        USER_API_KEYS.update({k: v for k, v in keys.items() if k in required_keys})
+        return {"error": error_msg}
 
 async def tavily_search(query: str, websocket: WebSocket) -> str:
     async with aiohttp.ClientSession() as session:
@@ -359,14 +281,12 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
             await websocket.send_json({"type": "error", "data": "Invalid query provided"})
             return None
 
-        # Send user message to UI for display
         await websocket.send_json({
             "type": "user_message",
             "data": transcript,
             "is_final": True
         })
 
-        # Configure Gemini API key
         gemini_api_key = get_api_key("gemini_api_key", websocket)
         if not gemini_api_key:
             error_msg = "No valid Gemini API key found"
@@ -540,22 +460,7 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
     await websocket.accept()
     log.info(f"WebSocket connected for chat_id: {chat_id}")
 
-    # Validate API keys and notify client
-    result = await set_api_keys(USER_API_KEYS)
-    if result.get("error"):
-        await websocket.send_json({
-            "type": "error",
-            "data": result["error"],
-            "invalid_keys": result.get("invalid_keys", [])
-        })
-    else:
-        await websocket.send_json({
-            "type": "info",
-            "data": result["message"]
-        })
-
-    # Ensure Gemini API is configured
-    gemini_api_key = get_api_key("gemini_api_key", websocket)
+    gemini_api_key = get_api_key("murf_api_key", websocket)
     if gemini_api_key:
         configure(api_key=gemini_api_key)
     else:

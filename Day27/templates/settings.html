@@ -4,82 +4,84 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings - AI Voice Agent ⚙️</title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Urbanist:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/static/settings.css" />
   </head>
-  <body>
-    <div class="app settings-app">
-      <div class="notification" id="notification" style="display: none">
-        API keys submitted successfully! ✅
-      </div>
-      <div class="settings-container glossy">
-        <button id="backBtn" class="back-btn glossy">Back to Main 👈🏻</button>
-        <h1>API Configuration ⚙️</h1>
-        <form id="apiForm">
+  <body
+    class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex settings-app"
+  >
+    <div
+      class="notification hidden px-6 py-3 rounded-lg shadow-2xl text-white font-semibold font-poppins"
+      id="notification"
+    ></div>
+    <div class="flex-1 flex items-center justify-center p-6">
+      <div class="settings-container">
+        <h1
+          class="text-3xl font-bold text-center gradient-text mb-8 font-urbanist"
+        >
+          API Configuration ⚙️
+        </h1>
+        <form id="apiForm" class="space-y-6">
           <div class="checkbox-group">
-            <label for="enableCustomKeys">
-              <input
-                type="checkbox"
-                id="enableCustomKeys"
-                name="enableCustomKeys"
-              />
-              Enable Custom API Keys
-            </label>
+            <input
+              type="checkbox"
+              id="enableCustomKeys"
+              name="enableCustomKeys"
+              class="checkbox-input"
+            />
+            <label for="enableCustomKeys" class="checkbox-label"
+              >Enable Custom API Keys</label
+            >
           </div>
           <div class="input-group">
-            <label for="aai_api_key">AssemblyAI API Key</label>
+            <label for="aai_api_key" class="input-label"
+              >AssemblyAI API Key</label
+            >
             <input
               type="password"
               id="aai_api_key"
               name="aai_api_key"
               placeholder="Enter AssemblyAI key"
+              class="input-field"
               disabled
             />
           </div>
           <div class="input-group">
-            <label for="gemini_api_key">Gemini API Key</label>
+            <label for="gemini_api_key" class="input-label"
+              >Gemini API Key</label
+            >
             <input
               type="password"
               id="gemini_api_key"
               name="gemini_api_key"
               placeholder="Enter Gemini key"
+              class="input-field"
               disabled
             />
           </div>
           <div class="input-group">
-            <label for="murf_api_key">Murf API Key</label>
+            <label for="murf_api_key" class="input-label">Murf API Key</label>
             <input
               type="password"
               id="murf_api_key"
               name="murf_api_key"
               placeholder="Enter Murf key"
+              class="input-field"
               disabled
             />
           </div>
-          <div class="input-group">
-            <label for="tavily_api_key">Tavily API Key</label>
-            <input
-              type="password"
-              id="tavily_api_key"
-              name="tavily_api_key"
-              placeholder="Enter Tavily key"
-              disabled
-            />
-          </div>
-          <div class="input-group">
-            <label for="zapier_webhook_url">Zapier Webhook URL</label>
-            <input
-              type="password"
-              id="zapier_webhook_url"
-              name="zapier_webhook_url"
-              placeholder="Enter Zapier URL"
-              disabled
-            />
-          </div>
-          <button type="submit" class="submit-btn glossy" disabled>
-            Authenticate and Enable
+          <button type="submit" class="submit-btn" disabled>
+            Save and Return
           </button>
         </form>
+        <button id="backBtn" class="back-btn">Back to Main 👈🏻</button>
       </div>
     </div>
     <script src="/static/settings.js"></script>

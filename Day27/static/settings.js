@@ -2,12 +2,12 @@ const apiForm = document.getElementById("apiForm");
 const notification = document.getElementById("notification");
 const backBtn = document.getElementById("backBtn");
 const enableCustomKeys = document.getElementById("enableCustomKeys");
-const submitBtn = document.querySelector(".submit-btn");
+const submitBtn = document.querySelector("button[type='submit']");
 const inputs = document.querySelectorAll(
   "#apiForm input:not([type='checkbox'])"
 );
 
-// Toggle input fields and submit button based on checkbox
+// Toggle input fields and submit button
 enableCustomKeys.addEventListener("change", () => {
   const isEnabled = enableCustomKeys.checked;
   inputs.forEach((input) => (input.disabled = !isEnabled));
@@ -19,52 +19,38 @@ backBtn.addEventListener("click", () => {
   window.location.href = "/";
 });
 
-// Show notification with dynamic gradient based on message type
+// Show notification
 function showNotification(message, isError = false) {
   notification.textContent = message;
-  notification.style.background = isError
-    ? "linear-gradient(135deg, #f87171, #dc2626)"
-    : "linear-gradient(135deg, #14b8a6, #0d9488)";
+  notification.className = `notification px-4 py-2 rounded-lg shadow-lg text-white font-semibold ${
+    isError ? "bg-red-600" : "bg-teal-600"
+  }`;
   notification.style.display = "block";
-  notification.style.animation =
-    "slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4s forwards";
   setTimeout(() => {
     notification.style.display = "none";
   }, 4500);
 }
 
-// Handle form submit
+// Handle form submission
 apiForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   if (!enableCustomKeys.checked) {
     showNotification("Custom API keys disabled; using .env keys.");
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 2000);
-    return;
-  }
-
-  // Collect values (trim and check non-empty)
-  const aai = document.getElementById("aai_api_key").value.trim();
-  const gemini = document.getElementById("gemini_api_key").value.trim();
-  const murf = document.getElementById("murf_api_key").value.trim();
-  const tavily = document.getElementById("tavily_api_key").value.trim();
-  const zapier = document.getElementById("zapier_webhook_url").value.trim();
-
-  if (!aai || !gemini || !murf || !tavily || !zapier) {
-    showNotification("Please fill all API keys.", true);
+    setTimeout(() => (window.location.href = "/"), 2000);
     return;
   }
 
   const keys = {
-    aai_api_key: aai,
-    gemini_api_key: gemini,
-    murf_api_key: murf,
-    tavily_api_key: tavily,
-    zapier_webhook_url: zapier,
-    override_env: "true", // Set to true when submitting custom keys
+    aai_api_key: document.getElementById("aai_api_key").value.trim(),
+    gemini_api_key: document.getElementById("gemini_api_key").value.trim(),
+    murf_api_key: document.getElementById("murf_api_key").value.trim(),
+    override_env: "true",
   };
+
+  if (!keys.aai_api_key || !keys.gemini_api_key || !keys.murf_api_key) {
+    showNotification("Please fill all API keys.", true);
+    return;
+  }
 
   try {
     const response = await fetch("/set_keys", {
@@ -73,17 +59,14 @@ apiForm.addEventListener("submit", async (e) => {
       body: JSON.stringify(keys),
     });
     const result = await response.json();
-
     if (result.error) {
       showNotification(`${result.error} Falling back to .env keys.`, true);
     } else {
-      showNotification(result.message);
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
+      showNotification("API keys saved successfully!");
     }
+    setTimeout(() => (window.location.href = "/"), 2000);
   } catch (error) {
-    console.error("Error submitting keys:", error);
-    showNotification("Error submitting API keys ❌", true);
+    showNotification("Error saving API keys. Falling back to .env keys.", true);
+    setTimeout(() => (window.location.href = "/"), 2000);
   }
 });
