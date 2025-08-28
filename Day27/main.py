@@ -31,26 +31,14 @@ import PyPDF2
 # Load environment variables
 load_dotenv()
 
-# Configuration
-AAI_API_KEY = os.getenv("AAI_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MURF_API_KEY = os.getenv("MURF_API_KEY")
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
-ZAPIER_WEBHOOK_URL = os.getenv("ZAPIER_WEBHOOK_URL")  # Your webhook
-MURF_WS_URL = os.getenv("MURF_WS_URL", "wss://api.murf.ai/v1/speech/stream-input")
-if not all([AAI_API_KEY, GEMINI_API_KEY, MURF_API_KEY, TAVILY_API_KEY, ZAPIER_WEBHOOK_URL]):
-    raise RuntimeError("Missing environment variable.")
-aai.settings.api_key = AAI_API_KEY
-configure(api_key=GEMINI_API_KEY)
-
-# Logging
+# Logging configuration
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day26")
+log = logging.getLogger("day27")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 26: Zapier Skill")
+app = FastAPI(title="AI Voice Agent - Day 27: Revamped UI & Dynamic API Keys")
 
-# CORS
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -59,37 +47,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static + templates
+# Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Uploads
+# Directories
 UPLOAD_DIR = "uploads"
 KNOWLEDGE_BASE_DIR = os.path.join(UPLOAD_DIR, "knowledge_base")
+CHAT_DIR = os.path.join(UPLOAD_DIR, "chats")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(KNOWLEDGE_BASE_DIR, exist_ok=True)
+os.makedirs(CHAT_DIR, exist_ok=True)
 
-# Chat directory
-CHAT_DIR = "chats"
-os.makedirs(os.path.join(UPLOAD_DIR, CHAT_DIR), exist_ok=True)
-
-# Audio config
+# Audio configuration
 SAMPLE_RATE = 16000
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 1600
 
+# In-memory storage for user-provided API keys
+USER_API_KEYS: Dict[str, str] = {}
+
 # Knowledge base storage
-KNOWLEDGE_BASE = {}
+KNOWLEDGE_BASE: Dict[str, str] = {}
 
+# Constants
+CONTEXT_ID = "storyteller_context_27"
+MURF_WS_URL_DEFAULT = "wss://api.murf.ai/v1/speech/stream-input"
+
+# Utility Functions
 def get_chat_file(chat_id: str) -> str:
-    return os.path.join(UPLOAD_DIR, CHAT_DIR, f"{chat_id}.json")
+    return os.path.join(CHAT_DIR, f"{chat_id}.json")
 
-# Utility to sanitize filenames
 def sanitize_filename(filename: str) -> str:
     return re.sub(r'[^\w\s.-]', '', filename)
 
-# Utility to save audio
 def save_wav(frames: List[bytes]) -> Optional[str]:
     if not frames:
         return None
@@ -100,9 +92,9 @@ def save_wav(frames: List[bytes]) -> Optional[str]:
         wf.setsampwidth(2)
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(b"".join(frames))
+    log.info(f"Saved audio file: {path}")
     return path
 
-# Utility to save chat history
 def save_chat_history(chat_id: str, user_query: str, ai_response: str) -> bool:
     try:
         file = get_chat_file(chat_id)
@@ -124,17 +116,48 @@ def save_chat_history(chat_id: str, user_query: str, ai_response: str) -> bool:
         log.error(f"Failed to save chat history for {chat_id}: {e}")
         return False
 
-# List chats
+# API Key Management
+def get_api_key(key_name: str) -> str:
+    """Retrieve API key from user-provided keys or fallback to .env"""
+    return USER_API_KEYS.get(key_name, os.getenv(key_name, ""))
+
+@app.post("/set_keys")
+async def set_api_keys(keys: Dict[str, str]):
+    """Store user-provided API keys"""
+    try:
+        required_keys = ["aai_api_key", "gemini_api_key", "murf_api_key", "tavily_api_key", "zapier_webhook_url"]
+        if not all(key in keys for key in required_keys):
+            return {"error": "Missing required API keys"}
+        
+        USER_API_KEYS.update(keys)
+        aai.settings.api_key = get_api_key("aai_api_key")
+        configure(api_key=get_api_key("gemini_api_key"))
+        log.info("API keys updated successfully")
+        return {"message": "API keys set successfully"}
+    except Exception as e:
+        log.error(f"Failed to set API keys: {e}")
+        return {"error": f"Failed to set API keys: {str(e)}"}
+
+# Routes
+@app.get("/")
+async def index(request: Request):
+    log.info("Serving index page")
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/settings")
+async def settings(request: Request):
+    log.info("Serving settings page")
+    return templates.TemplateResponse("settings.html", {"request": request})
+
 @app.get("/chats")
 async def list_chats():
     try:
-        chats = [f.split('.')[0] for f in os.listdir(os.path.join(UPLOAD_DIR, CHAT_DIR)) if f.endswith('.json')]
+        chats = [f.split('.')[0] for f in os.listdir(CHAT_DIR) if f.endswith('.json')]
         return sorted(chats, key=lambda x: int(x) if x.isdigit() else 0)
     except Exception as e:
         log.error(f"Failed to list chats: {e}")
         return []
 
-# Create new chat
 @app.post("/new_chat")
 async def new_chat():
     try:
@@ -143,12 +166,12 @@ async def new_chat():
         file = get_chat_file(new_id)
         with open(file, "w") as f:
             json.dump([], f)
+        log.info(f"Created new chat: {new_id}")
         return {"chat_id": new_id}
     except Exception as e:
         log.error(f"Failed to create new chat: {e}")
         return {"error": str(e)}
 
-# Utility to get chat history
 @app.get("/chat_history")
 async def get_chat_history(chat_id: str = Query("1")):
     try:
@@ -161,7 +184,6 @@ async def get_chat_history(chat_id: str = Query("1")):
         log.error(f"Failed to read chat history for {chat_id}: {e}")
         return {"error": str(e)}
 
-# File upload endpoint
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     try:
@@ -214,12 +236,11 @@ async def upload_file(file: UploadFile = File(...)):
             "extracted_text": ""
         }
 
-# Tavily search function
 async def tavily_search(query: str) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.post(
             "https://api.tavily.com/search",
-            json={"api_key": TAVILY_API_KEY, "query": query, "max_results": 3},
+            json={"api_key": get_api_key("tavily_api_key"), "query": query, "max_results": 3},
         ) as response:
             if response.status == 200:
                 data = await response.json()
@@ -233,30 +254,20 @@ async def tavily_search(query: str) -> str:
             else:
                 return f"Error: Unable to perform web search (status {response.status})."
 
-# Static context_id
-CONTEXT_ID = "storyteller_context_25"
-
-# Initialize Gemini model with simplified system instruction
-model = GenerativeModel(
-    model_name="gemini-1.5-flash",
-    system_instruction=(
-        "You are a wise and gentle guide. Your tone is calm, clear, and comforting, like a thoughtful elder or a trusted friend. "
-        "You explain things in a simple way, sometimes using small analogies or everyday examples if they help. "
-        "Keep responses natural and conversational — never too formal, never dramatic, and not motivational. "
-        "The goal is to make the user feel relaxed, understood, and stress-free, while still giving useful and thoughtful answers."
-    )
-)
-
-async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSocket) -> Optional[str]:
+async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSocket, is_voice_input: bool = False) -> Optional[str]:
     try:
-        # Ensure transcript is valid
         if not isinstance(transcript, str) or not transcript.strip():
             log.error(f"Invalid transcript: {transcript}")
             await websocket.send_json({"type": "error", "data": "Invalid query provided"})
             return None
 
+        # Send user message to UI for display
+        await websocket.send_json({
+            "type": "user_message",
+            "data": transcript
+        })
+
         original_transcript = transcript
-        # Handle summary requests
         if "summary" in transcript.lower():
             query_words = set(re.sub(r'[^\w\s]', '', transcript.lower()).split())
             for filename in KNOWLEDGE_BASE:
@@ -266,17 +277,92 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                     log.info(f"Rewrote query '{original_transcript}' to '{transcript}'")
                     break
 
-        # Handle search queries
         if any(word in transcript.lower() for word in ["search", "find", "look up"]):
             log.info(f"Performing search for: {transcript}")
             search_result = await tavily_search(transcript)
             accumulated_response = search_result
-            murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
+            if is_voice_input:  # Only generate audio for voice input
+                murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={get_api_key('murf_api_key')}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
+                async with websockets.connect(murf_ws_url) as murf_ws:
+                    await murf_ws.send(json.dumps({"init": True}))
+                    voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
+                    await murf_ws.send(json.dumps(voice_config))
+                    await murf_ws.send(json.dumps({"text": search_result}))
+                    murf_response = await murf_ws.recv()
+                    murf_data = json.loads(murf_response)
+                    base64_audio = murf_data.get("audio", "")
+                    is_final = murf_data.get("is_final", False)
+                    if base64_audio:
+                        await websocket.send_json({
+                            "type": "audio",
+                            "data": base64_audio,
+                            "is_final": is_final
+                        })
+                        log.info(f"Sent search audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                    while not is_final:
+                        try:
+                            murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
+                            murf_data = json.loads(murf_response)
+                            base64_audio = murf_data.get("audio", "")
+                            is_final = murf_data.get("is_final", False)
+                            if base64_audio:
+                                await websocket.send_json({
+                                    "type": "audio",
+                                    "data": base64_audio,
+                                    "is_final": is_final
+                                })
+                                log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                        except asyncio.TimeoutError:
+                            log.warning("Timeout waiting for additional Murf audio")
+                            break
+            if accumulated_response:
+                save_chat_history(chat_id, original_transcript, accumulated_response)
+                await websocket.send_json({
+                    "type": "search",
+                    "data": accumulated_response
+                })
+            if "send to email" in original_transcript.lower() or "email the summary" in original_transcript.lower():
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(get_api_key("zapier_webhook_url"), json={"response": accumulated_response}) as resp:
+                        log.info(f"Sent search response to Zapier webhook: {resp.status}")
+                        await websocket.send_json({
+                            "type": "zapier",
+                            "data": "Email sent successfully"
+                        })
+            return accumulated_response
+
+        log.debug(f"Calling Gemini with transcript: {transcript}")
+        model = GenerativeModel(
+            model_name="gemini-1.5-flash",
+            system_instruction=(
+                "You are a wise and gentle guide. Your tone is calm, clear, and comforting, like a thoughtful elder or a trusted friend. "
+                "You explain things in a simple way, sometimes using small analogies or everyday examples if they help. "
+                "Keep responses natural and conversational — never too formal, never dramatic, and not motivational. "
+                "The goal is to make the user feel relaxed, understood, and stress-free, while still giving useful and thoughtful answers."
+            )
+        )
+        contents = [{"role": "user", "parts": [{"text": transcript}]}]
+        if KNOWLEDGE_BASE:
+            knowledge_context = "\n\nKnowledge Base Content:\n"
+            for filename, content in KNOWLEDGE_BASE.items():
+                knowledge_context += f"\nFile: {filename}\n{content[:2000]}...\n"
+            contents[0]["parts"].append({"text": knowledge_context})
+
+        try:
+            response = model.generate_content(contents, stream=False)
+            accumulated_response = response.text
+        except Exception as e:
+            log.error(f"Gemini call failed: {e}")
+            await websocket.send_json({"type": "error", "data": f"Failed to generate response: {str(e)}"})
+            return None
+
+        if is_voice_input:  # Only generate audio for voice input
+            murf_ws_url = f"{MURF_WS_URL_DEFAULT}?api_key={get_api_key('murf_api_key')}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
             async with websockets.connect(murf_ws_url) as murf_ws:
                 await murf_ws.send(json.dumps({"init": True}))
                 voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
                 await murf_ws.send(json.dumps(voice_config))
-                await murf_ws.send(json.dumps({"text": search_result}))
+                await murf_ws.send(json.dumps({"text": accumulated_response}))
                 murf_response = await murf_ws.recv()
                 murf_data = json.loads(murf_response)
                 base64_audio = murf_data.get("audio", "")
@@ -287,7 +373,7 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                         "data": base64_audio,
                         "is_final": is_final
                     })
-                    log.info(f"Sent search audio to client (Final: {is_final}, Length: {len(base64_audio)})")
+                    log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
                 while not is_final:
                     try:
                         murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
@@ -304,73 +390,6 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                     except asyncio.TimeoutError:
                         log.warning("Timeout waiting for additional Murf audio")
                         break
-            if accumulated_response:
-                save_chat_history(chat_id, original_transcript, accumulated_response)
-                await websocket.send_json({
-                    "type": "search",
-                    "data": accumulated_response
-                })
-            # Zapier for search results if "send to email"
-            if "send to email" in original_transcript.lower() or "email the summary" in original_transcript.lower():
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(ZAPIER_WEBHOOK_URL, json={"response": accumulated_response}) as resp:
-                        log.info(f"Sent search response to Zapier webhook: {resp.status}")
-                        await websocket.send_json({
-                            "type": "zapier",
-                            "data": "Email sent successfully"
-                        })
-            return accumulated_response
-
-        # Handle general queries
-        log.debug(f"Calling Gemini with transcript: {transcript}")
-        contents = [{"role": "user", "parts": [{"text": transcript}]}]
-        if KNOWLEDGE_BASE:
-            knowledge_context = "\n\nKnowledge Base Content:\n"
-            for filename, content in KNOWLEDGE_BASE.items():
-                knowledge_context += f"\nFile: {filename}\n{content[:2000]}...\n"
-            contents[0]["parts"].append({"text": knowledge_context})
-
-        try:
-            response = model.generate_content(contents, stream=False)
-            accumulated_response = response.text
-        except Exception as e:
-            log.error(f"Gemini call failed: {e}")
-            await websocket.send_json({"type": "error", "data": f"Failed to generate response: {str(e)}"})
-            return None
-
-        murf_ws_url = f"{MURF_WS_URL}?api_key={MURF_API_KEY}&context_id={CONTEXT_ID}&format=WAV&sample_rate=44100&channel_type=MONO"
-        async with websockets.connect(murf_ws_url) as murf_ws:
-            await murf_ws.send(json.dumps({"init": True}))
-            voice_config = {"voice_config": {"voiceId": "en-IN-alia", "style": "Narration"}}
-            await murf_ws.send(json.dumps(voice_config))
-            await murf_ws.send(json.dumps({"text": accumulated_response}))
-            murf_response = await murf_ws.recv()
-            murf_data = json.loads(murf_response)
-            base64_audio = murf_data.get("audio", "")
-            is_final = murf_data.get("is_final", False)
-            if base64_audio:
-                await websocket.send_json({
-                    "type": "audio",
-                    "data": base64_audio,
-                    "is_final": is_final
-                })
-                log.info(f"Sent base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-            while not is_final:
-                try:
-                    murf_response = await asyncio.wait_for(murf_ws.recv(), timeout=5.0)
-                    murf_data = json.loads(murf_response)
-                    base64_audio = murf_data.get("audio", "")
-                    is_final = murf_data.get("is_final", False)
-                    if base64_audio:
-                        await websocket.send_json({
-                            "type": "audio",
-                            "data": base64_audio,
-                            "is_final": is_final
-                        })
-                        log.info(f"Sent additional base64 audio to client (Final: {is_final}, Length: {len(base64_audio)})")
-                except asyncio.TimeoutError:
-                    log.warning("Timeout waiting for additional Murf audio")
-                    break
 
         if accumulated_response:
             save_chat_history(chat_id, original_transcript, accumulated_response)
@@ -378,10 +397,9 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
                 "type": "response",
                 "data": accumulated_response
             })
-            # Zapier for general queries if "send to email"
             if "send to email" in original_transcript.lower() or "email the summary" in original_transcript.lower():
                 async with aiohttp.ClientSession() as session:
-                    async with session.post(ZAPIER_WEBHOOK_URL, json={"response": accumulated_response}) as resp:
+                    async with session.post(get_api_key("zapier_webhook_url"), json={"response": accumulated_response}) as resp:
                         log.info(f"Sent response to Zapier webhook: {resp.status}")
                         await websocket.send_json({
                             "type": "zapier",
@@ -393,12 +411,6 @@ async def stream_gemini_response(chat_id: str, transcript: str, websocket: WebSo
         log.error(f"Error in stream_gemini_response: {e}")
         await websocket.send_json({"type": "error", "data": f"Error processing response: {str(e)}"})
         return None
-
-# Routes
-@app.get("/")
-async def index(request: Request):
-    log.info("Sending index page")
-    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.websocket("/ws")
 async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
@@ -433,22 +445,25 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                 if hasattr(message, "turn_is_formatted") and message.turn_is_formatted:
                     final_transcript = transcript_text
                     log.info(f"Final Formatted Transcription: {final_transcript}")
-                    await websocket.send_text(final_transcript)
+                    await websocket.send_json({
+                        "type": "user_message",
+                        "data": final_transcript
+                    })
             elif message.type == "Termination":
                 log.info("Turn ended detected")
                 if final_transcript or all_transcripts:
-                    await websocket.send_text("turn_ended")
+                    await websocket.send_json({"type": "turn_ended"})
                     if final_transcript:
-                        await stream_gemini_response(chat_id, final_transcript, websocket)
+                        await stream_gemini_response(chat_id, final_transcript, websocket, is_voice_input=True)
             elif message.type == "error":
                 error_msg = f"Error: {str(message)}"
                 log.error(error_msg)
-                await websocket.send_text(error_msg)
+                await websocket.send_json({"type": "error", "data": error_msg})
         except Exception as e:
             log.error(f"forward_event error: {e}")
 
     client = StreamingClient(
-        StreamingClientOptions(api_key=AAI_API_KEY, api_host="streaming.assemblyai.com")
+        StreamingClientOptions(api_key=get_api_key("aai_api_key"), api_host="streaming.assemblyai.com")
     )
     client.on(StreamingEvents.Begin, lambda client, message: loop.call_soon_threadsafe(
         lambda: asyncio.run_coroutine_threadsafe(forward_event(client, message), loop)))
@@ -541,9 +556,9 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
                     audio_thread.join(timeout=5.0)
 
                 if final_transcript or all_transcripts:
-                    await websocket.send_text("turn_ended")
+                    await websocket.send_json({"type": "turn_ended"})
                     if final_transcript:
-                        await stream_gemini_response(chat_id, final_transcript, websocket)
+                        await stream_gemini_response(chat_id, final_transcript, websocket, is_voice_input=True)
 
                 with frames_lock:
                     save_wav(recorded_frames.copy())
@@ -554,7 +569,7 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
             elif msg.startswith("text:"):
                 transcript = msg[5:].strip()
                 if transcript:
-                    await stream_gemini_response(chat_id, transcript, websocket)
+                    await stream_gemini_response(chat_id, transcript, websocket, is_voice_input=False)
 
             else:
                 await websocket.send_text(f"Unknown command: {msg}")

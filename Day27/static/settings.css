@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Urbanist:wght@300;400;500;600;700;900&display=swap");
+
+/* Premium enhancements: Softer gradients, enhanced shadows, smoother animations */
+.settings-app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(circle at center, #0d0d0d, #1e1e1e);
+}
+
+.settings-container {
+  width: 90%;
+  max-width: 600px;
+  background: rgba(30, 30, 30, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(255, 107, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.settings-container:hover {
+  box-shadow: 0 25px 60px rgba(255, 107, 0, 0.3);
+}
+
+.settings-container h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff6b00, #ffa500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 30px;
+  letter-spacing: 1.5px;
+}
+
+#apiForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffa500;
+}
+
+.input-group input {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  background: rgba(13, 13, 13, 0.8);
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #ffa500;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.4);
+}
+
+.submit-btn {
+  padding: 16px;
+  background: linear-gradient(135deg, #ff6b00, #ffa500);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(255, 107, 0, 0.6);
+}
+
+.back-btn {
+  background: linear-gradient(135deg, #1e1e1e, #0d0d0d);
+  color: #ffa500;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+  display: block;
+  width: fit-content;
+  margin: 0 auto 30px;
+}
+
+.back-btn:hover {
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Reuse notification from main styles, but premium override */
+.notification {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  /* ... (rest from main style.css) */
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .settings-container {
+    padding: 30px 20px;
+  }
+  .settings-container h1 {
+    font-size: 24px;
+  }
+}

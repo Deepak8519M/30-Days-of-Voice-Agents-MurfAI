@@ -5,8 +5,8 @@ let isPlaying = false;
 let nextStartTime = 0;
 let isFirstAudio = true;
 let currentChatId = "1";
-let currentTranscript = "";
 let rippleInterval = null;
+let lastUserMessage = null;
 
 const SAMPLE_RATE = 44100; // Murf output sample rate
 const CHANNELS = 1;
@@ -27,6 +27,7 @@ const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 const uploadForm = document.getElementById("uploadForm");
 const fileInput = document.getElementById("fileInput");
+const settingsBtn = document.getElementById("settingsBtn");
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -39,23 +40,44 @@ function initAudioContext() {
       audioContext.sampleRate
     );
   }
+  // Resume AudioContext if suspended
+  if (audioContext.state === "suspended") {
+    audioContext.resume().then(() => {
+      console.log("AudioContext resumed");
+    });
+  }
 }
 
 // Decode base64 to ArrayBuffer
 function base64ToArrayBuffer(base64) {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
+  try {
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  } catch (error) {
+    console.error("Error decoding base64:", error);
+    return null;
   }
-  return bytes.buffer;
 }
 
 // Queue audio chunk
 async function queueAudio(base64Audio, isFinal) {
   try {
+    if (!base64Audio) {
+      console.error("Empty audio data received");
+      status.textContent = "Error: No audio data received ❌";
+      return;
+    }
     let pcmBuffer = base64ToArrayBuffer(base64Audio);
+    if (!pcmBuffer) {
+      console.error("Failed to decode audio data");
+      status.textContent = "Error: Failed to decode audio data ❌";
+      return;
+    }
     if (isFirstAudio) {
       console.log("First audio chunk: skipping 44-byte WAV header");
       pcmBuffer = pcmBuffer.slice(44);
@@ -63,6 +85,11 @@ async function queueAudio(base64Audio, isFinal) {
     }
 
     const int16 = new Int16Array(pcmBuffer);
+    if (int16.length === 0) {
+      console.error("Empty audio buffer after conversion");
+      status.textContent = "Error: Empty audio buffer ❌";
+      return;
+    }
     const float32 = new Float32Array(int16.length);
     for (let i = 0; i < int16.length; i++) {
       float32[i] = int16[i] / 32768;
@@ -111,10 +138,42 @@ function playNextAudio() {
       isFirstAudio = true;
       console.log("Audio playback complete");
       status.textContent = "Status: Audio playback complete ✅";
-    } else {
-      playNextAudio();
     }
+    playNextAudio();
   };
+}
+
+// Append user message to transcription
+function appendUserMessage(text) {
+  // Remove previous user message if it exists
+  if (lastUserMessage) {
+    lastUserMessage.remove();
+    lastUserMessage = null;
+  }
+  const message = document.createElement("div");
+  message.classList.add("user-message");
+  message.textContent = text;
+  transcription.appendChild(message);
+  lastUserMessage = message;
+  transcription.scrollTop = transcription.scrollHeight;
+}
+
+// Append AI message to transcription
+function appendAIMessage(text) {
+  const message = document.createElement("div");
+  message.classList.add("ai-message");
+  message.textContent = text;
+  transcription.appendChild(message);
+  transcription.scrollTop = transcription.scrollHeight;
+}
+
+// Append search result to transcription
+function appendSearchResult(text) {
+  const message = document.createElement("div");
+  message.classList.add("search-result");
+  message.textContent = text;
+  transcription.appendChild(message);
+  transcription.scrollTop = transcription.scrollHeight;
 }
 
 // Load chat list
@@ -146,6 +205,7 @@ async function loadChats() {
     });
   } catch (error) {
     console.error("Error loading chats:", error);
+    showNotification("Error loading chats ❌");
   }
 }
 
@@ -178,6 +238,7 @@ async function fetchChatHistory() {
     console.error("Error fetching chat history:", error);
     chatHistory.innerHTML =
       "<span class='text'>Error loading chat history.</span>";
+    showNotification("Error loading chat history ❌");
   }
 }
 
@@ -187,17 +248,18 @@ async function loadCurrentConversation() {
     const response = await fetch(`/chat_history?chat_id=${currentChatId}`);
     const history = await response.json();
     if (Array.isArray(history)) {
-      transcription.innerHTML = history
-        .map(
-          (entry) => `
-        <div class="user-message ">${entry.user_query}</div>
-        <div class="ai-message ">${entry.ai_response}</div>
-      `
-        )
-        .join("");
+      transcription.innerHTML =
+        '<span class="spinner" style="display: none">⏳</span>';
+      lastUserMessage = null;
+      history.forEach((entry) => {
+        appendUserMessage(entry.user_query);
+        appendAIMessage(entry.ai_response);
+        lastUserMessage = null; // Reset after each pair
+      });
     }
   } catch (error) {
     console.error("Error loading current conversation:", error);
+    showNotification("Error loading conversation ❌");
   }
 }
 
@@ -213,6 +275,135 @@ function showNotification(message) {
   }, 2500);
 }
 
+// Initialize WebSocket connection
+function connectWebSocket() {
+  ws = new WebSocket(
+    `ws://${window.location.host}/ws?chat_id=${currentChatId}`
+  );
+
+  ws.onopen = () => {
+    console.log("WebSocket opened");
+    connectionStatus.textContent = "Connected to server ✅";
+    connectionStatus.classList.add("connected");
+  };
+
+  ws.onmessage = async (event) => {
+    console.log(
+      "WebSocket message received:",
+      event.data.substring(0, 100) + "..."
+    );
+
+    try {
+      const jsonData = JSON.parse(event.data);
+      if (
+        jsonData.type === "user_message" &&
+        jsonData.data &&
+        jsonData.is_final
+      ) {
+        appendUserMessage(jsonData.data);
+      } else if (jsonData.type === "audio" && jsonData.data) {
+        console.log(
+          "Audio chunk received, is_final:",
+          jsonData.is_final,
+          "length:",
+          jsonData.data.length
+        );
+        initAudioContext(); // Ensure AudioContext is initialized and resumed
+        await queueAudio(jsonData.data, jsonData.is_final);
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.add("active"));
+      } else if (jsonData.type === "response" && jsonData.data) {
+        appendAIMessage(jsonData.data);
+        await fetchChatHistory();
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else if (jsonData.type === "search" && jsonData.data) {
+        appendSearchResult(jsonData.data);
+        await fetchChatHistory();
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else if (jsonData.type === "zapier" && jsonData.data) {
+        showNotification(jsonData.data);
+        appendAIMessage(jsonData.data);
+        await fetchChatHistory();
+      } else if (jsonData.type === "error" && jsonData.data) {
+        showNotification(`Error: ${jsonData.data}`);
+        status.textContent = `Error: ${jsonData.data}`;
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else if (jsonData.type === "info" && jsonData.data) {
+        showNotification(jsonData.data);
+      } else if (jsonData.type === "turn_ended") {
+        status.textContent = "Status: Processing response 🤖";
+        spinner.style.display = "none";
+        listeningModal.style.display = "none";
+        clearInterval(rippleInterval);
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else {
+        console.warn("Invalid JSON message format:", jsonData);
+      }
+    } catch (e) {
+      // Handle legacy text messages
+      const data = event.data;
+      if (data === "Started transcription") {
+        status.textContent = "Status: Transcribing 🎤";
+        spinner.style.display = "inline-block";
+        listeningModal.style.display = "flex";
+        rippleInterval = setInterval(() => {
+          const ripples = document.querySelectorAll(".ripple");
+          ripples.forEach((ripple) => {
+            ripple.classList.remove("active");
+            setTimeout(() => ripple.classList.add("active"), 50);
+          });
+        }, 1500);
+      } else if (data === "Stopped transcription") {
+        status.textContent = "Status: Idle ⏳";
+        spinner.style.display = "none";
+        listeningModal.style.display = "none";
+        showNotification("Transcription stopped ✅");
+        clearInterval(rippleInterval);
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else if (data === "Already transcribing") {
+        status.textContent = "Status: Already transcribing 🎤";
+        showNotification("Already transcribing!");
+      } else if (
+        data.startsWith("Error:") ||
+        data.startsWith("Transcription error:")
+      ) {
+        status.textContent = `Error: ${data}`;
+        spinner.style.display = "none";
+        listeningModal.style.display = "none";
+        showNotification(`Error: ${data}`);
+        clearInterval(rippleInterval);
+        const ripples = document.querySelectorAll(".ripple");
+        ripples.forEach((ripple) => ripple.classList.remove("active"));
+      } else {
+        console.warn("Unhandled text message:", data);
+      }
+    }
+  };
+
+  ws.onclose = () => {
+    console.log("WebSocket closed");
+    connectionStatus.textContent = "Disconnected from server 🔌";
+    connectionStatus.classList.remove("connected");
+    status.textContent = "Status: Disconnected 🔌";
+    spinner.style.display = "none";
+    clearInterval(rippleInterval);
+    setTimeout(connectWebSocket, 5000);
+  };
+
+  ws.onerror = () => {
+    console.error("WebSocket error");
+    connectionStatus.textContent = "Error connecting to server ❌";
+    connectionStatus.classList.remove("connected");
+    status.textContent = "Status: Error ❌";
+    clearInterval(rippleInterval);
+  };
+}
+
 // Handle file upload
 uploadForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -224,9 +415,10 @@ uploadForm.addEventListener("submit", async (e) => {
     });
     const result = await response.json();
     showNotification(result.message);
-    transcription.innerHTML += `<div class="ai-message ">${result.message}</div>`;
-    transcription.scrollTop = transcription.scrollHeight;
+    appendAIMessage(result.message);
+    fileInput.value = "";
   } catch (error) {
+    console.error("Error uploading file:", error);
     showNotification("Error uploading file ❌");
   }
 });
@@ -249,172 +441,77 @@ async function initApp() {
     connectWebSocket();
   } catch (error) {
     console.error("Error initializing app:", error);
+    showNotification("Error initializing app ❌");
   }
-}
-
-// Initialize WebSocket connection
-function connectWebSocket() {
-  ws = new WebSocket(
-    `ws://${window.location.host}/ws?chat_id=${currentChatId}`
-  );
-
-  ws.onopen = () => {
-    console.log("WebSocket opened");
-    connectionStatus.textContent = "Connected to server ✅";
-    connectionStatus.classList.add("connected");
-  };
-
-  ws.onmessage = async (event) => {
-    const data = event.data;
-    console.log("WebSocket message received:", data.substring(0, 100) + "...");
-
-    // Handle JSON messages (audio, response, or zapier)
-    if (data.startsWith("{")) {
-      try {
-        const jsonData = JSON.parse(data);
-        if (jsonData.type === "audio" && jsonData.data) {
-          console.log(
-            "Audio chunk received, is_final:",
-            jsonData.is_final,
-            "length:",
-            jsonData.data.length
-          );
-          await queueAudio(jsonData.data, jsonData.is_final);
-          const ripples = document.querySelectorAll(".ripple");
-          ripples.forEach((ripple) => ripple.classList.add("active"));
-        } else if (jsonData.type === "response" && jsonData.data) {
-          transcription.innerHTML += `<div class="ai-message ">${jsonData.data}</div>`;
-          transcription.scrollTop = transcription.scrollHeight;
-          await fetchChatHistory();
-          const ripples = document.querySelectorAll(".ripple");
-          ripples.forEach((ripple) => ripple.classList.remove("active"));
-        } else if (jsonData.type === "search" && jsonData.data) {
-          transcription.innerHTML += `<div class="search-result">${jsonData.data}</div>`;
-          transcription.scrollTop = transcription.scrollHeight;
-          await fetchChatHistory();
-        } else if (jsonData.type === "zapier" && jsonData.data) {
-          showNotification(jsonData.data); // Show "Email sent successfully" with gradient
-          transcription.innerHTML += `<div class="ai-message ">${jsonData.data}</div>`;
-          transcription.scrollTop = transcription.scrollHeight;
-          await fetchChatHistory();
-        } else if (jsonData.type === "error" && jsonData.data) {
-          showNotification(`Error: ${jsonData.data}`);
-        } else {
-          console.warn("Invalid JSON message format:", jsonData);
-        }
-      } catch (e) {
-        console.error("Error parsing JSON message:", e);
-        status.textContent = "Error: Invalid data received ❌";
-      }
-      return;
-    }
-
-    // Handle text messages
-    if (data === "Started transcription") {
-      status.textContent = "Status: Transcribing 🎤";
-      spinner.style.display = "inline-block";
-      currentTranscript = "";
-      listeningModal.style.display = "flex";
-      rippleInterval = setInterval(() => {
-        const ripples = document.querySelectorAll(".ripple");
-        ripples.forEach((ripple) => {
-          ripple.classList.remove("active");
-          setTimeout(() => ripple.classList.add("active"), 50);
-        });
-      }, 1500);
-    } else if (data === "turn_ended") {
-      spinner.style.display = "none";
-      status.textContent = "Status: Processing response 🤖";
-      listeningModal.style.display = "none";
-      if (currentTranscript) {
-        transcription.innerHTML += `<div class="user-message ">${currentTranscript}</div>`;
-        transcription.scrollTop = transcription.scrollHeight;
-        currentTranscript = "";
-      }
-      clearInterval(rippleInterval);
-      const ripples = document.querySelectorAll(".ripple");
-      ripples.forEach((ripple) => ripple.classList.remove("active"));
-    } else if (data === "Stopped transcription") {
-      status.textContent = "Status: Idle ⏳";
-      spinner.style.display = "none";
-      listeningModal.style.display = "none";
-      showNotification("Transcription stopped ✅");
-      clearInterval(rippleInterval);
-      const ripples = document.querySelectorAll(".ripple");
-      ripples.forEach((ripple) => ripple.classList.remove("active"));
-    } else if (
-      data.startsWith("Error:") ||
-      data.startsWith("Transcription error:")
-    ) {
-      status.textContent = `Error: ${data}`;
-      spinner.style.display = "none";
-      listeningModal.style.display = "none";
-      showNotification(`Error: ${data}`);
-      clearInterval(rippleInterval);
-      const ripples = document.querySelectorAll(".ripple");
-      ripples.forEach((ripple) => ripple.classList.remove("active"));
-    } else if (data === "Already transcribing") {
-      status.textContent = "Status: Already transcribing 🎤";
-    } else {
-      currentTranscript = data;
-    }
-  };
-
-  ws.onclose = () => {
-    console.log("WebSocket closed");
-    connectionStatus.textContent = "Disconnected from server 🔌";
-    connectionStatus.classList.remove("connected");
-    status.textContent = "Status: Disconnected 🔌";
-    spinner.style.display = "none";
-    clearInterval(rippleInterval);
-  };
-
-  ws.onerror = () => {
-    connectionStatus.textContent = "Error connecting to server ❌";
-    connectionStatus.classList.remove("connected");
-    clearInterval(rippleInterval);
-  };
 }
 
 // Event listeners
-startBtn.addEventListener("click", () => {
-  initAudioContext();
-  isFirstAudio = true;
-  listeningModal.style.display = "flex";
-  ws.send("start");
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // Start microphone
+  startBtn.addEventListener("click", () => {
+    initAudioContext();
+    isFirstAudio = true;
+    lastUserMessage = null; // Reset user message
+    listeningModal.style.display = "flex";
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send("start");
+    } else {
+      showNotification("WebSocket not connected ❌");
+    }
+  });
 
-stopBtn.addEventListener("click", () => {
-  ws.send("stop");
-});
+  // Stop microphone
+  stopBtn.addEventListener("click", () => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send("stop");
+    }
+  });
 
-sendBtn.addEventListener("click", () => {
-  const text = chatInput.value.trim();
-  if (text) {
-    transcription.innerHTML += `<div class="user-message ">${text}</div>`;
-    transcription.scrollTop = transcription.scrollHeight;
-    ws.send(`text:${text}`);
-    chatInput.value = "";
-    status.textContent = "Status: Processing response 🤖";
-  }
-});
+  // Send text query
+  sendBtn.addEventListener("click", () => {
+    const text = chatInput.value.trim();
+    if (text && ws && ws.readyState === WebSocket.OPEN) {
+      appendUserMessage(text);
+      ws.send(`text:${text}`);
+      chatInput.value = "";
+      status.textContent = "Status: Processing response 🤖";
+    } else if (!ws || ws.readyState !== WebSocket.OPEN) {
+      showNotification("WebSocket not connected ❌");
+    }
+  });
 
-chatInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendBtn.click();
-  }
-});
+  // Send text query on Enter key
+  chatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendBtn.click();
+    }
+  });
 
-newChatBtn.addEventListener("click", async () => {
-  const res = await fetch("/new_chat", { method: "POST" });
-  const data = await res.json();
-  currentChatId = data.chat_id;
-  await loadChats();
-  await loadCurrentConversation();
-  await fetchChatHistory();
-  if (ws) ws.close();
-  connectWebSocket();
-});
+  // New chat
+  newChatBtn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/new_chat", { method: "POST" });
+      const data = await res.json();
+      currentChatId = data.chat_id;
+      transcription.innerHTML =
+        '<span class="spinner" style="display: none">⏳</span>';
+      lastUserMessage = null;
+      await loadChats();
+      await loadCurrentConversation();
+      await fetchChatHistory();
+      if (ws) ws.close();
+      connectWebSocket();
+    } catch (error) {
+      console.error("Error creating new chat:", error);
+      showNotification("Error creating new chat ❌");
+    }
+  });
 
-// Initialize
-initApp();
+  // Navigate to settings page
+  settingsBtn.addEventListener("click", () => {
+    window.location.href = "/settings";
+  });
+
+  // Initialize app
+  initApp();
+});

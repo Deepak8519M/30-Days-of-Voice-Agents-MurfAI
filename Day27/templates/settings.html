@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - AI Voice Agent ⚙️</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <!-- Shared main styles -->
+    <link rel="stylesheet" href="/static/settings.css" />
+    <!-- Settings-specific premium styles -->
+  </head>
+  <body>
+    <div class="app settings-app">
+      <div class="notification" id="notification" style="display: none">
+        API keys submitted successfully! ✅
+      </div>
+      <div class="settings-container glossy">
+        <button id="backBtn" class="back-btn glossy">Back to Main 👈🏻</button>
+        <h1>API Configuration ⚙️</h1>
+        <form id="apiForm">
+          <div class="input-group">
+            <label for="aai_api_key">AssemblyAI API Key</label>
+            <input
+              type="password"
+              id="aai_api_key"
+              name="aai_api_key"
+              placeholder="Enter AssemblyAI key"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="gemini_api_key">Gemini API Key</label>
+            <input
+              type="password"
+              id="gemini_api_key"
+              name="gemini_api_key"
+              placeholder="Enter Gemini key"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="murf_api_key">Murf API Key</label>
+            <input
+              type="password"
+              id="murf_api_key"
+              name="murf_api_key"
+              placeholder="Enter Murf key"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="tavily_api_key">Tavily API Key</label>
+            <input
+              type="password"
+              id="tavily_api_key"
+              name="tavily_api_key"
+              placeholder="Enter Tavily key"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="zapier_webhook_url">Zapier Webhook URL</label>
+            <input
+              type="password"
+              id="zapier_webhook_url"
+              name="zapier_webhook_url"
+              placeholder="Enter Zapier URL"
+              required
+            />
+          </div>
+          <button type="submit" class="submit-btn glossy">Submit Keys</button>
+        </form>
+      </div>
+    </div>
+    <script src="/static/settings.js"></script>
+  </body>
+</html>

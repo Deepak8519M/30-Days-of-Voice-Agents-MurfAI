@@ -730,10 +730,11 @@ body {
   }
 }
 .navigation {
+  margin-inline: auto;
   cursor: pointer;
   display: flex;
   padding: 10px 1px;
-  width: 100%;
+  width: 90%;
   background: #1b1b1b;
   justify-content: center;
   align-items: center;

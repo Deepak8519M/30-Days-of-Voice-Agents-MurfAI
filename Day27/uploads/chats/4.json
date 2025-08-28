@@ -23,5 +23,20 @@
     "timestamp": "2025-08-27T14:47:10.196178",
     "user_query": "Hello.",
     "ai_response": "Hello there.  It sounds like you're exploring cloud computing, specifically the differences between public and private clouds. That's a great area to learn about!\n\nThink of it like this:  Imagine you need a toolbox.\n\n* **Public cloud (like Amazon AWS or Microsoft Azure):** This is like renting a toolbox from a big hardware store.  Lots of people use it, you only pay for what you use, and you don't have to worry about buying or maintaining the tools yourself.  It's convenient and flexible but you don't have complete control over everything.\n\n* **Private cloud:** This is like having your own, personal toolbox. You own it, you control it, and nobody else can use it. It might cost more upfront, but you have total control and privacy.\n\n\nThe document you shared gives a good overview of this, along with some examples of public cloud providers. Does anything in particular about public or private clouds puzzle you, or would you like to explore other aspects of cloud computing?  I'm happy to help in any way I can.\n"
+  },
+  {
+    "timestamp": "2025-08-28T15:44:46.480904",
+    "user_query": "Hi",
+    "ai_response": "Hello there. How can I help you today?\n"
+  },
+  {
+    "timestamp": "2025-08-28T15:48:28.632929",
+    "user_query": "So high. This is Deepak speaking.",
+    "ai_response": "Hello, Deepak.  It sounds like you might be feeling overwhelmed.  Is there something you'd like to talk about?  Take your time; there's no rush.\n"
+  },
+  {
+    "timestamp": "2025-08-28T15:48:38.561598",
+    "user_query": "hi",
+    "ai_response": "Hello there. How are you doing today?\n"
   }
 ]
