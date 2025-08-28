@@ -1,0 +1,230 @@
+The ULTIMATE
+REACT 
+COURSE
+VIRTUAL CODE
+VIRTUAL CODE Ultimate React Course
+Level – 1  :  Introduction to React
+Level – 2  :  Create Our First React App
+Practice Project 1
+Level – 3  :  Props In React
+Practice Project 2
+Level – 4  :  Hooks In React
+Practice Project 3
+Level – 5  :  React Router
+Practice Project 4
+Level – 6  :  Context API
+VIRTUAL CODE
+LEVEL
+ -
+1
+Introduction To React
+
+VIRTUAL CODE Introduction To React
+-REACT ( also known as React.js or ReactJs ) is a free and open source 
+FRONT -END  JAVASCRIPT LIBRARY for building user interfaces based 
+on components by Facebook inc.
+-REACT  can be used to develop single -page  application
+-A key Advantage of REACT  is that it only rerenders those parts of the 
+page that have changed , avoiding unnecessary rerendering of 
+unchanged DOM elements.
+-You can use CDN for add React in your JavaScript file
+reactR
+eactDOM
+R
+eactNative
+
+VIRTUAL CODE Introduction To React
+Document
+html
+head
+ body
+h1
+button
+VIRTUAL CODE
+LEVEL
+ -
+2
+Create our First React App
+
+VIRTUAL CODE Create our 
+ first
+  
+React app 
+There are some popular  utility for creating React App
+1. Create -react -app 
+2. Vite (recommended)
+Some frequently used words -
+1. npm   - npm  is the package manager for the javascript runtime 
+environment Node.js
+1. npx- node package Executor
+VIRTUAL CODE Create our 
+ first
+  
+React app 
+JSX ( Javascript XML , formally Javascript Syntax Extension )
+ JSX 
+-
+
+VIRTUAL CODE Create our 
+ first
+  
+React app 
+Some Important KeyPoint For JSX-
+You can write javascript in JSX using curly bracketsHTML JSX
+class className
+ffor htmlFor
+
+VIRTUAL CODE Practice Project 1 
+Create this layout using React JS -
+LOGO
+ HOME   ABOOT   CONTACT US
+THIS IS FOOTER
+
+VIRTUAL CODE
+LEVEL
+ -
+3
+Props in React
+
+VIRTUAL CODE Props In react
+-Props stands for Properties
+-Props are arguments passed into React Components
+-React Props are like function arguments in Javascript and attributes 
+in HTML
+-To send props into a component use the same syntax as HTML 
+attributes
+VIRTUAL CODE Props In react
+Example -
+ add a “brand” attribute in car element
+  The component receives the argument as a props object
+          
+
+VIRTUAL CODE Practice Project 
+ 2
+ 
+Create this layout using React JS -
+LOGO
+ HOME   ABO
+ U
+T   CONTACT US
+THIS IS FOOTER
+Range Rover
+ BMW
+ Lamborghini
+RS 1.89cr
+ RS 8.89cr
+ RS 2.89cr
+VIRTUAL CODE
+LEVEL
+ -
+4
+Hooks in React
+
+VIRTUAL CODE Hooks In react
+-Hooks allows function components to have access to state  and other 
+React features . Because of this , class components are generally no 
+longer needed.
+-Now what is state in React?
+-In React , State is a javascript object that holds data and information 
+about a component.
+VIRTUAL CODE Hooks In react
+-There are so many Types of Hooks in React -
+1. useState( ) Hook
+2. useEffect( ) Hook
+3. useRef( ) Hook
+4. useMemo( ) Hook
+5. useCallback( ) Hook
+6. useContext( ) Hook
+7. useReducer( ) Hook
+8. useLayoutEffect( ) Hook
+9. customHook( ) Hook
+VIRTUAL CODE Hooks In react
+1.useState( ) Hook -
+The react ,useState Hook allows us to track state in a function 
+component.
+State generally refers to data or properties that need to be tracking in 
+an application.
+We initialize our state by calling useState in our function component
+useState accepts an initial state and returns two values .
+1. Current state
+2. A function that updates the state
+
+VIRTUAL CODE Hooks In react
+2. useEffect( ) Hook -
+ 
+The useEffect Hook allows you to perform side effects in your 
+components.
+Some examples of side effects are – 
+1. Fetching data
+2. Directly updating DOM Element
+3. Timers
+useEffect accepts two arguments . The second argument is optional
+
+VIRTUAL CODE Hooks In react
+2. useEffect( ) Hook -
+When No dependency passed -
+When An Empty array passed -
+
+VIRTUAL CODE Hooks In react
+2. useEffect( ) Hook -
+When state values  or props passed -
+
+VIRTUAL CODE Hooks In react
+3. useRef( ) Hook -
+The useRef hook allows you to persist values between renders
+It can be used to store a mutable value that does not cause a re -render 
+when updated.
+It can be used to access a DOM element directly
+useRef( ) only returns one item . It returns an object called current.
+When we initialize useRef we set the initial value useRef( 0 )
+VIRTUAL CODE
+LEVEL
+ -
+5
+React Router
+
+VIRTUAL CODE React Router
+-React Router is a library for handling routing and navigation in React 
+JS Application .
+-It enables navigation in single page Application (SPA) without 
+refreshing the entire page
+
+VIRTUAL CODE React Router
+Method 1 -
+
+VIRTUAL CODE React Router
+Method 2 -
+
+VIRTUAL CODEPractice Project 3
+Create This single page application using react
+
+VIRTUAL CODE
+LEVEL
+ -
+6
+Context API
+
+VIRTUAL CODE Context
+  
+AP
+I
+-Context API in React is used to share data across the components 
+without passing the props manually through every level.
+-Context API is used to pass global variables anywhere in the code 
+without the prop drilling
+-It helps when there  is a need for Sharing state between a lot of 
+nested components.
+-It is light in weight and easier to use, to create a context just need to 
+call React.createContext() .
+-No need to install other dependencies or third -party libraries like 
+Redux for state management.
+VIRTUAL CODE Context
+  
+AP
+I
+<Left/>
+<App/>
+<Right/>
+<RightTop/>
+<RightBottom/>
+<Card/>
