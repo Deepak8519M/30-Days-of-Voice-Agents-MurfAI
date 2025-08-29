@@ -29,6 +29,57 @@ const uploadForm = document.getElementById("uploadForm");
 const fileInput = document.getElementById("fileInput");
 const settingsBtn = document.getElementById("settingsBtn");
 
+// static/index.js
+
+// Color definitions
+const colorSchemes = {
+  orange: {
+    primary: "#ff8d04",
+    gradientStart: "#ffd700",
+    gradientEnd: "#ff8d04",
+  },
+  blue: {
+    primary: "#1e88e5",
+    gradientStart: "#4fc3f7",
+    gradientEnd: "#1e88e5",
+  },
+  green: {
+    primary: "#43a047",
+    gradientStart: "#a5d6a7",
+    gradientEnd: "#43a047",
+  },
+};
+
+// Apply theme and accent color
+function applyTheme(theme, accentColor) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const scheme = colorSchemes[accentColor];
+  document.documentElement.style.setProperty("--accent-color", scheme.primary);
+  document.documentElement.style.setProperty(
+    "--accent-gradient-start",
+    scheme.gradientStart
+  );
+  document.documentElement.style.setProperty(
+    "--accent-gradient-end",
+    scheme.gradientEnd
+  );
+}
+
+// Load saved settings on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  const savedAccentColor = localStorage.getItem("accentColor") || "orange";
+  applyTheme(savedTheme, savedAccentColor);
+});
+
+// Navigation (handled by <a> tags in HTML, but added for settingsBtn)
+document.querySelector(".settings-btn").addEventListener("click", () => {
+  window.location.href = "/settings";
+});
+
+// Placeholder for other index.js functionality (e.g., WebSocket, chat, uploads)
+// Add your existing index.js code here for chat, upload, WebSocket, etc.
+
 // Initialize AudioContext
 function initAudioContext() {
   if (!audioContext) {

@@ -1,3 +1,5 @@
+// static/settings.js
+
 const sidebarItems = document.querySelectorAll(".settings-sidebar li");
 const cards = document.querySelectorAll(".settings-card");
 const apiForm = document.getElementById("apiForm");
@@ -5,7 +7,6 @@ const settingsForm = document.querySelector(".settings-main");
 const notification = document.getElementById("notification");
 const cancelBtn = document.querySelector(".cancel-btn");
 const saveBtn = document.querySelector(".settings-footer .save-btn");
-const backBtn = document.querySelector(".back-btn");
 const resetBtn = document.querySelector(".reset-btn");
 const enableCustomKeys = document.getElementById("enableCustomKeys");
 const apiInputs = document.querySelectorAll(
@@ -14,6 +15,7 @@ const apiInputs = document.querySelectorAll(
 const sliders = document.querySelectorAll(".slider");
 const previewVoiceBtn = document.getElementById("previewVoice");
 const accentColorSelect = document.querySelector("select[name='accentColor']");
+const themeSelect = document.querySelector("select[name='theme']");
 
 // Color definitions
 const colorSchemes = {
@@ -34,10 +36,10 @@ const colorSchemes = {
   },
 };
 
-// Dynamic theme update
-accentColorSelect.addEventListener("change", () => {
-  const selectedColor = accentColorSelect.value;
-  const scheme = colorSchemes[selectedColor];
+// Apply theme and accent color
+function applyTheme(theme, accentColor) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const scheme = colorSchemes[accentColor];
   document.documentElement.style.setProperty("--accent-color", scheme.primary);
   document.documentElement.style.setProperty(
     "--accent-gradient-start",
@@ -47,6 +49,31 @@ accentColorSelect.addEventListener("change", () => {
     "--accent-gradient-end",
     scheme.gradientEnd
   );
+}
+
+// Load saved settings on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  const savedAccentColor = localStorage.getItem("accentColor") || "orange";
+  themeSelect.value = savedTheme;
+  accentColorSelect.value = savedAccentColor;
+  applyTheme(savedTheme, savedAccentColor);
+});
+
+// Dynamic theme update
+themeSelect.addEventListener("change", () => {
+  const theme = themeSelect.value;
+  const accentColor = accentColorSelect.value;
+  applyTheme(theme, accentColor);
+  localStorage.setItem("theme", theme);
+});
+
+// Dynamic accent color update
+accentColorSelect.addEventListener("change", () => {
+  const theme = themeSelect.value;
+  const accentColor = accentColorSelect.value;
+  applyTheme(theme, accentColor);
+  localStorage.setItem("accentColor", accentColor);
 });
 
 // Sidebar navigation
@@ -203,22 +230,21 @@ saveBtn.addEventListener("click", async () => {
       showNotification(`Error saving settings: ${result.error}`, true);
     } else {
       showNotification("Settings saved successfully!");
+      // Save to localStorage
+      localStorage.setItem("theme", settings.theme);
+      localStorage.setItem("accentColor", settings.accentColor);
+      applyTheme(settings.theme, settings.accentColor);
     }
-    setTimeout(() => (window.location.href = "/"), 2000);
+    setTimeout(() => (window.location.href = "/app"), 2000);
   } catch (error) {
     showNotification("Error saving settings.", true);
-    setTimeout(() => (window.location.href = "/"), 2000);
+    setTimeout(() => (window.location.href = "/app"), 2000);
   }
-});
-
-// Back to Voice Agent
-backBtn.addEventListener("click", () => {
-  window.location.href = "/";
 });
 
 // Cancel button
 cancelBtn.addEventListener("click", () => {
-  window.location.href = "/";
+  window.location.href = "/app";
 });
 
 // Reset to defaults
@@ -259,7 +285,9 @@ resetBtn.addEventListener("click", async () => {
             : `${slider.value}x`;
       });
       enableCustomKeys.dispatchEvent(new Event("change"));
-      accentColorSelect.dispatchEvent(new Event("change")); // Trigger theme reset
+      applyTheme("dark", "orange");
+      localStorage.setItem("theme", "dark");
+      localStorage.setItem("accentColor", "orange");
     }
   } catch (error) {
     showNotification("Error resetting settings.", true);
@@ -330,21 +358,10 @@ previewVoiceBtn.addEventListener("click", async () => {
   }
 });
 
-// document.querySelectorAll(".nav-btn").forEach((button) => {
-//   button.addEventListener("click", () => {
-//     const navTarget = button.dataset.nav;
-//     if (navTarget === "home") {
-//       navigateTo("/"); // Navigate to home.html
-//     } else if (navTarget === "voice-agent") {
-//       navigateTo("/app"); // Navigate to index.html
-//     }
-//   });
-// });
-
+// Navigation buttons
 document.querySelectorAll(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.getAttribute("data-nav");
-
     if (target === "home") {
       window.location.href = "/";
     } else if (target === "voice-agent") {

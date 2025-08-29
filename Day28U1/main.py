@@ -50,6 +50,7 @@ app.add_middleware(
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+settings_store = {"theme": "dark", "accentColor": "orange"}
 
 # Directories
 UPLOAD_DIR = "uploads"

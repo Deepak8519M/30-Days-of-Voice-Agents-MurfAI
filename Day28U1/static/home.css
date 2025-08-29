@@ -29,6 +29,7 @@ body {
   background: linear-gradient(180deg, #0b0b0c 0%, #111114 100%);
   position: relative;
   overflow-x: hidden;
+  cursor: pointer;
 }
 
 /* Enhanced starry background with animated stars */
@@ -435,7 +436,7 @@ h1 {
   line-height: 1.5;
 }
 
-.corner {
+/* .corner {
   position: absolute;
   right: -40px;
   top: -40px;
@@ -447,7 +448,7 @@ h1 {
     transparent 70%
   );
   transform: rotate(25deg);
-}
+} */
 
 footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
