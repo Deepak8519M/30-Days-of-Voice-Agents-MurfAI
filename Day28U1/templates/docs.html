@@ -180,6 +180,10 @@
     <canvas id="stars"></canvas>
     <header>
       <h1>📄 NovaFlow Documentation</h1>
+      <button class="nav-btn" data-nav="home">🏠 Back to Home</button>
+      <button class="nav-btn" data-nav="voice-agent">
+        🎙️ Back to Voice Agent
+      </button>
     </header>
 
     <div class="container">
@@ -416,6 +420,18 @@
         requestAnimationFrame(animate);
       }
       animate();
+
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-nav");
+
+          if (target === "home") {
+            window.location.href = "/";
+          } else if (target === "voice-agent") {
+            window.location.href = "/app";
+          }
+        });
+      });
     </script>
   </body>
 </html>

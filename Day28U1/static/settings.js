@@ -330,13 +330,25 @@ previewVoiceBtn.addEventListener("click", async () => {
   }
 });
 
-document.querySelectorAll(".nav-btn").forEach((button) => {
-  button.addEventListener("click", () => {
-    const navTarget = button.dataset.nav;
-    if (navTarget === "home") {
-      navigateTo("/"); // Navigate to home.html
-    } else if (navTarget === "voice-agent") {
-      navigateTo("/app"); // Navigate to index.html
+// document.querySelectorAll(".nav-btn").forEach((button) => {
+//   button.addEventListener("click", () => {
+//     const navTarget = button.dataset.nav;
+//     if (navTarget === "home") {
+//       navigateTo("/"); // Navigate to home.html
+//     } else if (navTarget === "voice-agent") {
+//       navigateTo("/app"); // Navigate to index.html
+//     }
+//   });
+// });
+
+document.querySelectorAll(".nav-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = btn.getAttribute("data-nav");
+
+    if (target === "home") {
+      window.location.href = "/";
+    } else if (target === "voice-agent") {
+      window.location.href = "/app";
     }
   });
 });

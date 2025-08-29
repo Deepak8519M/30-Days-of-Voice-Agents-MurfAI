@@ -80,7 +80,8 @@ body {
 
 .back-btn,
 .reset-btn,
-.preview-btn {
+.preview-btn,
+.nav-btn {
   padding: 8px 16px;
   border: 1px solid var(--accent-color);
   background: transparent;
@@ -98,7 +99,6 @@ body {
   color: #0d0d0d;
   transform: translateY(-2px);
 }
-
 
 .preview-btn {
   margin-left: 10px;
