@@ -1,4 +1,3 @@
-
 import os
 import wave
 import json
@@ -34,10 +33,10 @@ load_dotenv()
 
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-log = logging.getLogger("day27")
+log = logging.getLogger("novaflow")
 
 # FastAPI app
-app = FastAPI(title="AI Voice Agent - Day 27: Revamped UI & Dynamic API Keys")
+app = FastAPI(title="NovaFlow AI Voice Agent")
 
 # CORS middleware
 app.add_middleware(
@@ -51,16 +50,6 @@ app.add_middleware(
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
-# ... (all existing imports and code remain unchanged)
-
-# Add this new route
-@app.get("/home")
-async def home(request: Request):
-    log.info("Serving home page")
-    return templates.TemplateResponse("home.html", {"request": request})
-
-
 
 # Directories
 UPLOAD_DIR = "uploads"
@@ -170,9 +159,19 @@ def get_api_key(key_name: str, websocket: Optional[WebSocket] = None) -> str:
 
 # Routes
 @app.get("/")
-async def index(request: Request):
-    log.info("Serving index page")
+async def home(request: Request):
+    log.info("Serving home page")
+    return templates.TemplateResponse("home.html", {"request": request})
+
+@app.get("/app")
+async def app_page(request: Request):
+    log.info("Serving app page")
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/docu")
+async def docs(request: Request):
+    log.info("Serving docs page")
+    return templates.TemplateResponse("docs.html", {"request": request})
 
 @app.get("/settings")
 async def settings(request: Request):
@@ -680,7 +679,6 @@ async def ws_handler(websocket: WebSocket, chat_id: str = Query(...)):
             while not stop_event.is_set():
                 try:
                     data = mic_stream.read(FRAMES_PER_BUFFER, exception_on_overflow=False)
-                    # Apply micSensitivity as a gain factor
                     sensitivity = USER_SETTINGS.get("micSensitivity", 50) / 50.0
                     audio_data = np.frombuffer(data, dtype=np.int16).astype(np.float32)
                     audio_data *= sensitivity
