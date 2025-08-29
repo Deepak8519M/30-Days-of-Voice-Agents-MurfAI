@@ -52,6 +52,16 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# ... (all existing imports and code remain unchanged)
+
+# Add this new route
+@app.get("/home")
+async def home(request: Request):
+    log.info("Serving home page")
+    return templates.TemplateResponse("home.html", {"request": request})
+
+
+
 # Directories
 UPLOAD_DIR = "uploads"
 KNOWLEDGE_BASE_DIR = os.path.join(UPLOAD_DIR, "knowledge_base")
