@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <title>AI Voice Agent 🎙️</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script
+      src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js"
+      type="module"
+    ></script>
+  </head>
+  <body>
+    <div class="app">
+      <div class="notification" id="notification" style="display: none">
+        Audio saved successfully! ✅
+      </div>
+      <div class="left-sidebar">
+        <button id="newChatBtn" class="new-chat-btn glossy">
+          New Conversation ✨
+        </button>
+        <div class="upload-box glossy">
+          <h2>Upload Knowledge Base 📂</h2>
+          <form id="uploadForm" enctype="multipart/form-data">
+            <input
+              type="file"
+              id="fileInput"
+              name="file"
+              accept=".pdf,.txt"
+              class="upload-input"
+            />
+            <button type="submit" class="upload-btn glossy">Upload</button>
+          </form>
+        </div>
+        <ul id="chatList" class="chat-list"></ul>
+      </div>
+      <div class="main-content">
+        <div class="transcription-box">
+          <h2>Current Conversation 📝</h2>
+          <div id="transcription" class="transcription-content">
+            <span class="spinner" style="display: none">⏳</span>
+          </div>
+          <div class="chat-input">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Type your message or ask to search..."
+            />
+            <button id="sendBtn" class="send-btn glossy">Send</button>
+            <button id="micBtn" class="mic-btn glossy circular">🎤</button>
+          </div>
+        </div>
+      </div>
+      <div class="right-sidebar">
+        <div class="navigation glossy">
+          <a href="/" style="text-decoration: none" class="nav-btn homeBtn"
+            >Home🏠</a
+          >
+          <button id="settingsBtn" class="nav-btn settings-btn glossy">
+            ⚙️
+          </button>
+          <a
+            href="/docu"
+            style="text-decoration: none"
+            id="settingsBtn"
+            class="nav-btn docsBtn glossy"
+          >
+            Docs📄
+          </a>
+        </div>
+        <div class="chat-history-box">
+          <h2>Conversation History 📜</h2>
+          <div id="chatHistory" class="chat-history-content glossy">
+            <span class="text">Loading chat history... ⏳</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div id="status" class="status glossy">Status: Idle ⏳</div>
+          <div id="connectionStatus" class="connection-status glossy">
+            Connecting to server... 🔌
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="listeningModal" style="display: none">
+      <div class="modal-content">
+        <div class="voice-animation">
+          <div class="pulse-circle"></div>
+          <div class="ripple ripple1"></div>
+          <div class="ripple ripple2"></div>
+          <div class="ripple ripple3"></div>
+        </div>
+        <p>Listening...</p>
+        <button id="stopListening" class="stop-btn glossy circular">
+          Stop Listening
+        </button>
+      </div>
+    </div>
+    <script src="/static/index.js"></script>
+  </body>
+</html>

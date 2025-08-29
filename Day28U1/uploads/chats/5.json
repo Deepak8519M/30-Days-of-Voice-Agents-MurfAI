@@ -1,7 +1,0 @@
-[
-  {
-    "timestamp": "2025-08-29T17:21:39.411151",
-    "user_query": "Hi",
-    "ai_response": "Hey there!  So you've got some notes on cloud computing, specifically Units 2 and 3.  Unit 2 focuses on virtual machines and virtualization\u2014how you can run multiple virtual computers on one physical machine. It talks about different levels of virtualization (like at the instruction set level or the operating system level) and how that all works.\n\nUnit 3 dives into cloud platform architecture. It covers different cloud service models (like public and private clouds), and mentions specific platforms like AWS and Azure.  It also touches on service-oriented architecture.\n\nIs there anything specific you'd like to know or discuss about these units?  I can try my best to help!\n"
-  }
-]

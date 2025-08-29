@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docs — NovaFlow AI Voice Agent 📄</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0b0b0c;
+        --card: rgba(255, 255, 255, 0.06);
+        --accent: #ff8d04;
+        --text: #f1f2f4;
+        --muted: #aaa;
+        --radius: 16px;
+        --stroke: rgba(255, 141, 4, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", "Urbanist", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      /* Glossy glow overlay */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 255, 255, 0.06),
+          transparent 70%
+        );
+        z-index: -1;
+        animation: glowPulse 6s ease-in-out infinite;
+      }
+      @keyframes glowPulse {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+      header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(15, 15, 15, 0.8);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .container {
+        width: min(1100px, 90vw);
+        margin: auto;
+        padding: 48px 0;
+      }
+      h2 {
+        font-size: 26px;
+        margin-bottom: 12px;
+        color: var(--accent);
+      }
+      p {
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      .grid {
+        display: grid;
+        gap: 24px;
+      }
+      .features,
+      .stack {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius);
+        padding: 24px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 44px rgba(255, 141, 4, 0.18);
+      }
+      .card h3 {
+        margin-top: 0;
+        font-size: 18px;
+        color: #fff;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .flow {
+        border-left: 3px solid var(--accent);
+        padding-left: 16px;
+        margin: 32px 0;
+      }
+      .flow-step {
+        margin-bottom: 20px;
+      }
+      .api-list {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .api {
+        padding: 18px;
+        border-radius: var(--radius);
+        background: rgba(255, 141, 4, 0.05);
+        border: 1px solid var(--stroke);
+      }
+      footer {
+        margin-top: 48px;
+        padding: 24px;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 14px;
+        color: var(--muted);
+      }
+      /* Glow buttons */
+      .btn {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 999px;
+        border: 1px solid var(--stroke);
+        color: #0b0b0c;
+        background: linear-gradient(180deg, #ff9f2e, #ff8d04);
+        font-weight: 600;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          120deg,
+          rgba(255, 255, 255, 0.25),
+          rgba(255, 255, 255, 0) 40%
+        );
+        transform: rotate(25deg) translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+      .btn:hover::before {
+        transform: rotate(25deg) translateX(120%);
+      }
+      /* Background canvas for stars */
+      #stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+      }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* padding: 10px; */
+        gap: 20px;
+      }
+      .nav-btn {
+        padding: 13px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="stars"></canvas>
+    <header>
+      <h1>📄 NovaFlow Documentation</h1>
+      <div class="button">
+        <button class="nav-btn btn" data-nav="home">Home</button>
+        <button class="nav-btn btn" data-nav="voice-agent">Voice Agent</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <section>
+        <h2>Overview</h2>
+        <p>
+          NovaFlow is a premium AI Voice Agent web application that unifies
+          <b>voice, chat, transcription, search, and workflow automation</b> in
+          a single interface. Designed with a glowing black-gold aesthetic, it
+          provides developers and teams with a seamless way to interact with AI.
+        </p>
+      </section>
+
+      <section>
+        <h2>✨ Features</h2>
+        <div class="grid features">
+          <div class="card">
+            <h3>🎙 Voice Conversations</h3>
+            <p>
+              Real-time speech-to-text & text-to-speech with Murf AI voices.
+            </p>
+          </div>
+          <div class="card">
+            <h3>📝 Transcription</h3>
+            <p>AssemblyAI for accurate audio transcription and summaries.</p>
+          </div>
+          <div class="card">
+            <h3>🤖 AI Responses</h3>
+            <p>Powered by Google Gemini API for fast, context-aware answers.</p>
+          </div>
+          <div class="card">
+            <h3>🔎 Knowledge Search</h3>
+            <p>Upload documents, query with context, and use Tavily search.</p>
+          </div>
+          <div class="card">
+            <h3>🌐 Integrations</h3>
+            <p>Zapier webhook support to connect with 5000+ external apps.</p>
+          </div>
+          <div class="card">
+            <h3>☀️ Weather & More</h3>
+            <p>Includes Weather API integration for real-time updates.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>🛠 Tech Stack</h2>
+        <div class="grid stack">
+          <div class="card">
+            <h3>Frontend</h3>
+            <ul>
+              <li>HTML5, CSS3</li>
+              <li>JavaScript (Vanilla)</li>
+              <li>Lottie Animations</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Backend</h3>
+            <ul>
+              <li>FastAPI (Python)</li>
+              <li>WebSockets for live audio</li>
+              <li>pyaudio + NumPy</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Infra</h3>
+            <ul>
+              <li>AssemblyAI (STT)</li>
+              <li>Murf (TTS)</li>
+              <li>Google Gemini (LLM)</li>
+              <li>Tavily Search</li>
+              <li>Zapier API</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>🔄 Flow of Working</h2>
+        <div class="flow">
+          <div class="flow-step">
+            <b>1.</b> User speaks into the microphone 🎤
+          </div>
+          <div class="flow-step">
+            <b>2.</b> Audio streamed → AssemblyAI for transcription.
+          </div>
+          <div class="flow-step">
+            <b>3.</b> Text sent → Gemini API for smart response.
+          </div>
+          <div class="flow-step">
+            <b>4.</b> If voice reply enabled → Murf API generates audio.
+          </div>
+          <div class="flow-step">
+            <b>5.</b> If external action needed → Zapier or Weather API invoked.
+          </div>
+          <div class="flow-step">
+            <b>6.</b> Response displayed in chat & optionally saved in history.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>🌍 APIs Used</h2>
+        <div class="api-list">
+          <div class="api">
+            <b>AssemblyAI</b><br />Speech-to-Text streaming & summarization
+          </div>
+          <div class="api"><b>Google Gemini</b><br />AI text generation</div>
+          <div class="api">
+            <b>Murf</b><br />Voice synthesis for natural replies
+          </div>
+          <div class="api"><b>Tavily</b><br />External search integration</div>
+          <div class="api"><b>Zapier</b><br />Workflow automation triggers</div>
+          <div class="api">
+            <b>Weather API</b><br />Fetches real-time weather updates
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>🚀 Getting Started</h2>
+        <p>
+          1. Clone the repo & install dependencies.<br />
+          2. Set your <code>.env</code> with API keys.<br />
+          3. Run FastAPI server with
+          <code>uvicorn main:app --reload</code>.<br />
+          4. Open <a href="/">Home</a> to start chatting.<br />
+          5. Go to <a href="/settings">Settings</a> to configure keys.<br />
+          6. Explore this <a href="/docs.html">Docs</a> anytime 📄
+        </p>
+        <a class="btn" href="/">Back to App</a>
+      </section>
+
+      <section>
+        <h2>📦 Dependencies Explained</h2>
+        <div class="grid features">
+          <div class="card">
+            <h3>⚡ FastAPI (0.112.0)</h3>
+            <p>
+              Python web framework powering APIs, WebSocket streams, and event
+              handling.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🔊 PyAudio (0.2.14)</h3>
+            <p>
+              Captures live microphone input and streams audio for
+              transcription.
+            </p>
+          </div>
+          <div class="card">
+            <h3>📝 AssemblyAI (>=0.36.0)</h3>
+            <p>
+              Speech-to-text & summarization API used for real-time
+              transcription.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🗣 Murf AI</h3>
+            <p>Generates natural-sounding TTS voices for AI responses.</p>
+          </div>
+          <div class="card">
+            <h3>🧠 Google Generative AI (0.8.3)</h3>
+            <p>Gemini LLM for context-aware intelligent replies.</p>
+          </div>
+          <div class="card">
+            <h3>📑 PyPDF2 (3.0.1)</h3>
+            <p>
+              Used for reading and indexing uploaded PDF knowledge base docs.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🌐 aiohttp & websockets</h3>
+            <p>
+              Async libraries powering streaming and real-time interactions.
+            </p>
+          </div>
+          <div class="card">
+            <h3>⚙️ dotenv (1.0.1)</h3>
+            <p>
+              Securely loads API keys from <code>.env</code> file into
+              environment.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      © 2025 NovaFlow AI — Built with ❤️ using FastAPI, Gemini, and Murf.
+    </footer>
+
+    <script>
+      const canvas = document.getElementById("stars");
+      const ctx = canvas.getContext("2d");
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      let stars = Array.from({ length: 150 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2,
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3,
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fff";
+        stars.forEach((s) => {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+          s.x += s.dx;
+          s.y += s.dy;
+          if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+          if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+        });
+
+        // occasional comet
+        if (Math.random() < 0.002) {
+          ctx.strokeStyle = "rgba(255,141,4,0.7)";
+          ctx.beginPath();
+          let cx = Math.random() * canvas.width;
+          let cy = Math.random() * canvas.height;
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx - 80, cy - 30);
+          ctx.stroke();
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-nav");
+
+          if (target === "home") {
+            window.location.href = "/";
+          } else if (target === "voice-agent") {
+            window.location.href = "/app";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
