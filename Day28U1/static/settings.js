@@ -329,3 +329,14 @@ previewVoiceBtn.addEventListener("click", async () => {
     showNotification("Error previewing voice.", true);
   }
 });
+
+document.querySelectorAll(".nav-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const navTarget = button.dataset.nav;
+    if (navTarget === "home") {
+      navigateTo("/"); // Navigate to home.html
+    } else if (navTarget === "voice-agent") {
+      navigateTo("/app"); // Navigate to index.html
+    }
+  });
+});
