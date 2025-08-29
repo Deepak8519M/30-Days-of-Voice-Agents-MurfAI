@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - AI Voice Agent ⚙️</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Urbanist:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/settings.css" />
+  </head>
+  <body>
+    <div class="settings-container">
+      <!-- Sidebar -->
+      <aside class="settings-sidebar">
+        <ul>
+          <li class="active" data-section="configure-api">⚙️ Configure API</li>
+          <li data-section="voice">🎙️ Voice Settings</li>
+          <li data-section="conversation">💬 Conversation</li>
+          <li data-section="audio">🎤 Audio Settings</li>
+          <li data-section="chat-history">📜 Chat History</li>
+          <li data-section="knowledge-base">📚 Knowledge Base</li>
+          <li data-section="search">🔍 Search Settings</li>
+          <li data-section="notifications">🔔 Notifications</li>
+          <li data-section="appearance">🎨 Appearance</li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="settings-main">
+        <header>
+          <h1>⚙️ Settings</h1>
+          <div class="header-buttons">
+            <button class="nav-btn" data-nav="home">🏠 Back to Home</button>
+
+            <button class="back-btn">🔙 Back to Voice Agent</button>
+            <button class="reset-btn">Reset to Defaults</button>
+          </div>
+        </header>
+
+        <!-- Dynamic Sections -->
+        <section id="configure-api" class="settings-card active">
+          <h2>⚙️ Configure API</h2>
+          <form id="apiForm">
+            <div class="option">
+              <input
+                type="checkbox"
+                id="enableCustomKeys"
+                name="enableCustomKeys"
+              />
+              <label
+                for="enableCustomKeys"
+                title="Enable to use your own API keys instead of default .env keys"
+                >Enable Custom API Keys</label
+              >
+            </div>
+            <div class="option">
+              <label
+                for="aai_api_key"
+                title="API key for AssemblyAI transcription service"
+                >AssemblyAI API Key:</label
+              >
+              <input
+                type="password"
+                name="aai_api_key"
+                id="aai_api_key"
+                placeholder="Enter AssemblyAI API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label
+                for="gemini_api_key"
+                title="API key for Google Gemini text generation"
+                >Gemini API Key:</label
+              >
+              <input
+                type="password"
+                name="gemini_api_key"
+                id="gemini_api_key"
+                placeholder="Enter Gemini API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label
+                for="murf_api_key"
+                title="API key for Murf text-to-speech service"
+                >Murf API Key:</label
+              >
+              <input
+                type="password"
+                name="murf_api_key"
+                id="murf_api_key"
+                placeholder="Enter Murf API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label
+                for="tavily_api_key"
+                title="API key for Tavily search service"
+                >Tavily API Key:</label
+              >
+              <input
+                type="password"
+                name="tavily_api_key"
+                id="tavily_api_key"
+                placeholder="Enter Tavily API Key"
+                disabled
+              />
+            </div>
+            <div class="option">
+              <label
+                for="zapier_webhook_url"
+                title="Webhook URL for Zapier integration"
+                >Zapier Webhook URL:</label
+              >
+              <input
+                type="text"
+                name="zapier_webhook_url"
+                id="zapier_webhook_url"
+                placeholder="Enter Zapier Webhook URL"
+                disabled
+              />
+            </div>
+            <button type="submit" class="save-btn">💾 Save API Keys</button>
+          </form>
+        </section>
+
+        <section id="voice" class="settings-card">
+          <h2>🎙️ Voice Settings</h2>
+          <div class="option">
+            <label
+              for="voiceId"
+              title="Select the voice for text-to-speech output"
+              >Voice Selection:</label
+            >
+            <select name="voiceId" id="voiceId">
+              <option value="en-IN-alia" selected>
+                Alia (Female, Narration/Conversational)
+              </option>
+              <option value="en-IN-priya">
+                Priya (Female, Conversational/Promo)
+              </option>
+              <option value="en-IN-rahul">
+                Rahul (Male, Narration/Storytelling)
+              </option>
+              <option value="en-IN-ananya">
+                Ananya (Female, Conversational)
+              </option>
+              <option value="en-IN-arjun">Arjun (Male, Promo/Newscast)</option>
+              <option value="en-IN-neha">
+                Neha (Female, Storytelling/Calm)
+              </option>
+              <option value="en-IN-vikram">
+                Vikram (Male, Conversational/Promo)
+              </option>
+            </select>
+            <button type="button" class="preview-btn" id="previewVoice">
+              🎵 Preview Voice
+            </button>
+          </div>
+          <div class="option">
+            <label
+              for="playbackSpeed"
+              title="Adjust the speed of the voice output (0.5x to 2.0x)"
+              >Playback Speed:</label
+            >
+            <input
+              type="range"
+              name="playbackSpeed"
+              id="playbackSpeed"
+              min="0.5"
+              max="2.0"
+              step="0.1"
+              value="1.0"
+              class="slider"
+            />
+            <span class="slider-value">1.0x</span>
+          </div>
+        </section>
+
+        <section id="conversation" class="settings-card">
+          <h2>💬 Conversation</h2>
+          <div class="option">
+            <label
+              for="conversationType"
+              title="Choose the tone and style of the AI's responses"
+              >Conversation Type:</label
+            >
+            <select name="conversationType" id="conversationType">
+              <option value="casual" selected>Casual</option>
+              <option value="formal">Formal</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+        </section>
+
+        <section id="audio" class="settings-card">
+          <h2>🎤 Audio Settings</h2>
+          <div class="option">
+            <label
+              for="micSensitivity"
+              title="Adjust microphone input sensitivity (0% to 100%)"
+              >Microphone Sensitivity:</label
+            >
+            <input
+              type="range"
+              name="micSensitivity"
+              id="micSensitivity"
+              min="0"
+              max="100"
+              value="50"
+              class="slider"
+            />
+            <span class="slider-value">50%</span>
+          </div>
+          <div class="option">
+            <label
+              for="audioQuality"
+              title="Select the audio output quality for text-to-speech"
+              >Audio Output Quality:</label
+            >
+            <select name="audioQuality" id="audioQuality">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </section>
+
+        <section id="chat-history" class="settings-card">
+          <h2>📜 Chat History</h2>
+          <div class="option">
+            <input
+              type="checkbox"
+              name="autoSaveHistory"
+              id="autoSaveHistory"
+              checked
+            />
+            <label
+              for="autoSaveHistory"
+              title="Enable to automatically save chat history to disk"
+              >Auto-save Chat History</label
+            >
+          </div>
+          <div class="option">
+            <button type="button" class="reset-btn" id="clearHistory">
+              Clear Chat History
+            </button>
+          </div>
+        </section>
+
+        <section id="knowledge-base" class="settings-card">
+          <h2>📚 Knowledge Base</h2>
+          <div class="option">
+            <input
+              type="checkbox"
+              name="includeKnowledgeBase"
+              id="includeKnowledgeBase"
+              checked
+            />
+            <label
+              for="includeKnowledgeBase"
+              title="Include knowledge base content in AI queries"
+              >Include Knowledge Base in Queries</label
+            >
+          </div>
+          <div class="option">
+            <button type="button" class="reset-btn" id="clearKnowledgeBase">
+              Clear Knowledge Base
+            </button>
+          </div>
+        </section>
+
+        <section id="search" class="settings-card">
+          <h2>🔍 Search Settings</h2>
+          <div class="option">
+            <input
+              type="checkbox"
+              name="enableSearch"
+              id="enableSearch"
+              checked
+            />
+            <label
+              for="enableSearch"
+              title="Enable Tavily search for queries with 'search', 'find', or 'look up'"
+              >Enable Tavily Search</label
+            >
+          </div>
+          <div class="option">
+            <label
+              for="maxSearchResults"
+              title="Set the maximum number of search results (1-5)"
+              >Max Search Results:</label
+            >
+            <input
+              type="number"
+              name="maxSearchResults"
+              id="maxSearchResults"
+              min="1"
+              max="5"
+              value="3"
+            />
+          </div>
+        </section>
+
+        <section id="notifications" class="settings-card">
+          <h2>🔔 Notifications</h2>
+          <div class="option">
+            <input
+              type="checkbox"
+              name="enableSound"
+              id="enableSound"
+              checked
+            />
+            <label
+              for="enableSound"
+              title="Enable sound alerts for WebSocket events (e.g., errors, transcriptions)"
+              >Enable Sound Alerts</label
+            >
+          </div>
+          <div class="option">
+            <label
+              for="notificationDuration"
+              title="Set how long notifications are displayed (1-10 seconds)"
+              >Notification Duration:</label
+            >
+            <input
+              type="number"
+              name="notificationDuration"
+              id="notificationDuration"
+              min="1"
+              max="10"
+              value="4"
+            />
+          </div>
+        </section>
+
+        <section id="appearance" class="settings-card">
+          <h2>🎨 Appearance</h2>
+          <div class="option">
+            <label
+              for="theme"
+              title="Choose the UI theme (Light, Dark, or System preference)"
+              >Theme:</label
+            >
+            <select name="theme" id="theme">
+              <option value="light">Light</option>
+              <option value="dark" selected>Dark</option>
+              <option value="system">System</option>
+            </select>
+          </div>
+          <div class="option">
+            <label for="accentColor" title="Choose the accent color for the UI"
+              >Accent Color:</label
+            >
+            <select name="accentColor" id="accentColor">
+              <option value="orange" selected>Orange</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </select>
+          </div>
+        </section>
+
+        <footer class="settings-footer">
+          <button class="cancel-btn">❌ Cancel</button>
+          <button class="save-btn">💾 Save Changes</button>
+        </footer>
+      </main>
+    </div>
+    <div class="notification hidden" id="notification"></div>
+    <script src="/static/settings.js"></script>
+  </body>
+</html>

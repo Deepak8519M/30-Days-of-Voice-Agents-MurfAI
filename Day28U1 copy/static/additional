@@ -1,0 +1,443 @@
+const sidebarItems = document.querySelectorAll(".settings-sidebar li");
+const cards = document.querySelectorAll(".settings-card");
+const apiForm = document.getElementById("apiForm");
+const settingsForm = document.querySelector(".settings-main");
+const notification = document.getElementById("notification");
+const cancelBtn = document.querySelector(".cancel-btn");
+const saveBtn = document.querySelector(".save-btn");
+const backBtn = document.querySelector(".back-btn");
+const resetBtn = document.querySelector(".reset-btn");
+const enableCustomKeys = document.getElementById("enableCustomKeys");
+const apiInputs = document.querySelectorAll(
+  "#apiForm input[type='password'], #apiForm input[type='text']"
+);
+const sliders = document.querySelectorAll(".slider");
+const previewVoiceBtn = document.getElementById("previewVoice");
+const accentColorSelect = document.querySelector("select[name='accentColor']");
+const voiceSelect = document.getElementById("voiceId");
+
+// Color definitions
+const colorSchemes = {
+  orange: {
+    primary: "#ff8d04",
+    gradientStart: "#ffd700",
+    gradientEnd: "#ff8d04",
+  },
+  blue: {
+    primary: "#1e88e5",
+    gradientStart: "#4fc3f7",
+    gradientEnd: "#1e88e5",
+  },
+  green: {
+    primary: "#43a047",
+    gradientStart: "#a5d6a7",
+    gradientEnd: "#43a047",
+  },
+  purple: {
+    primary: "#8b5cf6",
+    gradientStart: "#c4b5fd",
+    gradientEnd: "#8b5cf6",
+  },
+};
+
+// Load settings from server
+async function loadSettings() {
+  try {
+    const response = await fetch("/set_settings", { method: "GET" });
+    if (response.ok) {
+      const settings = await response.json();
+      Object.keys(settings).forEach((key) => {
+        const input = document.querySelector(`[name='${key}']`);
+        if (input) {
+          if (input.type === "checkbox") {
+            input.checked = settings[key];
+          } else {
+            input.value = settings[key];
+          }
+          if (key === "accentColor") {
+            accentColorSelect.dispatchEvent(new Event("change"));
+          }
+          if (key === "micSensitivity" || key === "playbackSpeed") {
+            const slider = document.querySelector(`input[name='${key}']`);
+            if (slider) {
+              const valueSpan = slider.nextElementSibling;
+              valueSpan.textContent =
+                key === "micSensitivity"
+                  ? `${slider.value}%`
+                  : `${slider.value}x`;
+            }
+          }
+        }
+      });
+    }
+  } catch (error) {
+    showNotification("Error loading settings. 😞", true);
+  }
+}
+
+// Populate voice dropdown
+async function loadVoices() {
+  try {
+    const response = await fetch("/get_voices");
+    const data = await response.json();
+    if (data.error) {
+      showNotification(`Failed to load voices: ${data.error} 😕`, true);
+      return;
+    }
+    voiceSelect.innerHTML = "";
+    data.forEach((voice) => {
+      const option = document.createElement("option");
+      option.value = voice.id;
+      option.textContent = `${voice.name} (${voice.id})`;
+      voiceSelect.appendChild(option);
+    });
+    const savedVoice = USER_SETTINGS?.voiceId || "en-IN-alia";
+    voiceSelect.value = savedVoice;
+    if (!voiceSelect.value && data[0]?.id) {
+      voiceSelect.value = data[0].id;
+    }
+  } catch (error) {
+    showNotification("Error fetching voices. Using default voice. 😢", true);
+    const option = document.createElement("option");
+    option.value = "en-IN-alia";
+    option.textContent = "Alia (en-IN)";
+    voiceSelect.appendChild(option);
+  }
+}
+
+// Dynamic theme update
+accentColorSelect.addEventListener("change", () => {
+  const selectedColor = accentColorSelect.value;
+  const scheme = colorSchemes[selectedColor];
+  document.documentElement.style.setProperty("--accent-color", scheme.primary);
+  document.documentElement.style.setProperty(
+    "--accent-gradient-start",
+    scheme.gradientStart
+  );
+  document.documentElement.style.setProperty(
+    "--accent-gradient-end",
+    scheme.gradientEnd
+  );
+  showNotification(`Switched to ${selectedColor} theme! 🌈`);
+});
+
+// Sidebar navigation
+sidebarItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    sidebarItems.forEach((i) => i.classList.remove("active"));
+    item.classList.add("active");
+    cards.forEach((card) => card.classList.remove("active"));
+    const sectionId = item.getAttribute("data-section");
+    document.getElementById(sectionId).classList.add("active");
+    showNotification(`Switched to ${sectionId} settings! ⚙️`);
+  });
+});
+
+// Toggle API inputs
+enableCustomKeys.addEventListener("change", () => {
+  const isEnabled = enableCustomKeys.checked;
+  apiInputs.forEach((input) => {
+    input.disabled = !isEnabled;
+    input.classList.remove("error");
+  });
+  showNotification(
+    isEnabled ? "Custom API keys enabled! 🔐" : "Using default API keys. 🔧"
+  );
+});
+
+// Update slider values
+sliders.forEach((slider) => {
+  const valueSpan = slider.nextElementSibling;
+  slider.addEventListener("input", () => {
+    valueSpan.textContent =
+      slider.name === "micSensitivity"
+        ? `${slider.value}%`
+        : `${slider.value}x`;
+    showNotification(
+      `${
+        slider.name === "micSensitivity" ? "Mic Sensitivity" : "Playback Speed"
+      } set to ${valueSpan.textContent}! 🎚️`
+    );
+  });
+});
+
+// Show notification
+function showNotification(message, isError = false) {
+  notification.textContent = message;
+  notification.className = `notification ${isError ? "error" : ""}`;
+  notification.style.display = "block";
+  const duration =
+    parseInt(
+      document.querySelector("input[name='notificationDuration']").value
+    ) * 1000 || 4000;
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, duration);
+}
+
+// API form submission
+apiForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const settings = {
+    enableCustomKeys: enableCustomKeys.checked,
+    aai_api_key: document
+      .querySelector("#apiForm input[name='aai_api_key']")
+      .value.trim(),
+    gemini_api_key: document
+      .querySelector("#apiForm input[name='gemini_api_key']")
+      .value.trim(),
+    murf_api_key: document
+      .querySelector("#apiForm input[name='murf_api_key']")
+      .value.trim(),
+    tavily_api_key: document
+      .querySelector("#apiForm input[name='tavily_api_key']")
+      .value.trim(),
+    zapier_webhook_url: document
+      .querySelector("#apiForm input[name='zapier_webhook_url']")
+      .value.trim(),
+    override_env: enableCustomKeys.checked ? "true" : "false",
+  };
+
+  if (settings.enableCustomKeys) {
+    let hasError = false;
+    const requiredFields = [
+      "aai_api_key",
+      "gemini_api_key",
+      "murf_api_key",
+      "tavily_api_key",
+    ];
+    requiredFields.forEach((field) => {
+      if (!settings[field]) {
+        document
+          .querySelector(`#apiForm input[name='${field}']`)
+          .classList.add("error");
+        hasError = true;
+      } else {
+        document
+          .querySelector(`#apiForm input[name='${field}']`)
+          .classList.remove("error");
+      }
+    });
+    if (hasError) {
+      showNotification("Please fill all required API keys. ⚠️", true);
+      return;
+    }
+  }
+
+  try {
+    const response = await fetch("/set_keys", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    });
+    const result = await response.json();
+    if (result.error) {
+      showNotification(`${result.error} Falling back to .env keys. 😕`, true);
+    } else {
+      showNotification("API keys saved successfully! 🎉");
+      setTimeout(() => (window.location.href = "/"), 2000);
+    }
+  } catch (error) {
+    showNotification(
+      "Error saving API keys. Falling back to .env keys. 😞",
+      true
+    );
+    setTimeout(() => (window.location.href = "/"), 2000);
+  }
+});
+
+// General settings submission
+saveBtn.addEventListener("click", async () => {
+  const settings = {
+    voiceId: voiceSelect.value,
+    playbackSpeed: parseFloat(
+      document.querySelector("input[name='playbackSpeed']").value
+    ),
+    conversationType: document.querySelector("select[name='conversationType']")
+      .value,
+    micSensitivity: parseInt(
+      document.querySelector("input[name='micSensitivity']").value
+    ),
+    audioQuality: document.querySelector("select[name='audioQuality']").value,
+    autoSaveHistory: document.querySelector("input[name='autoSaveHistory']")
+      .checked,
+    includeKnowledgeBase: document.querySelector(
+      "input[name='includeKnowledgeBase']"
+    ).checked,
+    enableSearch: document.querySelector("input[name='enableSearch']").checked,
+    maxSearchResults: parseInt(
+      document.querySelector("input[name='maxSearchResults']").value
+    ),
+    enableSound: document.querySelector("input[name='enableSound']").checked,
+    notificationDuration: parseInt(
+      document.querySelector("input[name='notificationDuration']").value
+    ),
+    theme: document.querySelector("select[name='theme']").value,
+    accentColor: accentColorSelect.value,
+  };
+
+  try {
+    const response = await fetch("/set_settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    });
+    const result = await response.json();
+    if (result.error) {
+      showNotification(`Error saving settings: ${result.error} 😕`, true);
+    } else {
+      showNotification("Settings saved successfully! 🎉");
+      setTimeout(() => (window.location.href = "/"), 2000);
+    }
+  } catch (error) {
+    showNotification("Error saving settings. 😞", true);
+    setTimeout(() => (window.location.href = "/"), 2000);
+  }
+});
+
+// Back to Voice Agent
+backBtn.addEventListener("click", () => {
+  showNotification("Returning to Voice Agent! 🏠");
+  setTimeout(() => (window.location.href = "/"), 1000);
+});
+
+// Cancel button
+cancelBtn.addEventListener("click", () => {
+  showNotification("Changes cancelled. Back to Voice Agent! 🚫");
+  setTimeout(() => (window.location.href = "/"), 1000);
+});
+
+// Reset to defaults
+resetBtn.addEventListener("click", async () => {
+  try {
+    const response = await fetch("/reset_settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reset: true }),
+    });
+    const result = await response.json();
+    if (result.error) {
+      showNotification(`Error resetting settings: ${result.error} 😕`, true);
+    } else {
+      showNotification("Settings reset to defaults! 🔄");
+      settingsForm.querySelectorAll("input, select").forEach((input) => {
+        if (input.type === "checkbox")
+          input.checked =
+            input.name === "enableSound" ||
+            input.name === "autoSaveHistory" ||
+            input.name === "includeKnowledgeBase" ||
+            input.name === "enableSearch";
+        else if (input.type === "range")
+          input.value = input.name === "micSensitivity" ? "50" : "1.0";
+        else if (input.type === "number")
+          input.value = input.name === "notificationDuration" ? "4" : "3";
+        else if (input.type === "password" || input.type === "text")
+          input.value = "";
+        else if (input.tagName === "SELECT")
+          input.value = input.options[0].value;
+        input.classList.remove("error");
+      });
+      sliders.forEach((slider) => {
+        const valueSpan = slider.nextElementSibling;
+        valueSpan.textContent =
+          slider.name === "micSensitivity"
+            ? `${slider.value}%`
+            : `${slider.value}x`;
+      });
+      enableCustomKeys.dispatchEvent(new Event("change"));
+      accentColorSelect.dispatchEvent(new Event("change"));
+      await loadVoices();
+    }
+  } catch (error) {
+    showNotification("Error resetting settings. 😞", true);
+  }
+});
+
+// Clear chat history
+document.getElementById("clearHistory").addEventListener("click", async () => {
+  try {
+    const response = await fetch("/clear_chat_history", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clear: true }),
+    });
+    const result = await response.json();
+    if (result.error) {
+      showNotification(`Error clearing chat history: ${result.error} 😕`, true);
+    } else {
+      showNotification("Chat history cleared successfully! 🗑️");
+    }
+  } catch (error) {
+    showNotification("Error clearing chat history. 😞", true);
+  }
+});
+
+// Clear knowledge base
+document
+  .getElementById("clearKnowledgeBase")
+  .addEventListener("click", async () => {
+    try {
+      const response = await fetch("/clear_knowledge_base", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clear: true }),
+      });
+      const result = await response.json();
+      if (result.error) {
+        showNotification(
+          `Error clearing knowledge base: ${result.error} 😕`,
+          true
+        );
+      } else {
+        showNotification("Knowledge base cleared successfully! 🗑️");
+      }
+    } catch (error) {
+      showNotification("Error clearing knowledge base. 😞", true);
+    }
+  });
+
+// Preview voice
+previewVoiceBtn.addEventListener("click", async () => {
+  const voiceId = voiceSelect.value;
+  const sampleText =
+    "Hello! This is a sample of my voice. Let's make your AI conversations fun and engaging! 🎙️";
+  try {
+    showNotification("Playing voice preview... 🔊");
+    const ws = new WebSocket(`ws://${window.location.host}/ws?chat_id=1`);
+    ws.onopen = () => {
+      ws.send(`speak:${sampleText}`);
+    };
+    ws.onmessage = async (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "speak_audio" && message.data) {
+        const audio = new Audio(`data:audio/wav;base64,${message.data}`);
+        audio.play().catch((err) => {
+          showNotification(`Error playing audio: ${err.message} 😢`, true);
+        });
+        if (message.is_final) {
+          ws.close();
+          showNotification("Voice preview played successfully! 🎵");
+        }
+      } else if (message.type === "error") {
+        showNotification(`Voice preview failed: ${message.data} 😕`, true);
+        ws.close();
+      }
+    };
+    ws.onerror = () => {
+      showNotification("WebSocket error during voice preview. 😞", true);
+      ws.close();
+    };
+    ws.onclose = () => {
+      console.log("Voice preview WebSocket closed");
+    };
+  } catch (error) {
+    showNotification(`Error previewing voice: ${error.message} 😢`, true);
+  }
+});
+
+// Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadSettings();
+  await loadVoices();
+  showNotification("Welcome to AI Voice Agent Settings! 🎉");
+});
