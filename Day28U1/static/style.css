@@ -245,8 +245,8 @@ body {
 }
 
 .main-content {
-  width: 60%;
-  padding: 32px;
+  width: 70%;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -329,7 +329,7 @@ body {
   overflow: hidden;
   margin-bottom: 25px;
   width: 100%;
-  max-width: 1030px;
+  max-width: 94%;
   display: flex;
   flex-direction: column;
   height: 800px;
@@ -390,7 +390,7 @@ body {
   border-radius: 20px 20px 0 20px;
   max-width: 80%;
   box-shadow: 0 6px 15px rgba(255, 165, 0, 0.4);
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px;
 }
 
@@ -402,7 +402,7 @@ body {
   border-radius: 20px 20px 20px 0;
   max-width: 80%;
   box-shadow: 0 6px 15px rgba(13, 13, 13, 0.4);
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px;
   position: relative;
 }
@@ -756,7 +756,7 @@ body {
   }
   .transcription-content .user-message,
   .transcription-content .ai-message {
-    font-size: 16px;
+    font-size: 12px;
     padding: 14px 20px;
   }
 }
