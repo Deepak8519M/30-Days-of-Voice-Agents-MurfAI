@@ -242,6 +242,11 @@ saveBtn.addEventListener("click", async () => {
   }
 });
 
+// Back to Voice Agent
+backBtn.addEventListener("click", () => {
+  window.location.href = "/app";
+});
+
 // Cancel button
 cancelBtn.addEventListener("click", () => {
   window.location.href = "/app";

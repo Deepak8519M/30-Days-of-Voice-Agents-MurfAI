@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "voiceId": "en-IN-alia",
+=======
+  "voiceId": "en-IN-ananya",
+>>>>>>> 2d84df8c92a0d46d38d28be763502abf5ca77a85
   "playbackSpeed": 1,
   "conversationType": "casual",
   "micSensitivity": 50,
