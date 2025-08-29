@@ -59,6 +59,10 @@
         position: sticky;
         top: 0;
         z-index: 10;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
       header h1 {
         margin: 0;
@@ -174,16 +178,32 @@
         height: 100%;
         z-index: -2;
       }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* padding: 10px; */
+        gap: 20px;
+      }
+      .nav-btn {
+        padding: 13px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
     <canvas id="stars"></canvas>
     <header>
       <h1>📄 NovaFlow Documentation</h1>
-      <button class="nav-btn" data-nav="home">🏠 Back to Home</button>
-      <button class="nav-btn" data-nav="voice-agent">
-        🎙️ Back to Voice Agent
-      </button>
+      <div class="button">
+        <button class="nav-btn btn" data-nav="home">Home</button>
+        <button class="nav-btn btn" data-nav="voice-agent">Voice Agent</button>
+      </div>
     </header>
 
     <div class="container">
