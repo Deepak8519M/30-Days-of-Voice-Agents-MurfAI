@@ -3,7 +3,7 @@
   "playbackSpeed": 1,
   "conversationType": "casual",
   "micSensitivity": 50,
-  "audioQuality": "medium",
+  "audioQuality": "low",
   "autoSaveHistory": true,
   "includeKnowledgeBase": true,
   "enableSearch": true,
@@ -11,5 +11,5 @@
   "enableSound": true,
   "notificationDuration": 4,
   "theme": "dark",
-  "accentColor": "green"
+  "accentColor": "orange"
 }

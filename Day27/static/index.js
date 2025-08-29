@@ -1,3 +1,5 @@
+// static/index.js
+
 let ws = null;
 let audioContext = null;
 let audioQueue = [];
@@ -27,7 +29,40 @@ const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 const uploadForm = document.getElementById("uploadForm");
 const fileInput = document.getElementById("fileInput");
-const settingsBtn = document.getElementById("settingsBtn");
+const settingsBtn = document.querySelector(".settings-btn"); // Select the settings button
+
+// Theme and accent color support
+const colorSchemes = {
+  orange: {
+    primary: "#ff8d04",
+    gradientStart: "#ffd700",
+    gradientEnd: "#ff8d04",
+  },
+  blue: {
+    primary: "#1e88e5",
+    gradientStart: "#4fc3f7",
+    gradientEnd: "#1e88e5",
+  },
+  green: {
+    primary: "#43a047",
+    gradientStart: "#a5d6a7",
+    gradientEnd: "#43a047",
+  },
+};
+
+function applyTheme(theme, accentColor) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const scheme = colorSchemes[accentColor];
+  document.documentElement.style.setProperty("--accent-color", scheme.primary);
+  document.documentElement.style.setProperty(
+    "--accent-gradient-start",
+    scheme.gradientStart
+  );
+  document.documentElement.style.setProperty(
+    "--accent-gradient-end",
+    scheme.gradientEnd
+  );
+}
 
 // Initialize AudioContext
 function initAudioContext() {
@@ -40,7 +75,6 @@ function initAudioContext() {
       audioContext.sampleRate
     );
   }
-  // Resume AudioContext if suspended
   if (audioContext.state === "suspended") {
     audioContext.resume().then(() => {
       console.log("AudioContext resumed");
@@ -145,13 +179,12 @@ function playNextAudio() {
 
 // Append user message to transcription
 function appendUserMessage(text, isFinal) {
-  // Remove previous user message if it exists
   if (lastUserMessage) {
     lastUserMessage.remove();
     lastUserMessage = null;
   }
   const message = document.createElement("div");
-  message.classList.add("user-message");
+  message.classList.add("user-message", "message-glossy");
   if (!isFinal) {
     message.classList.add("temporary");
     message.textContent = text + " (transcribing...)";
@@ -166,7 +199,7 @@ function appendUserMessage(text, isFinal) {
 // Append AI message to transcription
 function appendAIMessage(text) {
   const message = document.createElement("div");
-  message.classList.add("ai-message");
+  message.classList.add("ai-message", "message-glossy");
   message.textContent = text;
 
   const speakBtn = document.createElement("button");
@@ -283,7 +316,7 @@ async function loadCurrentConversation() {
       history.forEach((entry) => {
         appendUserMessage(entry.user_query, true);
         appendAIMessage(entry.ai_response);
-        lastUserMessage = null; // Reset after each pair
+        lastUserMessage = null;
       });
     }
   } catch (error) {
@@ -292,10 +325,11 @@ async function loadCurrentConversation() {
   }
 }
 
-// Show notification with gradient animation
+// Show notification with theme-based gradient
 function showNotification(message) {
   notification.textContent = message;
-  notification.style.background = "linear-gradient(135deg, #ff6b00, #ffa500)";
+  notification.style.background =
+    "linear-gradient(135deg, var(--accent-gradient-start), var(--accent-gradient-end))";
   notification.style.display = "block";
   notification.style.animation =
     "slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s forwards";
@@ -378,7 +412,6 @@ function connectWebSocket() {
         console.warn("Invalid JSON message format:", jsonData);
       }
     } catch (e) {
-      // Handle legacy text messages
       const data = event.data;
       if (data === "Started transcription") {
         status.textContent = "Status: Transcribing 🎤";
@@ -460,6 +493,11 @@ uploadForm.addEventListener("submit", async (e) => {
 // Initialize app
 async function initApp() {
   try {
+    // Load theme and accent color
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    const savedAccentColor = localStorage.getItem("accentColor") || "orange";
+    applyTheme(savedTheme, savedAccentColor);
+
     let res = await fetch("/chats");
     let chats = await res.json();
     if (!chats.length) {
@@ -485,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startBtn.addEventListener("click", () => {
     initAudioContext();
     isFirstAudio = true;
-    lastUserMessage = null; // Reset user message
+    lastUserMessage = null;
     listeningModal.style.display = "flex";
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send("start");

@@ -49,6 +49,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+
 # Directories
 UPLOAD_DIR = "uploads"
 KNOWLEDGE_BASE_DIR = os.path.join(UPLOAD_DIR, "knowledge_base")
