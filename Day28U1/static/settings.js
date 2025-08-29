@@ -204,21 +204,21 @@ saveBtn.addEventListener("click", async () => {
     } else {
       showNotification("Settings saved successfully!");
     }
-    setTimeout(() => (window.location.href = "/"), 2000);
+    setTimeout(() => (window.location.href = "/app"), 2000);
   } catch (error) {
     showNotification("Error saving settings.", true);
-    setTimeout(() => (window.location.href = "/"), 2000);
+    setTimeout(() => (window.location.href = "/app"), 2000);
   }
 });
 
 // Back to Voice Agent
 backBtn.addEventListener("click", () => {
-  window.location.href = "/";
+  window.location.href = "/app";
 });
 
 // Cancel button
 cancelBtn.addEventListener("click", () => {
-  window.location.href = "/";
+  window.location.href = "/app";
 });
 
 // Reset to defaults

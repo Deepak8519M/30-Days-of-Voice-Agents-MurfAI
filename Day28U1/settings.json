@@ -1,6 +1,6 @@
 {
-  "voiceId": "en-IN-alia",
-  "playbackSpeed": 1.0,
+  "voiceId": "en-IN-ananya",
+  "playbackSpeed": 1,
   "conversationType": "casual",
   "micSensitivity": 50,
   "audioQuality": "medium",
