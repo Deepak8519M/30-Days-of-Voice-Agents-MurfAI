@@ -10,6 +10,6 @@
   "maxSearchResults": 3,
   "enableSound": true,
   "notificationDuration": 4,
-  "theme": "dark",
+  "theme": "light",
   "accentColor": "orange"
 }

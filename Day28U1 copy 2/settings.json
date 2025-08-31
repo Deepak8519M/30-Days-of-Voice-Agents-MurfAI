@@ -1,7 +1,7 @@
 {
   "voiceId": "en-IN-alia",
-  "playbackSpeed": 1.0,
-  "conversationType": "casual",
+  "playbackSpeed": 1,
+  "conversationType": "formal",
   "micSensitivity": 50,
   "audioQuality": "medium",
   "autoSaveHistory": true,
@@ -11,5 +11,5 @@
   "enableSound": true,
   "notificationDuration": 4,
   "theme": "dark",
-  "accentColor": "orange"
+  "accentColor": "green"
 }

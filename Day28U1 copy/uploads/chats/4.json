@@ -18,5 +18,10 @@
     "timestamp": "2025-08-29T15:19:18.371080",
     "user_query": "Could you explain about yourself in a simple way?",
     "ai_response": "Hey there!  I'm a large language model, which is a fancy way of saying I'm a computer program that can understand and generate human-like text.  Think of me as a really advanced autocomplete that can write stories, answer your questions, translate languages, and lots more!  I learn from the massive amount of text data I've been trained on, and I try my best to be helpful and informative.  Basically, I'm here to chat, help you with tasks, and hopefully make things a little easier for you.  Anything I can help you with today?\n"
+  },
+  {
+    "timestamp": "2025-08-30T00:13:17.877967",
+    "user_query": "Hello, this is Deepak speaking. It's of the recording.",
+    "ai_response": "Hi Deepak!  Thanks for letting me know. Is there anything I can help you with regarding the recording?\n"
   }
 ]
