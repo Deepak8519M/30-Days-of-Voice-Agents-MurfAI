@@ -16,7 +16,7 @@ Each day focuses on solving real-world AI challenges like:
 * 🔄 **Real-Time WebSocket Streaming**
 * 🤖 **Context + Multi-Agent experiments**
 
-👉 The ultimate goal: A **robust, interactive voice agent** that feels alive, responsive, and production-ready! ⚡
+👉 The ultimate goal: A **Robust, Interactive voice agent** that feels Alive, Responsive, and Production-ready! ⚡
 
 ---
 
