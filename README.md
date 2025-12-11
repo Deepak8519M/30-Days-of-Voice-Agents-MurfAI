@@ -8,7 +8,7 @@ Welcome to my AI Voice Agent project, crafted for the 30 Days of AI Voice Agents
 
 This repo documents my **day-by-day progress** in building a **voice-driven AI assistant from scratch**.
 
-Each day focuses on solving real-world AI challenges like:
+Each day Focuses on solving real-world AI challenges like:
 
 * 🎤 **Speech-to-Text (STT)** with AssemblyAI
 * 🗣️ **Text-to-Speech (TTS)** with Murf AI
