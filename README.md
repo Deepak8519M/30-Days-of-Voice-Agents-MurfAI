@@ -6,7 +6,7 @@ Welcome to my AI Voice Agent project, crafted for the 30 Days of AI Voice Agents
 
 ## 📖 `About the Project`
 
-This repo documents my **day-by-day progress** in building a **voice-driven AI assistant from scratch**.
+This Repo documents my **day-by-day progress** in building a **voice-driven AI assistant from scratch**.
 
 Each day Focuses on solving real-world AI challenges like:
 
